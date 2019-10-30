@@ -6,8 +6,6 @@ class FirstScreen extends StatefulWidget {
 }
 
 class BottomNavigationWidgetState extends State<FirstScreen> {
-  final _bottomNavigationColor = Colors.blue;
-  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
