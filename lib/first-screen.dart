@@ -11,6 +11,15 @@ class BottomNavigationWidgetState extends State<FirstScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('First Screen'),
+		leading: Builder(builder: (context) {
+		  return IconButton(
+			icon: Icon(Icons.dashboard, color: Colors.white), //自定义图标
+			onPressed: () {
+			  // 打开抽屉菜单  
+			  Scaffold.of(context).openDrawer(); 
+			},
+		  );
+		}),
       ),
       body: Center(
         child: RaisedButton(
