@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'second-screen.dart';
-import 'first-screen.dart';
+import 'package:flutter_test_626/screens/cart.dart';
+import 'package:flutter_test_626/screens/catalog.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
   @override
@@ -15,8 +15,8 @@ class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   @override
   void initState() {
     list
-      ..add(FirstScreen())
-      ..add(SecondScreen());
+      ..add(MyCatalog())
+      ..add(MyCart());
     super.initState();
   }
 
