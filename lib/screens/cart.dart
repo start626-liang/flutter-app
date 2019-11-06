@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:math';
+
 import 'package:flutter_test_626/models/cart.dart';
 
 class MyCart extends StatelessWidget {
@@ -73,7 +75,7 @@ class _CartTotal extends StatelessWidget {
                     SnackBar(content: Text('Buying not supported yet.')));
               },
               color: Colors.white,
-              child: Text('BUY'),
+              child: Text(Random().nextInt(10000).toString()),
             ),
           ],
         ),
