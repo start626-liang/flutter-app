@@ -3,45 +3,29 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:redux_dev_tools/redux_dev_tools.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 
-import 'package:flutter_test_626/common/theme.dart';
-import 'package:flutter_test_626/models/cart.dart';
-import 'package:flutter_test_626/models/catalog.dart';
-import 'package:flutter_test_626/screens/cart.dart';
-import 'package:flutter_test_626/screens/catalog.dart';
-import 'package:flutter_test_626/bottom_navigation_widget.dart';
+import 'package:flutter_test_626/model/User.dart';
+import 'package:flutter_test_626/App.dart';
+import 'package:flutter_test_626/redux/reducers.dart';
+import 'package:flutter_test_626/model/Store.dart';
 
 void main() {
-  runApp(MyApp());
+  final store =
+      new DevToolsStore<Store>(cartItemsReducer, initialState: new Store());
+  runApp(MyApp(store));
 }
 
 class MyApp extends StatelessWidget {
+  final DevToolsStore<Store> store;
+
+  MyApp(this.store);
   @override
   Widget build(BuildContext context) {
-    // Using MultiProvider is convenient when providing multiple objects.
-    return MultiProvider(
-      providers: [
-        // In this sample app, CatalogModel never changes, so a simple Provider
-        // is sufficient.
-        Provider(builder: (context) => CatalogModel()),
-        // CartModel is implemented as a ChangeNotifier, which calls for the use
-        // of ChangeNotifierProvider. Moreover, CartModel depends
-        // on CatalogModel, so a ProxyProvider is needed.
-        ChangeNotifierProxyProvider<CatalogModel, CartModel>(
-            builder: (context, catalog, previousCart) =>
-                CartModel(catalog, previousCart)),
-      ],
-      child: MaterialApp(
-        title: 'Provider Demo',
-        theme: appTheme,
-//        initialRoute: '/',
-        home: BottomNavigationWidget(),
-        routes: {
-          '/a': (context) => MyCatalog(),
-          '/cart': (context) => MyCart(),
-        },
-      ),
+    return new StoreProvider<Store>(
+      store: store,
+      child: new App(store),
     );
   }
 }
