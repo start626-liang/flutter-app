@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test_626/screens/cart.dart';
-import 'package:flutter_test_626/screens/catalog.dart';
+import 'package:flutter_test_626/views/home-view.dart';
+import 'package:flutter_test_626/views/user-view.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
   @override
@@ -14,9 +14,7 @@ class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
 
   @override
   void initState() {
-    list
-      ..add(MyCatalog())
-      ..add(MyCart());
+    list..add(HomeView())..add(UserView());
     super.initState();
   }
 

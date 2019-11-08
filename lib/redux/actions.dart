@@ -1,12 +1,7 @@
 import 'package:flutter_test_626/model/User.dart';
-class AddItemAction {
+
+class SetUser {
   final User user;
 
-  AddItemAction(this.user);
-}
-
-class ToggleItemStateAction {
-  final User user;
-
-  ToggleItemStateAction(this.user);
+  SetUser(this.user);
 }
