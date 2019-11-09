@@ -7,6 +7,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 
 import 'package:flutter_test_626/model/Store.dart';
 import 'package:flutter_test_626/model/User.dart';
+import 'package:flutter_test_626/main.dart';
 
 class HomeView extends StatelessWidget {
   @override
@@ -16,7 +17,7 @@ class HomeView extends StatelessWidget {
         title: Text('First Screen'),
         leading: Builder(builder: (BuildContext context) {
           return IconButton(
-            icon: Icon(Icons.dashboard, color: Colors.white), //自定义图标
+            icon: Icon(Icons.menu, color: Colors.white), //自定义图标
             onPressed: () {
               // 打开抽屉菜单
               Scaffold.of(context).openDrawer();
@@ -30,7 +31,7 @@ class HomeView extends StatelessWidget {
           onPressed: () {
             // Navigate to the second screen using a named route.
             // 使用命名路由跳转到第二个界面（Navigate to the second screen using a named route）
-            Navigator.pushNamed(context, '/user');
+            Navigator.pushNamed(context, '/login');
           },
         ),
       ),
@@ -54,7 +55,43 @@ class _Drawer extends StatelessWidget {
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
-                child: Text(user.name),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/login');
+                  },
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Container(
+                            //边框设置
+                            decoration: new BoxDecoration(
+                              //背景
+                              color: Colors.white,
+                              //设置四周圆角 角度
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                              //设置四周边框
+                              border:
+                                  new Border.all(width: 2, color: Colors.white),
+                              image: DecorationImage(
+                                  image: new NetworkImage(user.name != notLogin
+                                      ? 'https://tse3-mm.cn.bing.net/th?id=OIP.dXCIsZadSAJ3uGlYfRljmgHaHa&w=204&h=196&c=7&o=5&pid=1.7'
+                                      : '')),
+                            ),
+                            child: Icon(Icons.account_circle,
+                                color: Colors.black12, size: 60),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 8.0),
+                        child: Text(user.name),
+                      ),
+                    ],
+                  ),
+                ),
                 decoration: BoxDecoration(
                   color: Colors.blue,
                 ),

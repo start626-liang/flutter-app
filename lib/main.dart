@@ -11,8 +11,9 @@ import 'package:flutter_test_626/model/Store.dart';
 import 'package:flutter_test_626/redux/reducers.dart';
 import 'package:flutter_test_626/model/User.dart';
 
+final String notLogin = '未登录';
 void main() {
-  final Store initStore = new Store(new User('未登录'));
+  final Store initStore = new Store(new User(notLogin));
   final DevToolsStore store =
       new DevToolsStore<Store>(storeReducer, initialState: initStore);
   runApp(MyApp(store));
