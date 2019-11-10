@@ -31,7 +31,7 @@ class HomeView extends StatelessWidget {
           onPressed: () {
             // Navigate to the second screen using a named route.
             // 使用命名路由跳转到第二个界面（Navigate to the second screen using a named route）
-            Navigator.pushNamed(context, '/login');
+//            Navigator.pushNamed(context, '/login');
           },
         ),
       ),
@@ -87,7 +87,9 @@ class _Drawer extends StatelessWidget {
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 8.0),
-                        child: Text(user.name),
+                        child: Text(user.name == notLogin
+                            ? '点击登录'
+                            : user.name),
                       ),
                     ],
                   ),
@@ -97,7 +99,7 @@ class _Drawer extends StatelessWidget {
                 ),
               ),
               ListTile(
-                title: Text(user.name),
+                title: Text('1231231321'),
                 onTap: () {
                   // Update the state of the app
                   // ...
