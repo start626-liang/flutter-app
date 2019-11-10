@@ -4,6 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_test_626/model/Store.dart';
 import 'package:flutter_test_626/model/User.dart';
 import 'package:flutter_test_626/main.dart';
+
 class MyDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -37,10 +38,10 @@ class MyDrawer extends StatelessWidget {
                               color: Colors.white,
                               //设置四周圆角 角度
                               borderRadius:
-                              BorderRadius.all(Radius.circular(50)),
+                                  BorderRadius.all(Radius.circular(50)),
                               //设置四周边框
                               border:
-                              new Border.all(width: 2, color: Colors.white),
+                                  new Border.all(width: 2, color: Colors.white),
                               image: DecorationImage(
                                   image: new NetworkImage(user.name != notLogin
                                       ? 'https://tse3-mm.cn.bing.net/th?id=OIP.dXCIsZadSAJ3uGlYfRljmgHaHa&w=204&h=196&c=7&o=5&pid=1.7'

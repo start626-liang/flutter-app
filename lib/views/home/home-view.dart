@@ -8,9 +8,8 @@ import 'package:flutter_test_626/views/home/drawer-component.dart';
 import 'package:flutter_test_626/views/home/images.dart';
 
 class HomeView extends StatelessWidget {
-  final String img =
+  final String _img =
       'https://cn.bing.com/th?id=OIP.lZiy3876vC2hTJ5ERvg05wHaEn&pid=Api&rs=1';
-  bool previewNoShow = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +26,10 @@ class HomeView extends StatelessWidget {
           );
         }),
       ),
-      body: MyImages(img),
+      body: MyImages(_img),
       drawer: MyDrawer(),
     );
   }
+
+  HomeView();
 }
