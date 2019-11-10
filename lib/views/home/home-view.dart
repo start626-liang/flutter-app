@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:community_material_icon/community_material_icon.dart';
 
 import 'package:flutter_test_626/views/home/drawer-component.dart';
 import 'package:flutter_test_626/views/home/images.dart';
@@ -26,7 +27,30 @@ class HomeView extends StatelessWidget {
           );
         }),
       ),
-      body: MyImages(_img),
+      body: ListView(
+        children: <Widget>[
+          MyImages(_img),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.star_border),
+                onPressed: () {},
+              ),
+              IconButton(
+//                icon: Icon(CommunityMaterialIcons.thumb_up),
+                icon: Icon(CommunityMaterialIcons.thumb_up_outline),
+                onPressed: () {},
+              ),
+              IconButton(
+//                icon: Icon(CommunityMaterialIcons.thumb_down),
+                icon: Icon(CommunityMaterialIcons.thumb_down_outline),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ],
+      ),
       drawer: MyDrawer(),
     );
   }
