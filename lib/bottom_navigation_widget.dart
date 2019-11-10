@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test_626/views/home-view.dart';
+import 'package:flutter_test_626/views/home/home-view.dart';
 import 'package:flutter_test_626/views/user-view.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
