@@ -3,10 +3,12 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:community_material_icon/community_material_icon.dart';
 
 import 'package:flutter_test_626/views/home/drawer-component.dart';
 import 'package:flutter_test_626/views/home/images.dart';
+import 'package:flutter_test_626/views/home/enshrine-component.dart';
+import 'package:flutter_test_626/views/home/like-component.dart';
+import 'package:flutter_test_626/views/home/trample-component.dart';
 
 class HomeView extends StatelessWidget {
   final String _img =
@@ -33,20 +35,9 @@ class HomeView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.star_border),
-                onPressed: () {},
-              ),
-              IconButton(
-//                icon: Icon(CommunityMaterialIcons.thumb_up),
-                icon: Icon(CommunityMaterialIcons.thumb_up_outline),
-                onPressed: () {},
-              ),
-              IconButton(
-//                icon: Icon(CommunityMaterialIcons.thumb_down),
-                icon: Icon(CommunityMaterialIcons.thumb_down_outline),
-                onPressed: () {},
-              ),
+              Enshrine(false),
+              Like(false),
+              Trample(false),
             ],
           ),
         ],
