@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:redux_dev_tools/redux_dev_tools.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'package:flutter_test_626/App.dart';
-import 'package:flutter_test_626/model/Store.dart';
-import 'package:flutter_test_626/redux/reducers.dart';
-import 'package:flutter_test_626/model/User.dart';
+import 'App.dart';
+import 'model/Store.dart';
+import 'redux/reducers.dart';
+import 'model/User.dart';
 
 final String notLogin = '未登录';
 void main() {

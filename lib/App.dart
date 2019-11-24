@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test_626/views/user-view.dart';
+
 import 'package:redux_dev_tools/redux_dev_tools.dart';
 
-import 'package:flutter_test_626/bottom_navigation_widget.dart';
-import 'package:flutter_test_626/model/Store.dart';
-import 'package:flutter_test_626/common/theme.dart';
-import 'package:flutter_test_626/views/home/home-view.dart';
-import 'package:flutter_test_626/views/login/login-view.dart';
+import 'views/user-view.dart';
+import 'bottom_navigation_widget.dart';
+import 'model/Store.dart';
+import 'common/theme.dart';
+import 'views/home/home-view.dart';
+import 'views/login/login-view.dart';
 
 class App extends StatelessWidget {
   final DevToolsStore<Store> store;

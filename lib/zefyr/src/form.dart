@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:zefyr/zefyr.dart';
 
 import 'full_page.dart';
-import 'package:flutter_test_626/zefyr/src/images.dart';
+import './images.dart';
 
 class FormEmbeddedScreen extends StatefulWidget {
   @override

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'package:flutter_test_626/model/Store.dart';
-import 'package:flutter_test_626/model/User.dart';
+import '../model/Store.dart';
+import '../model/User.dart';
 
 class UserView extends StatelessWidget {
   @override

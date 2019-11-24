@@ -1,5 +1,5 @@
-import 'package:flutter_test_626/model/Store.dart';
-import 'package:flutter_test_626/redux/actions.dart';
+import '../model/Store.dart';
+import '../redux/actions.dart';
 
 Store storeReducer(Store items, dynamic action) {
   if (action is SetUser) {

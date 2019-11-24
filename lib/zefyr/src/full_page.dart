@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
 
-import 'package:flutter_test_626/zefyr/src/images.dart';
+import './images.dart';
 
 class ZefyrLogo extends StatelessWidget {
   @override

@@ -2,10 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 import 'package:flutter/material.dart';
-import 'package:flutter_test_626/zefyr/src/form.dart';
-import 'package:flutter_test_626/zefyr/src/full_page.dart';
-import 'package:flutter_test_626/zefyr/src/view.dart';
-import 'package:flutter_test_626/zefyr/src/editor_page.dart';
+
+import './src/form.dart';
+import './src/full_page.dart';
+import './src/view.dart';
+import './src/editor_page.dart';
 
 void main() {
   runApp(ZefyrApp());

@@ -4,11 +4,11 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_test_626/views/home/drawer-component.dart';
-import 'package:flutter_test_626/views/home/images.dart';
-import 'package:flutter_test_626/views/home/enshrine-component.dart';
-import 'package:flutter_test_626/views/home/like-component.dart';
-import 'package:flutter_test_626/views/home/trample-component.dart';
+import '../../views/home/drawer-component.dart';
+import '../../views/home/images.dart';
+import '../../views/home/enshrine-component.dart';
+import '../../views/home/like-component.dart';
+import '../../views/home/trample-component.dart';
 
 class HomeView extends StatelessWidget {
   final String _img =

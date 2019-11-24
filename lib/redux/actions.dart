@@ -1,4 +1,4 @@
-import 'package:flutter_test_626/model/User.dart';
+import '../model/User.dart';
 
 class SetUser {
   final User user;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'package:flutter_test_626/model/Store.dart';
-import 'package:flutter_test_626/redux/actions.dart';
-import 'package:flutter_test_626/model/User.dart';
+import '../../model/Store.dart';
+import '../../redux/actions.dart';
+import '../../model/User.dart';
 
 // Create a Form widget.
 class LoginForm extends StatefulWidget {
