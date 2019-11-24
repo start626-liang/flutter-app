@@ -27,6 +27,61 @@ class LoginFormState extends State<LoginForm> {
   // of the TextField.
   final account = TextEditingController();
   final password = TextEditingController();
+
+  TextFormField buildAccountFormField() {
+    return TextFormField(
+      controller: account,
+      autofocus: true,
+      decoration: InputDecoration(
+          labelText: "Account",
+          hintText: "User name",
+          prefixIcon: Icon(Icons.person)),
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Please enter some text';
+        }
+        return null;
+      },
+    );
+  }
+
+  TextFormField buildPasswordFormField() {
+    return TextFormField(
+      controller: password,
+      decoration: InputDecoration(
+          labelText: "Password",
+          hintText: "Your login password",
+          prefixIcon: Icon(Icons.lock)),
+      obscureText: true,
+      validator: (value) {
+        if (value.isEmpty) {
+          return 'Please enter some text';
+        }
+        return null;
+      },
+    );
+  }
+
+  Padding buildPadding(OnStateUserGet callback) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: RaisedButton(
+        onPressed: () {
+          // Validate returns true if the form is valid, or false
+          // otherwise.
+          if (_formKey.currentState.validate()) {
+            final User user = new User(account.text);
+            callback(user);
+            Navigator.pop(context);
+          } else {
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text('?????')));
+          }
+        },
+        child: Text('Sign In'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new StoreConnector<Store, OnStateUserGet>(converter: (store) {
@@ -37,52 +92,9 @@ class LoginFormState extends State<LoginForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextFormField(
-              controller: account,
-              autofocus: true,
-              decoration: InputDecoration(
-                  labelText: "Account",
-                  hintText: "User name",
-                  prefixIcon: Icon(Icons.person)),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: password,
-              decoration: InputDecoration(
-                  labelText: "Password",
-                  hintText: "Your login password",
-                  prefixIcon: Icon(Icons.lock)),
-              obscureText: true,
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: RaisedButton(
-                onPressed: () {
-                  // Validate returns true if the form is valid, or false
-                  // otherwise.
-                  if (_formKey.currentState.validate()) {
-                    final User user = new User(account.text);
-                    callback(user);
-                    Navigator.pop(context);
-                  } else {
-                    Scaffold.of(context)
-                        .showSnackBar(SnackBar(content: Text('?????')));
-                  }
-                },
-                child: Text('Sign In'),
-              ),
-            ),
+            buildAccountFormField(),
+            buildPasswordFormField(),
+            buildPadding(callback),
           ],
         ),
       );

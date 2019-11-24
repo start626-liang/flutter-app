@@ -13,6 +13,18 @@ class App extends StatelessWidget {
 
   App(this.store);
 
+  Widget buildLoginViewPage(BuildContext context) {
+    return LoginView();
+  }
+
+  Widget buildUserViewPage(BuildContext context) {
+    return UserView();
+  }
+
+  Widget buildHomeViewPage(BuildContext context) {
+    return HomeView();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -21,9 +33,9 @@ class App extends StatelessWidget {
 //        initialRoute: '/',
       home: BottomNavigationWidget(),
       routes: {
-        '/home': (context) => HomeView(),
-        '/user': (context) => UserView(),
-        '/login': (context) => LoginView(),
+        '/home': (context) => buildHomeViewPage(context),
+        '/user': (context) => buildUserViewPage(context),
+        '/login': (context) => buildLoginViewPage(context),
       },
     );
   }
