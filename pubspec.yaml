@@ -29,6 +29,7 @@ dependencies:
   flutter_redux_dev_tools: "^0.3.0"
   community_material_icon: "^3.5.95"
   path_provider: ^1.4.4
+  video_player: ^0.10.3+3
 
 dev_dependencies:
   flutter_test:

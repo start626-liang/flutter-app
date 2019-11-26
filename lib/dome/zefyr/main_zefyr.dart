@@ -3,10 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 import 'package:flutter/material.dart';
 
-import './src/form.dart';
-import './src/full_page.dart';
-import './src/view.dart';
-import './src/editor_page.dart';
+import 'src/form.dart';
+import 'src/full_page.dart';
+import 'src/view.dart';
+import 'src/editor_page.dart';
 
 void main() {
   runApp(ZefyrApp());

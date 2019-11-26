@@ -2,32 +2,18 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:zefyr/zefyr.dart';
 
-import './images.dart';
+import 'full_page.dart';
+import 'images.dart';
 
-class ZefyrLogo extends StatelessWidget {
+class ViewScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text('Ze'),
-        FlutterLogo(size: 24.0),
-        Text('yr'),
-      ],
-    );
-  }
-}
-
-class FullPageEditorScreen extends StatefulWidget {
-  @override
-  _FullPageEditorScreenState createState() => _FullPageEditorScreenState();
+  _ViewScreen createState() => _ViewScreen();
 }
 
 final doc =
@@ -41,31 +27,12 @@ Delta getDelta() {
   return Delta.fromJson(json.decode(doc) as List);
 }
 
-class _FullPageEditorScreenState extends State<FullPageEditorScreen> {
-  final ZefyrController _controller =
-      ZefyrController(NotusDocument.fromDelta(getDelta()));
-  final FocusNode _focusNode = FocusNode();
-  bool _editing = false;
-  StreamSubscription<NotusChange> _sub;
-
-  @override
-  void initState() {
-    super.initState();
-    _sub = _controller.document.changes.listen((change) {
-      print('${change.source}: ${change.change}');
-    });
-  }
-
-  @override
-  void dispose() {
-    _sub.cancel();
-    super.dispose();
-  }
+class _ViewScreen extends State<ViewScreen> {
+  final doc = NotusDocument.fromDelta(getDelta());
 
   @override
   Widget build(BuildContext context) {
     final theme = ZefyrThemeData(
-      cursorColor: Colors.blue,
       toolbarTheme: ZefyrToolbarTheme.fallback(context).copyWith(
         color: Colors.grey.shade800,
         toggleColor: Colors.grey.shade900,
@@ -73,10 +40,6 @@ class _FullPageEditorScreenState extends State<FullPageEditorScreen> {
         disabledIconColor: Colors.grey.shade500,
       ),
     );
-
-    final done = _editing
-        ? [FlatButton(onPressed: _stopEditing, child: Text('DONE'))]
-        : [FlatButton(onPressed: _startEditing, child: Text('EDIT'))];
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
@@ -84,31 +47,29 @@ class _FullPageEditorScreenState extends State<FullPageEditorScreen> {
         backgroundColor: Colors.grey.shade200,
         brightness: Brightness.light,
         title: ZefyrLogo(),
-        actions: done,
       ),
-      body: ZefyrScaffold(
-        child: ZefyrTheme(
-          data: theme,
-          child: ZefyrEditor(
-            controller: _controller,
-            focusNode: _focusNode,
-            mode: _editing ? ZefyrMode.edit : ZefyrMode.select,
-            imageDelegate: CustomImageDelegate(),
-          ),
+      body: ZefyrTheme(
+        data: theme,
+        child: ListView(
+          children: <Widget>[
+            SizedBox(height: 16.0),
+            ListTile(
+              leading: Icon(Icons.info),
+              title: Text('ZefyrView inside ListView'),
+              subtitle: Text(
+                  'Allows embedding Notus documents in custom scrollables'),
+              trailing: Icon(Icons.keyboard_arrow_down),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ZefyrView(
+                document: doc,
+                imageDelegate: CustomImageDelegate(),
+              ),
+            )
+          ],
         ),
       ),
     );
-  }
-
-  void _startEditing() {
-    setState(() {
-      _editing = true;
-    });
-  }
-
-  void _stopEditing() {
-    setState(() {
-      _editing = false;
-    });
   }
 }
