@@ -10,48 +10,9 @@ import '../../views/home/enshrine-component.dart';
 import '../../views/home/like-component.dart';
 import '../../views/home/trample-component.dart';
 
-
 class HomeView extends StatelessWidget {
   final String _img =
       'https://cn.bing.com/th?id=OIP.lZiy3876vC2hTJ5ERvg05wHaEn&pid=Api&rs=1';
-
-  Widget _buildButton(
-      String text,
-      Function onPressed, {
-        Color color = Colors.white,
-      }) {
-    return FlatButton(
-      color: color,
-      child: Text(text),
-      onPressed: onPressed,
-    );
-  }
-
-  _showDialog(context) async {
-    var result = await showDialog(
-      context: context,
-      builder: (ctx) {
-        return Center(
-          child:Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-
-              children: <Widget>[
-                _buildButton("返回1", () => Navigator.of(context).pop(1)),
-                _buildButton("返回2", () => Navigator.pop(context, 2)),
-              ],
-            ),
-          ),
-
-        );
-      },
-    );
-
-    print("result = $result");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +45,7 @@ class HomeView extends StatelessWidget {
       drawer: MyDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-//          Navigator.pushNamed(context, '/write');
-          _showDialog(context);
+          Navigator.pushNamed(context, '/write');
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
