@@ -15,46 +15,6 @@ class MyDualog extends StatefulWidget {
 }
 
 class _MyDualogState extends State<MyDualog> {
-  File _imageFile;
-  dynamic _pickImageError;
-  bool isVideo = false;
-  VideoPlayerController _controller;
-  String _retrieveDataError;
-
-  Future<void> _disposeVideoController() async {
-    if (_controller != null) {
-      await _controller.dispose();
-      _controller = null;
-    }
-  }
-
-  void _onImageButtonPressed(ImageSource source) async {
-    if (_controller != null) {
-      await _controller.setVolume(0.0);
-    }
-    try {
-      _imageFile = await ImagePicker.pickImage(source: source);
-      setState(() {});
-    } catch (e) {
-      _pickImageError = e;
-    }
-  }
-
-  @override
-  void deactivate() {
-    if (_controller != null) {
-      _controller.setVolume(0.0);
-      _controller.pause();
-    }
-    super.deactivate();
-  }
-
-  @override
-  void dispose() {
-    _disposeVideoController();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -62,7 +22,7 @@ class _MyDualogState extends State<MyDualog> {
       children: <Widget>[
         GestureDetector(
           onTap: () {
-            _onImageButtonPressed(ImageSource.gallery);
+//            _onImageButtonPressed(ImageSource.gallery);
           },
           child: Container(
             padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -93,7 +53,7 @@ class _MyDualogState extends State<MyDualog> {
         ),
         GestureDetector(
           onTap: () {
-            _onImageButtonPressed(ImageSource.camera);
+//            _onImageButtonPressed(ImageSource.camera);
           },
           child: Container(
             padding: EdgeInsets.only(top: 10, bottom: 10),
