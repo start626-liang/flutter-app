@@ -43,24 +43,22 @@ class _WriteState extends State<WriteView> {
     }
   }
 
-  Widget _previewImage() {
+  Widget _buildImageWidget(data) {
     final Text retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
     }
-    if (_imageFile != null) {
-      return Image.file(_imageFile);
+    if (data != null) {
+      return Image.file(data);
     } else if (_pickImageError != null) {
       return Text(
         'Pick image error: $_pickImageError',
         textAlign: TextAlign.center,
       );
     } else {
-      return Container(
-        // red box
-        decoration: BoxDecoration(
-          color: Colors.yellow,
-        ),
+      return const Text(
+        '1111.',
+        textAlign: TextAlign.center,
       );
     }
   }
@@ -76,8 +74,151 @@ class _WriteState extends State<WriteView> {
     }
   }
 
+  List<Widget> _buildList() {
+    var list = <Widget>[
+//      Text(_imageFileList.length.toString()),
+      GestureDetector(
+        onTap: () async {
+          await showDialog(
+            context: context,
+            builder: (ctx) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        _onImageButtonPressed(ImageSource.gallery);
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        child: Text(
+                          'photo',
+                          textAlign: TextAlign.center,
+                          style: new TextStyle(
+                            color: Colors.black38,
+                            decoration: TextDecoration.none,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 22.0,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16.0),
+                                topRight: Radius.circular(16.0))),
+                        width: 300,
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                      ),
+                      width: 300,
+                      height: 1,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        _onImageButtonPressed(ImageSource.camera);
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        child: Text(
+                          'camera',
+                          textAlign: TextAlign.center,
+                          style: new TextStyle(
+                            color: Colors.black38,
+                            decoration: TextDecoration.none,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 22.0,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(16.0),
+                              bottomRight: Radius.circular(16.0)),
+                          color: Colors.white,
+                        ),
+                        width: 300,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: Container(
+          // red box
+          child: Icon(
+            Icons.camera_alt,
+            color: Colors.grey[500],
+          ),
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+          ),
+          width: 100,
+          height: 120,
+        ),
+      ),
+    ];
+
+    if (0 != _imageFileList.length) {
+      for (File file in _imageFileList) {
+        list.insert(
+          0,
+          Container(
+            // red box
+            child: Platform.isAndroid
+                ? FutureBuilder<void>(
+                    future: retrieveLostData(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<void> snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+
+                        case ConnectionState.waiting:
+                          return const Text(
+                            '2222.',
+                            textAlign: TextAlign.center,
+                          );
+                        case ConnectionState.done:
+                          return _buildImageWidget(file);
+                        default:
+                          if (snapshot.hasError) {
+                            return Text(
+                              'Pick image/video error: ${snapshot.error}}',
+                              textAlign: TextAlign.center,
+                            );
+                          } else {
+                            return const Text(
+                              '33 ',
+                              textAlign: TextAlign.center,
+                            );
+                          }
+                      }
+                    },
+                  )
+                : _buildImageWidget(file),
+            decoration: BoxDecoration(
+//                    color: Colors.grey[300],
+                ),
+            width: 100,
+            height: 120,
+          ),
+        );
+      }
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
+//    print('isAndroid${Platform.isAndroid}');
+//    print('isIOS${Platform.isIOS}');
+//    print('isFuchsia${Platform.isFuchsia}');
     return Scaffold(
       appBar: AppBar(
         title: Text("Sign in"),
@@ -105,137 +246,8 @@ class _WriteState extends State<WriteView> {
                     return null;
                   },
                 ),
-                Row(
-                  children: <Widget>[
-                    Text(_imageFileList.length.toString()),
-                    Container(
-                      // red box
-                      child: Platform.isAndroid
-                          ? FutureBuilder<void>(
-                              future: retrieveLostData(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                switch (snapshot.connectionState) {
-                                  case ConnectionState.none:
-                                  case ConnectionState.waiting:
-                                    return const Text(
-                                      'You have not yet picked an image.',
-                                      textAlign: TextAlign.center,
-                                    );
-                                  case ConnectionState.done:
-                                    return _previewImage();
-                                  default:
-                                    if (snapshot.hasError) {
-                                      return Text(
-                                        'Pick image/video error: ${snapshot.error}}',
-                                        textAlign: TextAlign.center,
-                                      );
-                                    } else {
-                                      return const Text(
-                                        'You have not yet picked an image.',
-                                        textAlign: TextAlign.center,
-                                      );
-                                    }
-                                }
-                              },
-                            )
-                          : _previewImage(),
-                      decoration: BoxDecoration(
-//                    color: Colors.grey[300],
-                          ),
-                      width: 100,
-                      height: 120,
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (ctx) {
-                            return Center(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  GestureDetector(
-                                    onTap: () {
-                                      _onImageButtonPressed(
-                                          ImageSource.gallery);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.only(top: 10, bottom: 10),
-                                      child: Text(
-                                        'photo',
-                                        textAlign: TextAlign.center,
-                                        style: new TextStyle(
-                                          color: Colors.black38,
-                                          decoration: TextDecoration.none,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 22.0,
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(16.0),
-                                              topRight: Radius.circular(16.0))),
-                                      width: 300,
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                    ),
-                                    width: 300,
-                                    height: 1,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      _onImageButtonPressed(ImageSource.camera);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                      padding:
-                                          EdgeInsets.only(top: 10, bottom: 10),
-                                      child: Text(
-                                        'camera',
-                                        textAlign: TextAlign.center,
-                                        style: new TextStyle(
-                                          color: Colors.black38,
-                                          decoration: TextDecoration.none,
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 22.0,
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(16.0),
-                                            bottomRight: Radius.circular(16.0)),
-                                        color: Colors.white,
-                                      ),
-                                      width: 300,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: Container(
-                        // red box
-                        child: Icon(
-                          Icons.camera_alt,
-                          color: Colors.grey[500],
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                        ),
-                        width: 100,
-                        height: 120,
-                      ),
-                    ),
-                  ],
+                Wrap(
+                  children: _buildList(),
                 ),
               ],
             ),
