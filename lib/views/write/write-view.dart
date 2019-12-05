@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 import 'dart:async';
 import 'dart:io';
+
+import './custom-Pagination-builder.dart';
 
 class WriteView extends StatefulWidget {
   @override
@@ -143,16 +144,24 @@ class _WriteState extends State<WriteView> {
     await showDialog(
       context: context,
       builder: (ctx) {
+        //https://juejin.im/post/5c3f3c29f265da6120621048 说明Swiper
         return Swiper(
           itemBuilder: (BuildContext context, int index) {
-            return new Image.network(
-              "http://via.placeholder.com/350x150",
-              fit: BoxFit.fill,
+            return Center(
+              child: ListView(
+                children: <Widget>[
+                  Text("222"),
+                  Text("222"),
+                  Text("222"),
+                  Text("222"),
+                ],
+              ),
             );
           },
           itemCount: 3,
           index: 1,
-          pagination: new SwiperPagination(),
+          pagination: new CustomPaginationBuilder(),
+          onTap: (index) => print('点击了第$index'),
         );
       },
     );
