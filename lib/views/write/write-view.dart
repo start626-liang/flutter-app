@@ -71,7 +71,6 @@ class _WriteState extends State<WriteView> {
       print(imageFile.path);
       setState(() {
         _imageFileList.add(imageFile);
-
       });
     } catch (e) {
       _pickImageError = e;
@@ -141,26 +140,19 @@ class _WriteState extends State<WriteView> {
     ];
   }
 
+  Widget _swiperItemBuilder(BuildContext context, int index) {
+    return Image.file(_imageFileList[index]);
+  }
+
   void _previewImage() async {
     await showDialog(
       context: context,
       builder: (ctx) {
         //https://juejin.im/post/5c3f3c29f265da6120621048 说明Swiper
         return Swiper(
-          itemBuilder: (BuildContext context, int index) {
-            return Center(
-              child: ListView(
-                children: <Widget>[
-                  Text("222"),
-                  Text("222"),
-                  Text("222"),
-                  Text("222"),
-                ],
-              ),
-            );
-          },
-          itemCount: 3,
-          index: 1,
+          itemBuilder: _swiperItemBuilder,
+          itemCount: _imageFileList.length,
+          index: 0,
           pagination: new CustomPaginationBuilder(),
           onTap: (index) => print('点击了第$index'),
         );
@@ -211,6 +203,7 @@ class _WriteState extends State<WriteView> {
             GestureDetector(
               onTap: () {
                 _previewImage();
+//              Navigator.pushNamed(context, '/login');
 //                Navigator.pop(context);
               },
               child: Container(
