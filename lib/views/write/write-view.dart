@@ -17,7 +17,6 @@ class _WriteState extends State<WriteView> {
   final _formKey = GlobalKey<FormState>();
   final _content = TextEditingController();
 
-  File _imageFile;
   List<File> _imageFileList = [];
   dynamic _pickImageError;
   String _retrieveDataError;
@@ -38,8 +37,8 @@ class _WriteState extends State<WriteView> {
     }
     if (response.file != null) {
       setState(() {
-        _imageFile = response.file;
-        _imageFileList.add(_imageFile);
+        File imageFile = response.file;
+        _imageFileList.add(imageFile);
       });
     } else {
       _retrieveDataError = response.exception.code;
@@ -68,9 +67,11 @@ class _WriteState extends State<WriteView> {
 
   void _onImageButtonPressed(ImageSource source) async {
     try {
-      _imageFile = await ImagePicker.pickImage(source: source, maxWidth: 100);
+      File imageFile = await ImagePicker.pickImage(source: source);
+      print(imageFile.path);
       setState(() {
-        _imageFileList.add(_imageFile);
+        _imageFileList.add(imageFile);
+
       });
     } catch (e) {
       _pickImageError = e;

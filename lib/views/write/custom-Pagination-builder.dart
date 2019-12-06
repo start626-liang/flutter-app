@@ -38,11 +38,19 @@ class CustomPaginationBuilder extends SwiperPlugin {
         children: <Widget>[
           new Text(
             "${config.activeIndex + 1}",
-            style: TextStyle(color: activeColor, fontSize: activeFontSize),
+            style: TextStyle(
+              color: activeColor,
+              fontSize: activeFontSize,
+              decoration: TextDecoration.none,
+            ),
           ),
           new Text(
             " / ${config.itemCount}",
-            style: TextStyle(color: color, fontSize: fontSize),
+            style: TextStyle(
+              color: color,
+              fontSize: fontSize,
+              decoration: TextDecoration.none,
+            ),
           )
         ],
       ),
