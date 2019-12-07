@@ -8,14 +8,14 @@ import '../../model/User.dart';
 // Create a Form widget.
 class LoginForm extends StatefulWidget {
   @override
-  LoginFormState createState() {
-    return LoginFormState();
+  _LoginFormState createState() {
+    return _LoginFormState();
   }
 }
 
 // Create a corresponding State class.
 // This class holds data related to the form.
-class LoginFormState extends State<LoginForm> {
+class _LoginFormState extends State<LoginForm> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //

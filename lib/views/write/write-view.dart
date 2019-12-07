@@ -10,7 +10,7 @@ import './custom-Pagination-builder.dart';
 
 class WriteView extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _WriteState();
+  _WriteState createState() => _WriteState();
 }
 
 class _WriteState extends State<WriteView> {
@@ -149,12 +149,28 @@ class _WriteState extends State<WriteView> {
       context: context,
       builder: (ctx) {
         //https://juejin.im/post/5c3f3c29f265da6120621048 说明Swiper
-        return Swiper(
-          itemBuilder: _swiperItemBuilder,
-          itemCount: _imageFileList.length,
-          index: 0,
-          pagination: new CustomPaginationBuilder(),
-          onTap: (index) => print('点击了第$index'),
+        return Scaffold(
+          appBar: AppBar(
+              // title: Text("Sign in"),
+              // actions: <Widget>[
+              //   new IconButton(
+              //     // action button
+              //     icon: new Icon(Icons.save),
+              //     onPressed: () {
+              //       _localPath
+              //           .then((onValue) => print(onValue))
+              //           .catchError((onError) => print(onError));
+              //     },
+              //   ),
+              // ],
+              ),
+          body: Swiper(
+            itemBuilder: _swiperItemBuilder,
+            itemCount: _imageFileList.length,
+            index: 0,
+            pagination: new CustomPaginationBuilder(),
+            onTap: (index) => print('点击了第$index'),
+          ),
         );
       },
     );
