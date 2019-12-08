@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'views/home/home-view.dart';
-import 'views/user-view.dart';
+import 'views/user/user-view.dart';
 
 class BottomNavigationWidget extends StatefulWidget {
   @override
