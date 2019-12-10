@@ -11,7 +11,7 @@ import 'views/login/login-view.dart';
 import 'views/write/write-view.dart';
 import './test/test1.dart';
 import './test/test2.dart';
-import './test/test4.dart';
+import './test/dome.dart';
 class App extends StatelessWidget {
   final DevToolsStore<Store> store;
 
