@@ -49,17 +49,9 @@ class TestListPage extends StatelessWidget {
   }
 }
 
-const int Trigger = 1;
-const int Cancle = 2;
-const int SelectAll = 3;
-const int Delete = 4;
-const int CurrentState = 5;
-
 typedef OnItemBuild = void Function(Size size);
 
 typedef ResultCallBack = bool Function();
-
-typedef IndexCallBack = void Function(int index);
 
 typedef OnActionFinished = int Function(
     List<int> indexes); // 进行数据清除工作，并返回当前list的length
