@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_test_626/views/login/form-component.dart';
+
+import './form-component.dart';
 
 class LoginView extends StatelessWidget {
   @override

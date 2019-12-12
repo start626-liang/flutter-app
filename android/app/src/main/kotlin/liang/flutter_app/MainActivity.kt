@@ -1,4 +1,4 @@
-package test.liang.flutter_test_626
+package liang.flutter_app
 
 import android.os.Bundle
 
