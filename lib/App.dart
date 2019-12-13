@@ -30,8 +30,8 @@ class App extends StatelessWidget {
     return HomeView();
   }
 
-  Widget buildWriteViewPage(BuildContext context) {
-    return WriteView();
+  Widget buildWritePage(BuildContext context) {
+    return WritePage();
   }
 
   @override
@@ -39,13 +39,13 @@ class App extends StatelessWidget {
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      initialRoute: '/example4',
+      initialRoute: '/write',
       home: BottomNavigationWidget(),
       routes: {
         '/home': (context) => buildHomeViewPage(context),
         '/user': (context) => buildUserViewPage(context),
         '/login': (context) => buildLoginViewPage(context),
-        '/write': (context) => buildWriteViewPage(context),
+        '/write': (context) => buildWritePage(context),
         '/example1': (context) => Drag(),
         '/example3': (context) => DraggablePage(),
         '/example4': (context) => TestListPage(),
