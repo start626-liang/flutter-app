@@ -21,7 +21,9 @@ class _ImageListState extends State<ImageList> {
         _imageFileList.add(imageFile);
       });
     } catch (e) {
-      _pickImageError = e;
+      setState(() {
+        _pickImageError = e;
+      });
     }
   }
 
@@ -88,21 +90,23 @@ class _ImageListState extends State<ImageList> {
     ];
   }
 
-  Widget _buildAddImageEvent() {
-    return GestureDetector(
-      onTap: () async {
-        await showDialog(
-          context: context,
-          builder: (ctx) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: _buildAddImageChoiceList(),
-              ),
-            );
-          },
+  void _showDialog() async {
+    await showDialog(
+      context: context,
+      builder: (ctx) {
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: _buildAddImageChoiceList(),
+          ),
         );
       },
+    );
+  }
+
+  Widget _buildAddImageEvent() {
+    return GestureDetector(
+      onTap: _showDialog,
       child: Container(
         // red box
         child: Icon(
@@ -125,7 +129,7 @@ class _ImageListState extends State<ImageList> {
 
     if (0 != _imageFileList.length) {
       for (File file in _imageFileList) {
-        list.insert(0, ImageItem(_imageFileList, file));
+        list.insert(0, ImageItem(_imageFileList, file, _pickImageError));
       }
     }
     return list;

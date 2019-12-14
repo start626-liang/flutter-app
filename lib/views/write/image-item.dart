@@ -43,8 +43,8 @@ void _previewImage(BuildContext context, List<File> _imageFileList) async {
 class ImageItem extends StatefulWidget {
   List<File> _imageFileList;
   File file;
-
-  ImageItem(this._imageFileList, this.file);
+  dynamic _pickImageError;
+  ImageItem(this._imageFileList, this.file, this._pickImageError);
 
   @override
   _ImageItemState createState() => _ImageItemState();
@@ -52,7 +52,6 @@ class ImageItem extends StatefulWidget {
 
 class _ImageItemState extends State<ImageItem> {
   String _retrieveDataError;
-  dynamic _pickImageError;
   Widget _buildImageWidget(data) {
     final Text retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
@@ -60,9 +59,9 @@ class _ImageItemState extends State<ImageItem> {
     }
     if (data != null) {
       return Image.file(data);
-    } else if (_pickImageError != null) {
+    } else if (widget._pickImageError != null) {
       return Text(
-        'Pick image error: $_pickImageError',
+        'Pick image error: ${widget._pickImageError}',
         textAlign: TextAlign.center,
       );
     } else {
