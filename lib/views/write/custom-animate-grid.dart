@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'write-form.dart';
-
 import 'grid-item.dart';
+import 'write-form.dart';
 
 typedef ShowDialog = void Function();
 typedef OnItemBuild = void Function(Size size);
@@ -105,51 +104,53 @@ class _CustomAnimateGridState extends State<CustomAnimateGrid>
       child: Stack(
         children: <Widget>[
           WriteForm(),
-          GridView.builder(
-              gridDelegate: _delegate, //一个控制 GridView 中子项布局的委托。
-              itemCount: widget.itemCount + 1, //子控件数量
-              scrollDirection: Axis.vertical, //滚动方向
-              reverse: false, //组件反向排序
-              // controller: null, //滚动控制（滚动监听）
-              // primary: null, //滚动控制（滚动监听）
+          Container(
+            margin: EdgeInsets.only(top: 216),
+            child: GridView.builder(
+                gridDelegate: _delegate, //一个控制 GridView 中子项布局的委托。
+                itemCount: widget.itemCount + 1, //子控件数量
+//              scrollDirection: Axis.vertical, //滚动方向
+                reverse: false, //组件反向排序
+                // controller: null, //滚动控制（滚动监听）
+                // primary: null, //滚动控制（滚动监听）
 //                 滑动类型设置
 
 // AlwaysScrollableScrollPhysics() 总是可以滑动
 // NeverScrollableScrollPhysics禁止滚动
 // BouncingScrollPhysics 内容超过一屏 上拉有回弹效果
 // ClampingScrollPhysics 包裹内容 不会有回弹
-              physics: BouncingScrollPhysics(
-                  parent: AlwaysScrollableScrollPhysics()),
-              shrinkWrap: false, //默认false   内容适配
-              padding: EdgeInsets.only(top: 300, left: 10, right: 10), //内边距
-              itemBuilder: (context, index) {
-                bool isSelected = selectedItems.contains(index);
+                physics: NeverScrollableScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                shrinkWrap: false, //默认false   内容适配
+                itemBuilder: (context, index) {
+                  bool isSelected = selectedItems.contains(index);
 
-                Animation<Offset> slideAnimation;
-                // 需要动画时，添加一个位移动画
-                if (_needToAnimate) {
-                  slideAnimation = createTargetItemSlideAnimation(index);
-                }
-                if (index == widget.itemCount) {
-                  return add();
-                } else {
-                  if (0 < widget.itemCount) {
-                    // print(index);
-                    // 	遍历数返回Widget
-                    return GridItem(
-                      index: index,
-                      child: widget.itemBuilder(context, index),
-                      onItemSelectedChanged: onItemSelected,
-                      singleDeleteStart: triggerSingleDelete,
-                      singleDeleteCancle: cancleSingleDelete,
-                      slideAnimation: slideAnimation,
-                      onItemBuild: itemBuildCallBack,
-                    );
-                  } else {
-                    return add();
+                  Animation<Offset> slideAnimation;
+                  // 需要动画时，添加一个位移动画
+                  if (_needToAnimate) {
+                    slideAnimation = createTargetItemSlideAnimation(index);
                   }
-                }
-              }),
+                  if (index == widget.itemCount) {
+                    return add();
+                  } else {
+                    if (0 < widget.itemCount) {
+                      // print(index);
+                      // 	遍历数返回Widget
+                      return GridItem(
+                        index: index,
+                        child: widget.itemBuilder(context, index),
+                        onItemSelectedChanged: onItemSelected,
+                        singleDeleteStart: triggerSingleDelete,
+                        singleDeleteCancle: cancleSingleDelete,
+                        slideAnimation: slideAnimation,
+                        onItemBuild: itemBuildCallBack,
+                      );
+                    } else {
+                      return add();
+                    }
+                  }
+                }),
+          ),
           StatefulBuilder(
             builder: (context, state) {
               _deleteSheetState = state;
@@ -188,7 +189,17 @@ class _CustomAnimateGridState extends State<CustomAnimateGrid>
           )
         ],
       ),
+      onWillPop: onBackPressed,
     );
+  }
+
+// 拦截返回按键
+  Future<bool> onBackPressed() async {
+    // if (_readyToDelete) {
+    //   cancleDeleteAction();
+    //   return false;
+    // }
+    return true;
   }
 
   // 首次触发时，计算item所占空间的大小，用于计算位移动画的位置
