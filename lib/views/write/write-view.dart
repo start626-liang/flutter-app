@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'dart:async';
 import 'dart:io';
 
-import 'image-list.dart';
+import 'image-item.dart';
+import 'custom-animate-grid.dart';
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -20,10 +22,109 @@ Future<String> get _localPath async {
   return directory.path;
 }
 
-class WritePage extends StatelessWidget {
+class WritePage extends StatefulWidget {
+  @override
+  WritePageState createState() => WritePageState();
+}
+
+class WritePageState extends State<WritePage> {
+  void _showDialog() async {
+    await showDialog(
+      context: context,
+      builder: (ctx) {
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: _buildAddImageChoiceList(),
+          ),
+        );
+      },
+    );
+  }
+
+  List<Widget> _buildAddImageChoiceList() {
+    return [
+      GestureDetector(
+        onTap: () {
+          _onImageButtonPressed(ImageSource.gallery);
+          Navigator.pop(context);
+        },
+        child: Container(
+          padding: EdgeInsets.only(top: 10, bottom: 10),
+          child: Text(
+            'photo',
+            textAlign: TextAlign.center,
+            style: new TextStyle(
+              color: Colors.black38,
+              decoration: TextDecoration.none,
+              fontWeight: FontWeight.w400,
+              fontSize: 22.0,
+            ),
+          ),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16.0),
+                  topRight: Radius.circular(16.0))),
+          width: 300,
+        ),
+      ),
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.grey,
+        ),
+        width: 300,
+        height: 1,
+      ),
+      GestureDetector(
+        onTap: () {
+          _onImageButtonPressed(ImageSource.camera);
+          Navigator.pop(context);
+        },
+        child: Container(
+          padding: EdgeInsets.only(top: 10, bottom: 10),
+          child: Text(
+            'camera',
+            textAlign: TextAlign.center,
+            style: new TextStyle(
+              color: Colors.black38,
+              decoration: TextDecoration.none,
+              fontWeight: FontWeight.w400,
+              fontSize: 22.0,
+            ),
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16.0),
+                bottomRight: Radius.circular(16.0)),
+            color: Colors.white,
+          ),
+          width: 300,
+        ),
+      ),
+    ];
+  }
+
+  void _onImageButtonPressed(ImageSource source) async {
+    try {
+      File imageFile = await ImagePicker.pickImage(source: source);
+      print(imageFile.path);
+      setState(() {
+        imageFileList.add(imageFile);
+      });
+    } catch (e) {
+      setState(() {
+        _pickImageError = e;
+      });
+    }
+  }
+
+  List<File> imageFileList = [];
+  dynamic _pickImageError;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue,
       appBar: AppBar(
         // title: Text("Sign in"),
         actions: <Widget>[
@@ -39,92 +140,31 @@ class WritePage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: _WriteView(),
+        child: createGrid(),
       ),
     );
   }
-}
 
-class _WriteView extends StatefulWidget {
-  @override
-  _WriteState createState() => _WriteState();
-}
 
-class _WriteState extends State<_WriteView> {
-  final _formKey = GlobalKey<FormState>();
-  final _content = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: EdgeInsets.only(left: 10, right: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            TextFormField(
-              controller: _content,
-              autofocus: true,
-              maxLines: 5,
-              decoration: InputDecoration(
-                hintText: "please enter",
-                border: InputBorder.none,
-              ),
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-            ImageList(),
-          ],
-        ),
-      ),
+  CustomAnimateGrid createGrid() {
+    return CustomAnimateGrid(
+      showDialog: _showDialog,
+      itemCount: imageFileList.length,
+      itemBuilder: _itemBuilder,
+      onActionFinished: (indexes) {
+        indexes.forEach((index) {
+          imageFileList.removeAt(index);
+        });
+        return imageFileList.length;
+      },
     );
   }
+
+
+  Widget _itemBuilder(BuildContext context, int index) {
+    return Material(
+      child: ImageItem(imageFileList, index, _pickImageError),
+    );
+  }
+
 }
-
-//提交表单
-//Padding(
-//padding: const EdgeInsets.symmetric(vertical: 16.0),
-//child: RaisedButton(
-//onPressed: () {
-//// Validate returns true if the form is valid, or false
-//// otherwise.
-//if (_formKey.currentState.validate()) {
-//// If the form is valid, display a Snackbar.
-//Scaffold.of(context).showSnackBar(
-//SnackBar(content: Text('Processing Data')));
-//}
-//},
-//child: Text('Submit'),
-//),
-//),
-
-//  右下角按钮
-//      floatingActionButton: Column(
-//        mainAxisAlignment: MainAxisAlignment.end,
-//        children: <Widget>[
-//          FloatingActionButton(
-//            onPressed: () {
-//              _onImageButtonPressed(ImageSource.gallery);
-//            },
-//            heroTag: 'image0',
-//            tooltip: 'Pick Image from gallery',
-//            child: const Icon(Icons.photo_library),
-//          ),
-//          Padding(
-//            padding: const EdgeInsets.only(top: 16.0),
-//            child: FloatingActionButton(
-//              onPressed: () {
-//                _onImageButtonPressed(ImageSource.camera);
-//              },
-//              heroTag: 'image1',
-//              tooltip: 'Take a Photo',
-//              child: const Icon(Icons.camera_alt),
-//            ),
-//          ),
-//        ],
-//      ),

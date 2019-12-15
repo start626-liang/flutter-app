@@ -42,9 +42,9 @@ void _previewImage(BuildContext context, List<File> _imageFileList) async {
 
 class ImageItem extends StatefulWidget {
   List<File> _imageFileList;
-  File file;
+  int index;
   dynamic _pickImageError;
-  ImageItem(this._imageFileList, this.file, this._pickImageError);
+  ImageItem(this._imageFileList, this.index, this._pickImageError);
 
   @override
   _ImageItemState createState() => _ImageItemState();
@@ -98,8 +98,10 @@ class _ImageItemState extends State<ImageItem> {
 
   @override
   Widget build(BuildContext context) {
+    File indexFile = widget._imageFileList[widget.index];
     return GestureDetector(
       onTap: () {
+        print('${widget.index}==============');
         _previewImage(context, widget._imageFileList);
 //              Navigator.pushNamed(context, '/login');
 //                Navigator.pop(context);
@@ -117,7 +119,7 @@ class _ImageItemState extends State<ImageItem> {
                         textAlign: TextAlign.center,
                       );
                     case ConnectionState.done:
-                      return _buildImageWidget(widget.file);
+                      return _buildImageWidget(indexFile);
                     default:
                       if (snapshot.hasError) {
                         return Text(
@@ -133,7 +135,7 @@ class _ImageItemState extends State<ImageItem> {
                   }
                 },
               )
-            : _buildImageWidget(widget.file),
+            : _buildImageWidget(indexFile),
         decoration: BoxDecoration(
 //                    color: Colors.grey[300],
             ),
