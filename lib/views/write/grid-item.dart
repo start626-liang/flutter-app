@@ -72,15 +72,23 @@ class _GridItemState extends State<GridItem> with TickerProviderStateMixin {
             )
           : buildItemChild()),
       feedback: StatefulBuilder(builder: (context, state) {
-        return SizedBox.fromSize(size: _size, child: widget.child);
+        return SizedBox.fromSize(
+            size: _size,
+            child: Transform(
+              child: widget.child,
+              alignment: Alignment.center,
+              transform: Matrix4.identity()..scale(1.2),
+            ));
       }),
       onDragStarted: () {
+        print('长按图片');
         setState(() {
           _isDragging = true;
           widget.singleDeleteStart();
         });
       },
       onDragEnd: (details) {
+        print('放下图片');
         if (widget.singleDeleteCancle()) {
           _isDragging = false;
         } else {
