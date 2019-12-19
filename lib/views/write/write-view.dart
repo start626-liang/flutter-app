@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:image_picker/image_picker.dart';
-
 import 'dart:async';
 import 'dart:io';
 
-import 'image-item.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+
 import 'custom-animate-grid.dart';
+import 'image-item.dart';
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -124,7 +124,7 @@ class WritePageState extends State<WritePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      // backgroundColor: Colors.blue,
       appBar: AppBar(
         // title: Text("Sign in"),
         actions: <Widget>[
@@ -139,12 +139,9 @@ class WritePageState extends State<WritePage> {
           ),
         ],
       ),
-      body: Center(
-        child: createGrid(),
-      ),
+      body: createGrid(),
     );
   }
-
 
   CustomAnimateGrid createGrid() {
     return CustomAnimateGrid(
@@ -160,11 +157,9 @@ class WritePageState extends State<WritePage> {
     );
   }
 
-
   Widget _itemBuilder(BuildContext context, int index) {
     return Material(
       child: ImageItem(imageFileList, index, _pickImageError),
     );
   }
-
 }

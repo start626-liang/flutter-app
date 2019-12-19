@@ -98,95 +98,95 @@ class _CustomAnimateGridState extends State<CustomAnimateGrid>
     );
   }
 
+  Widget _builderImageList() {
+    return Container(
+      margin: EdgeInsets.only(top: 120, left: 10, right: 10),
+      child: GridView.builder(
+          gridDelegate: _delegate, //一个控制 GridView 中子项布局的委托。
+          itemCount: widget.itemCount + 1, //子控件数量
+//              scrollDirection: Axis.vertical, //滚动方向
+          reverse: false, //组件反向排序
+          // controller: null, //滚动控制（滚动监听）
+          // primary: null, //滚动控制（滚动监听）
+//           physics      滑动类型设置
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: false, //默认false   内容适配
+          itemBuilder: (context, index) {
+            Animation<Offset> slideAnimation;
+            // 需要动画时，添加一个位移动画
+            if (_needToAnimate) {
+              slideAnimation = createTargetItemSlideAnimation(index);
+            }
+            if (index == widget.itemCount) {
+              return add();
+            } else {
+              if (0 < widget.itemCount) {
+                // print(index);
+                // 	遍历数返回Widget
+                return GridItem(
+                  index: index,
+                  child: widget.itemBuilder(context, index),
+                  onItemSelectedChanged: onItemSelected,
+                  singleDeleteStart: triggerSingleDelete,
+                  singleDeleteCancle: cancleSingleDelete,
+                  slideAnimation: slideAnimation,
+                  onItemBuild: itemBuildCallBack,
+                );
+              } else {
+                return add();
+              }
+            }
+          }),
+    );
+  }
+
+  Widget _bottomDelete() {
+    return StatefulBuilder(
+      builder: (context, state) {
+        _deleteSheetState = state;
+        return Offstage(
+          offstage: !_singleDelete,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: SlideTransition(
+              position: _deleteSheetAnimation,
+              child: DragTarget<int>(onWillAccept: (data) {
+                _canAccept = true;
+                return data != null; // dada不是null的时候,接收该数据。
+              }, onAccept: (data) {
+                doSingleDelete(data);
+              }, onLeave: (data) {
+                _canAccept = false;
+              }, builder: (context, candidateData, rejectedData) {
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 64.0,
+                  child: Material(
+                    color: Colors.black54,
+                    child: Center(
+                      child: Icon(
+                        Icons.delete_forever,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       child: Stack(
         children: <Widget>[
           WriteForm(),
-          Container(
-            margin: EdgeInsets.only(top: 216),
-            child: GridView.builder(
-                gridDelegate: _delegate, //一个控制 GridView 中子项布局的委托。
-                itemCount: widget.itemCount + 1, //子控件数量
-//              scrollDirection: Axis.vertical, //滚动方向
-                reverse: false, //组件反向排序
-                // controller: null, //滚动控制（滚动监听）
-                // primary: null, //滚动控制（滚动监听）
-//                 滑动类型设置
-
-// AlwaysScrollableScrollPhysics() 总是可以滑动
-// NeverScrollableScrollPhysics禁止滚动
-// BouncingScrollPhysics 内容超过一屏 上拉有回弹效果
-// ClampingScrollPhysics 包裹内容 不会有回弹
-                physics: NeverScrollableScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics()),
-                shrinkWrap: false, //默认false   内容适配
-                itemBuilder: (context, index) {
-                  bool isSelected = selectedItems.contains(index);
-
-                  Animation<Offset> slideAnimation;
-                  // 需要动画时，添加一个位移动画
-                  if (_needToAnimate) {
-                    slideAnimation = createTargetItemSlideAnimation(index);
-                  }
-                  if (index == widget.itemCount) {
-                    return add();
-                  } else {
-                    if (0 < widget.itemCount) {
-                      // print(index);
-                      // 	遍历数返回Widget
-                      return GridItem(
-                        index: index,
-                        child: widget.itemBuilder(context, index),
-                        onItemSelectedChanged: onItemSelected,
-                        singleDeleteStart: triggerSingleDelete,
-                        singleDeleteCancle: cancleSingleDelete,
-                        slideAnimation: slideAnimation,
-                        onItemBuild: itemBuildCallBack,
-                      );
-                    } else {
-                      return add();
-                    }
-                  }
-                }),
-          ),
-          StatefulBuilder(
-            builder: (context, state) {
-              _deleteSheetState = state;
-              return Offstage(
-                offstage: !_singleDelete,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SlideTransition(
-                    position: _deleteSheetAnimation,
-                    child: DragTarget<int>(onWillAccept: (data) {
-                      _canAccept = true;
-                      return data != null; // dada不是null的时候,接收该数据。
-                    }, onAccept: (data) {
-                      doSingleDelete(data);
-                    }, onLeave: (data) {
-                      _canAccept = false;
-                    }, builder: (context, candidateData, rejectedData) {
-                      return SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 64.0,
-                        child: Material(
-                          color: Colors.black54,
-                          child: Center(
-                            child: Icon(
-                              Icons.delete_forever,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-              );
-            },
-          )
+          _builderImageList(),
+          _bottomDelete(),
         ],
       ),
       onWillPop: onBackPressed,
