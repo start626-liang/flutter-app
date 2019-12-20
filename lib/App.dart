@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:redux_dev_tools/redux_dev_tools.dart';
 
-import './test/dome.dart';
-import './test/test1.dart';
-import './test/test2.dart';
-import './test/test3.dart';
 import 'bottom_navigation_widget.dart';
 import 'common/theme.dart';
 import 'model/Store.dart';
@@ -46,10 +42,6 @@ class App extends StatelessWidget {
         '/user': (context) => buildUserViewPage(context),
         '/login': (context) => buildLoginViewPage(context),
         '/write': (context) => buildWritePage(context),
-        '/example1': (context) => Drag(),
-        '/example3': (context) => DraggablePage(),
-        '/example4': (context) => TestListPage(),
-        '/test': (context) => Test3(),
       },
     );
   }
