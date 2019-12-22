@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
+import '../db/db-data-mode.dart';
+import '../db/db.dart';
 import 'custom-animate-grid.dart';
 import 'image-item.dart';
 
@@ -28,6 +32,10 @@ class WritePage extends StatefulWidget {
 }
 
 class WritePageState extends State<WritePage> {
+  List<File> imageFileList = [];
+  dynamic _pickImageError;
+
+  Database database;
   void _showDialog() async {
     await showDialog(
       context: context,
@@ -119,8 +127,6 @@ class WritePageState extends State<WritePage> {
     }
   }
 
-  List<File> imageFileList = [];
-  dynamic _pickImageError;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,13 +134,25 @@ class WritePageState extends State<WritePage> {
       appBar: AppBar(
         // title: Text("Sign in"),
         actions: <Widget>[
-          new IconButton(
-            // action button
-            icon: new Icon(Icons.save),
-            onPressed: () {
-              _localPath
-                  .then((onValue) => print(onValue))
-                  .catchError((onError) => print(onError));
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () async {
+              Database db1;
+              await db().then((onValue) => db1 = onValue);
+              setState(() {
+                this.database = db1;
+              });
+              var fido = Dog(
+                id: Random().nextInt(10000),
+                name: 'Fido',
+                age: Random().nextInt(10000),
+              );
+              await insertDog(fido, this.database);
+              print(await dogs(this.database));
+              // _localPath
+              //     .then((onValue) => print(onValue))
+              //     .catchError((onError) => print(onError));
+              // insertDog(null, database);
             },
           ),
         ],
