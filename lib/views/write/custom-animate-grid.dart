@@ -19,9 +19,10 @@ class CustomAnimateGrid extends StatefulWidget {
   final OnActionFinished onActionFinished;
   final ShowDialog showDialog;
   int itemCount;
-
+  final GlobalKey<FormState> formKey;
   CustomAnimateGrid({
     Key key,
+    @required this.formKey,
     @required this.showDialog,
     @required this.itemCount,
     @required this.itemBuilder,
@@ -184,7 +185,9 @@ class _CustomAnimateGridState extends State<CustomAnimateGrid>
     return WillPopScope(
       child: Stack(
         children: <Widget>[
-          WriteForm(),
+          WriteForm(
+            formKey: widget.formKey,
+          ),
           _builderImageList(),
           _bottomDelete(),
         ],

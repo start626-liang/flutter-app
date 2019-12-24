@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
+// import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
+// import 'package:sqflite/sqflite.dart';
 
-import '../db/db-data-mode.dart';
-import '../db/db.dart';
+// import '../db/db-data-mode.dart';
+// import '../db/db.dart';
 import 'custom-animate-grid.dart';
 import 'image-item.dart';
 
@@ -34,8 +34,8 @@ class WritePage extends StatefulWidget {
 class WritePageState extends State<WritePage> {
   List<File> imageFileList = [];
   dynamic _pickImageError;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Database database;
   void _showDialog() async {
     await showDialog(
       context: context,
@@ -137,22 +137,28 @@ class WritePageState extends State<WritePage> {
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () async {
-              Database db1;
-              await db().then((onValue) => db1 = onValue);
-              setState(() {
-                this.database = db1;
-              });
-              var fido = Dog(
-                id: Random().nextInt(10000),
-                name: 'Fido',
-                age: Random().nextInt(10000),
-              );
-              await insertDog(fido, this.database);
-              print(await dogs(this.database));
+              // Database db1;
+              // await db().then((onValue) => db1 = onValue);
+              // var fido = Dog(
+              //   id: Random().nextInt(10000),
+              //   name: 'Fido',
+              //   age: Random().nextInt(10000),
+              // );
+              // await insertDog(fido, db1);
+              // print(await dogs(db1));
               // _localPath
               //     .then((onValue) => print(onValue))
               //     .catchError((onError) => print(onError));
               // insertDog(null, database);
+              print('==============222===============13');
+              if (_formKey.currentState.validate()) {
+                // If the form is valid, display a Snackbar.
+//                Scaffold.of(context)
+//                    .showSnackBar(SnackBar(content: Text('Processing Data')));
+                print('222222---------------------------');
+              } else {
+                print('==================================111');
+              }
             },
           ),
         ],
@@ -163,6 +169,7 @@ class WritePageState extends State<WritePage> {
 
   CustomAnimateGrid createGrid() {
     return CustomAnimateGrid(
+      formKey: _formKey,
       showDialog: _showDialog,
       itemCount: imageFileList.length,
       itemBuilder: _itemBuilder,
@@ -181,3 +188,29 @@ class WritePageState extends State<WritePage> {
     );
   }
 }
+
+//  右下角按钮
+//      floatingActionButton: Column(
+//        mainAxisAlignment: MainAxisAlignment.end,
+//        children: <Widget>[
+//          FloatingActionButton(
+//            onPressed: () {
+//              _onImageButtonPressed(ImageSource.gallery);
+//            },
+//            heroTag: 'image0',
+//            tooltip: 'Pick Image from gallery',
+//            child: const Icon(Icons.photo_library),
+//          ),
+//          Padding(
+//            padding: const EdgeInsets.only(top: 16.0),
+//            child: FloatingActionButton(
+//              onPressed: () {
+//                _onImageButtonPressed(ImageSource.camera);
+//              },
+//              heroTag: 'image1',
+//              tooltip: 'Take a Photo',
+//              child: const Icon(Icons.camera_alt),
+//            ),
+//          ),
+//        ],
+//      ),
