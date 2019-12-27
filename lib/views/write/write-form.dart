@@ -13,6 +13,13 @@ class _WriteState extends State<WriteForm> {
   final _content = TextEditingController();
 
   @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    _content.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: widget.formKey,
@@ -31,6 +38,8 @@ class _WriteState extends State<WriteForm> {
               ),
               validator: (value) {
                 if (value.isEmpty) {
+                  Scaffold.of(context)
+                      .showSnackBar(SnackBar(content: Text('Processing Data')));
                   return 'Please enter some text';
                 }
                 return null;

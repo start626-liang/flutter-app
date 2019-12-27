@@ -32,7 +32,7 @@ class GridItem extends StatefulWidget {
 class _GridItemState extends State<GridItem> with TickerProviderStateMixin {
   Size _size;
 
-  bool _isDragging = false;
+  bool _isDragging = false; // 长按事件
 
   @override
   void initState() {
@@ -66,12 +66,12 @@ class _GridItemState extends State<GridItem> with TickerProviderStateMixin {
   Widget buildItem(BuildContext context) {
     return LongPressDraggable<int>(
       data: widget.index,
-      child: (_isDragging
+      child: (_isDragging // 被长按的对象组件
           ? Material(
               color: Colors.transparent,
             )
           : buildItemChild()),
-      feedback: StatefulBuilder(builder: (context, state) {
+      feedback: StatefulBuilder(builder: (context, state) { // 鼠标拖动时，显示的组件
         return SizedBox.fromSize(
             size: _size,
             child: Transform(
@@ -80,14 +80,14 @@ class _GridItemState extends State<GridItem> with TickerProviderStateMixin {
               transform: Matrix4.identity()..scale(1.2),
             ));
       }),
-      onDragStarted: () {
-        print('长按图片');
+      onDragStarted: () {   // 拖动开始回调   
+        print('长按图片${widget.index}');
         setState(() {
           _isDragging = true;
           widget.singleDeleteStart();
         });
       },
-      onDragEnd: (details) {
+      onDragEnd: (details) { // 拖动结束回调
         print('放下图片');
         if (widget.singleDeleteCancle()) {
           _isDragging = false;
@@ -97,7 +97,7 @@ class _GridItemState extends State<GridItem> with TickerProviderStateMixin {
           });
         }
       },
-      onDraggableCanceled: (velocity, offset) {
+      onDraggableCanceled: (velocity, offset) { // 拖动取消回调
         setState(() {
           _isDragging = false;
           widget.singleDeleteCancle();

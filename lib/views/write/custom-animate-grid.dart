@@ -152,11 +152,18 @@ class _CustomAnimateGridState extends State<CustomAnimateGrid>
             child: SlideTransition(
               position: _deleteSheetAnimation,
               child: DragTarget<int>(onWillAccept: (data) {
+                print('=======onWillAccept');
+                print(data);
+                //当推拽到控件里时触发，经常在这里得到传递过来的值。
                 _canAccept = true;
                 return data != null; // dada不是null的时候,接收该数据。
               }, onAccept: (data) {
+                // 当可接受的数据放在该拖动目标上时调用
+                print('=======onAccept');
                 doSingleDelete(data);
               }, onLeave: (data) {
+                // 当将给定数据拖到目标上时，并离开时调用
+                print('=======onLeave');
                 _canAccept = false;
               }, builder: (context, candidateData, rejectedData) {
                 return SizedBox(
@@ -257,7 +264,7 @@ class _CustomAnimateGridState extends State<CustomAnimateGrid>
 
   // 删除Item，执行动画，完成后重绘界面
   void doDeleteAction() {
-    if (selectedItems.length == 0 || selectedItems.length == widget.itemCount) {
+    if (selectedItems.length == 0) {
       // 未选中ite或选中了所有item --- 删除item，然后刷新布局，无动画效果
       setState(() {
         widget.itemCount =
@@ -274,6 +281,10 @@ class _CustomAnimateGridState extends State<CustomAnimateGrid>
       });
       _slideController.forward().whenComplete(() {
         setState(() {
+          /**
+           * 在动画开始执行后开始生成动画帧，屏幕每刷新一次就是一个动画帧，
+           * 在动画的每一帧，会随着根据动画的曲线来生成当前的动画值
+           */
           _slideController.value = 0.0;
           _needToAnimate = false;
           selectedItems.clear();
