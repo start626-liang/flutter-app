@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+typedef ShowDialog = void Function();
+typedef OnItemBuild = void Function(Size size);
 
-import 'custom-animate-grid.dart';
+typedef ResultCallBack = bool Function();
+
+typedef OnActionFinished = int Function(
+    List<int> indexes); // 进行数据清除工作，并返回当前list的length
+
+typedef OnItemSelectedChanged = void Function(
+    int index, bool isSelected); // 选中状态回调
+
 
 class GridItem extends StatefulWidget {
   final int index;
