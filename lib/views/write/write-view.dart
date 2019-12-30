@@ -9,9 +9,10 @@ import 'package:path_provider/path_provider.dart';
 
 // import '../db/db-data-mode.dart';
 // import '../db/db.dart';
-import 'image-item.dart';
-import 'grid-item.dart';
-
+import './image-item.dart';
+import './grid-item.dart';
+import './bottom-column-icon.dart';
+import './add-image-select.dart';
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
 
@@ -35,6 +36,31 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
   List<File> imageFileList = [];
   dynamic _pickImageError;
 
+  final List<int> selectedItems = []; // 被选中的item的index集合
+  final List<int> remainsItems = []; // 删除后将会保留的item的index集合
+
+  Size _itemSize;
+
+  StateSetter _deleteSheetState;
+
+  AnimationController _slideController;
+  AnimationController _deleteSheetController;
+  Animation<Offset> _deleteSheetAnimation;
+
+  int _oldItemCount;
+
+  bool _needToAnimate = false; // 是否需要进行平移动画
+  bool _singleDelete = false; // 是否是单独删除状态，长按item触发
+
+  bool _canAccept = false; // 长按删除时，是否移动到了指定位置
+  final SliverGridDelegate _delegate =
+      SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 4, //列数，即一行有几个子元素；
+    crossAxisSpacing: 8.0, //次轴方向上的空隙间距
+    mainAxisSpacing: 8.0, //主轴方向上的空隙间距
+    childAspectRatio: 1.0, //子元素的宽高比例
+  );
+
   @override
   void initState() {
     super.initState();
@@ -52,77 +78,9 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
     await showDialog(
       context: context,
       builder: (ctx) {
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _buildAddImageChoiceList(),
-          ),
-        );
+        return AddImageSelect(_onImageButtonPressed);
       },
     );
-  }
-
-  List<Widget> _buildAddImageChoiceList() {
-    return [
-      GestureDetector(
-        onTap: () {
-          _onImageButtonPressed(ImageSource.gallery);
-          Navigator.pop(context);
-        },
-        child: Container(
-          padding: EdgeInsets.only(top: 10, bottom: 10),
-          child: Text(
-            'photo',
-            textAlign: TextAlign.center,
-            style: new TextStyle(
-              color: Colors.black38,
-              decoration: TextDecoration.none,
-              fontWeight: FontWeight.w400,
-              fontSize: 22.0,
-            ),
-          ),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16.0),
-                  topRight: Radius.circular(16.0))),
-          width: 300,
-        ),
-      ),
-      Container(
-        decoration: BoxDecoration(
-          color: Colors.grey,
-        ),
-        width: 300,
-        height: 1,
-      ),
-      GestureDetector(
-        onTap: () {
-          _onImageButtonPressed(ImageSource.camera);
-          Navigator.pop(context);
-        },
-        child: Container(
-          padding: EdgeInsets.only(top: 10, bottom: 10),
-          child: Text(
-            'camera',
-            textAlign: TextAlign.center,
-            style: new TextStyle(
-              color: Colors.black38,
-              decoration: TextDecoration.none,
-              fontWeight: FontWeight.w400,
-              fontSize: 22.0,
-            ),
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16.0),
-                bottomRight: Radius.circular(16.0)),
-            color: Colors.white,
-          ),
-          width: 300,
-        ),
-      ),
-    ];
   }
 
   void _onImageButtonPressed(ImageSource source) async {
@@ -222,7 +180,7 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildBottom() {
+  Widget _buildBottomColumn() {
     return StatefulBuilder(
       builder: (context, state) {
         _deleteSheetState = state;
@@ -243,19 +201,7 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
                 // 当将给定数据拖到目标上时，并离开时调用
                 _canAccept = false;
               }, builder: (context, candidateData, rejectedData) {
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 64.0,
-                  child: Material(
-                    color: Colors.black54,
-                    child: Center(
-                      child: Icon(
-                        Icons.delete_forever,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                );
+                return BottomColumnIcon();
               }),
             ),
           ),
@@ -308,23 +254,11 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
         children: <Widget>[
           _buildForm(),
           _buildImageList(),
-          _buildBottom(),
+          _buildBottomColumn(),
         ],
       ),
       onWillPop: onBackPressed,
     );
-    // return CustomAnimateGrid(
-    //   formKey: _formKey,
-    //   showDialog: _showDialog,
-    //   itemCount: imageFileList.length,
-    //   itemBuilder: _itemBuilder,
-    //   onActionFinished: (indexes) {
-    //     indexes.forEach((index) {
-    //       imageFileList.removeAt(index);
-    //     });
-    //     return imageFileList.length;
-    //   },
-    // );
   }
 
   // Item选中状态回调 --- 将其从选中item的list中添加或删除
@@ -477,30 +411,6 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
     }
   }
 
-  final List<int> selectedItems = []; // 被选中的item的index集合
-  final List<int> remainsItems = []; // 删除后将会保留的item的index集合
-
-  Size _itemSize;
-
-  StateSetter _deleteSheetState;
-
-  AnimationController _slideController;
-  AnimationController _deleteSheetController;
-  Animation<Offset> _deleteSheetAnimation;
-
-  int _oldItemCount;
-
-  bool _needToAnimate = false; // 是否需要进行平移动画
-  bool _singleDelete = false; // 是否是单独删除状态，长按item触发
-
-  bool _canAccept = false; // 长按删除时，是否移动到了指定位置
-  final SliverGridDelegate _delegate =
-      SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 4, //列数，即一行有几个子元素；
-    crossAxisSpacing: 8.0, //次轴方向上的空隙间距
-    mainAxisSpacing: 8.0, //主轴方向上的空隙间距
-    childAspectRatio: 1.0, //子元素的宽高比例
-  );
   Widget _itemBuilder(BuildContext context, int index) {
     return Material(
       child: ImageItem(imageFileList, index, _pickImageError),
