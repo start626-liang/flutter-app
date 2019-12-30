@@ -128,7 +128,6 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
   void _onImageButtonPressed(ImageSource source) async {
     try {
       File imageFile = await ImagePicker.pickImage(source: source);
-      print(imageFile.path);
       setState(() {
         imageFileList.add(imageFile);
       });
@@ -162,14 +161,14 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
               //     .then((onValue) => print(onValue))
               //     .catchError((onError) => print(onError));
               // insertDog(null, database);
-              print('==============222===============13');
+              // print('==============222===============13');
               if (_formKey.currentState.validate()) {
                 // If the form is valid, display a Snackbar.
 //                Scaffold.of(context)
 //                    .showSnackBar(SnackBar(content: Text('Processing Data')));
                 print(_content.text);
               } else {
-                print('==================================111');
+                // print('==================================111');
               }
             },
           ),
@@ -199,120 +198,117 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
     return true;
   }
 
+  Widget _buildForm() {
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: EdgeInsets.only(left: 10, right: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            TextFormField(
+              controller: _content,
+              autofocus: true,
+              maxLines: 5,
+              decoration: InputDecoration(
+                hintText: "please enter",
+                border: InputBorder.none,
+              ),
+              // validator: (value) {},
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottom() {
+    return StatefulBuilder(
+      builder: (context, state) {
+        _deleteSheetState = state;
+        return Offstage(
+          offstage: !_singleDelete,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: SlideTransition(
+              position: _deleteSheetAnimation,
+              child: DragTarget<int>(onWillAccept: (data) {
+                //当推拽到控件里时触发，经常在这里得到传递过来的值。
+                _canAccept = true;
+                return data != null; // dada不是null的时候,接收该数据。
+              }, onAccept: (data) {
+                // 当可接受的数据放在该拖动目标上时调用
+                doSingleDelete(data);
+              }, onLeave: (data) {
+                // 当将给定数据拖到目标上时，并离开时调用
+                _canAccept = false;
+              }, builder: (context, candidateData, rejectedData) {
+                return SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 64.0,
+                  child: Material(
+                    color: Colors.black54,
+                    child: Center(
+                      child: Icon(
+                        Icons.delete_forever,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildImageList() {
+    final int _itemCount = imageFileList.length + 1;
+    return Container(
+      margin: EdgeInsets.only(top: 120, left: 10, right: 10),
+      child: GridView.builder(
+          gridDelegate: _delegate, //一个控制 GridView 中子项布局的委托。
+          itemCount: _itemCount, //子控件数量
+//              scrollDirection: Axis.vertical, //滚动方向
+          reverse: false, //组件反向排序
+          // controller: null, //滚动控制（滚动监听）
+          // primary: null, //滚动控制（滚动监听）
+//           physics      滑动类型设置
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: false, //默认false   内容适配
+          itemBuilder: (context, index) {
+            Animation<Offset> slideAnimation;
+            // 需要动画时，添加一个位移动画
+            if (_needToAnimate) {
+              slideAnimation = createTargetItemSlideAnimation(index);
+            }
+            if ((index + 1) != _itemCount) {
+              // 	遍历数返回Widget
+              return GridItem(
+                index: index,
+                child: _itemBuilder(context, index),
+                onItemSelectedChanged: onItemSelected,
+                singleDeleteStart: triggerSingleDelete,
+                singleDeleteCancle: cancleSingleDelete,
+                slideAnimation: slideAnimation,
+                onItemBuild: itemBuildCallBack,
+              );
+            } else {
+              return add();
+            }
+          }),
+    );
+  }
+
   WillPopScope createGrid() {
     return WillPopScope(
       child: Stack(
         children: <Widget>[
-          Form(
-            key: _formKey,
-            child: Padding(
-              padding: EdgeInsets.only(left: 10, right: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  TextFormField(
-                    controller: _content,
-                    autofocus: true,
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                      hintText: "please enter",
-                      border: InputBorder.none,
-                    ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text('Processing Data')));
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 120, left: 10, right: 10),
-            child: GridView.builder(
-                gridDelegate: _delegate, //一个控制 GridView 中子项布局的委托。
-                itemCount: imageFileList.length + 1, //子控件数量
-//              scrollDirection: Axis.vertical, //滚动方向
-                reverse: false, //组件反向排序
-                // controller: null, //滚动控制（滚动监听）
-                // primary: null, //滚动控制（滚动监听）
-//           physics      滑动类型设置
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: false, //默认false   内容适配
-                itemBuilder: (context, index) {
-                  Animation<Offset> slideAnimation;
-                  // 需要动画时，添加一个位移动画
-                  if (_needToAnimate) {
-                    slideAnimation = createTargetItemSlideAnimation(index);
-                  }
-                  if (index == imageFileList.length) {
-                    return add();
-                  } else {
-                    if (0 < imageFileList.length) {
-                      // print(index);
-                      // 	遍历数返回Widget
-                      return GridItem(
-                        index: index,
-                        child: _itemBuilder(context, index),
-                        onItemSelectedChanged: onItemSelected,
-                        singleDeleteStart: triggerSingleDelete,
-                        singleDeleteCancle: cancleSingleDelete,
-                        slideAnimation: slideAnimation,
-                        onItemBuild: itemBuildCallBack,
-                      );
-                    } else {
-                      return add();
-                    }
-                  }
-                }),
-          ),
-          StatefulBuilder(
-            builder: (context, state) {
-              _deleteSheetState = state;
-              return Offstage(
-                offstage: !_singleDelete,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: SlideTransition(
-                    position: _deleteSheetAnimation,
-                    child: DragTarget<int>(onWillAccept: (data) {
-                      print('=======onWillAccept');
-                      print(data);
-                      //当推拽到控件里时触发，经常在这里得到传递过来的值。
-                      _canAccept = true;
-                      return data != null; // dada不是null的时候,接收该数据。
-                    }, onAccept: (data) {
-                      // 当可接受的数据放在该拖动目标上时调用
-                      print('=======onAccept');
-                      doSingleDelete(data);
-                    }, onLeave: (data) {
-                      // 当将给定数据拖到目标上时，并离开时调用
-                      print('=======onLeave');
-                      _canAccept = false;
-                    }, builder: (context, candidateData, rejectedData) {
-                      return SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 64.0,
-                        child: Material(
-                          color: Colors.black54,
-                          child: Center(
-                            child: Icon(
-                              Icons.delete_forever,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-              );
-            },
-          ),
+          _buildForm(),
+          _buildImageList(),
+          _buildBottom(),
         ],
       ),
       onWillPop: onBackPressed,
@@ -418,14 +414,24 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
 
   // 创建指定item的位移动画
   Animation<Offset> createTargetItemSlideAnimation(int index) {
-    int startIndex = remainsItems[index];
-    if (startIndex != index) {
+    if (remainsItems.length == index) {
       Tween<Offset> tween = Tween(
-          begin: getTargetOffset(remainsItems[index], index),
-          end: Offset(0.0, 0.0));
+          begin: getTargetOffset(index - 1, index), end: Offset(0.0, 0.0));
       return tween.animate(
           CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
+    } else {
+      if (!remainsItems.isEmpty) {
+        int startIndex = remainsItems[index];
+        if (startIndex != index) {
+          Tween<Offset> tween = Tween(
+              begin: getTargetOffset(remainsItems[index], index),
+              end: Offset(0.0, 0.0));
+          return tween.animate(
+              CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
+        }
+      }
     }
+
     return null;
   }
 
@@ -448,14 +454,7 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
 
   // 删除Item，执行动画，完成后重绘界面
   void doDeleteAction() {
-    if (selectedItems.length == 0) {
-      // 未选中ite或选中了所有item --- 删除item，然后刷新布局，无动画效果
-      setState(() {
-        imageFileList.length =
-            onActionFinished(selectedItems.reversed.toList());
-        selectedItems.clear();
-      });
-    } else {
+    if (selectedItems.length != 0) {
       // 选中部分item --- 计算需要动画的item，刷新item布局，加入动画控件，然后统一执行动画，结束后刷新布局
       getRemainsItemsList();
       setState(() {
