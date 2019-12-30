@@ -13,6 +13,7 @@ import './image-item.dart';
 import './grid-item.dart';
 import './bottom-column-icon.dart';
 import './add-image-select.dart';
+
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
 
@@ -72,15 +73,6 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
         Tween(begin: Offset(0.0, 1.0), end: Offset(0.0, 0.0)).animate(
             CurvedAnimation(
                 parent: _deleteSheetController, curve: Curves.easeOut));
-  }
-
-  void _showDialog() async {
-    await showDialog(
-      context: context,
-      builder: (ctx) {
-        return AddImageSelect(_onImageButtonPressed);
-      },
-    );
   }
 
   void _onImageButtonPressed(ImageSource source) async {
@@ -217,12 +209,8 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
       child: GridView.builder(
           gridDelegate: _delegate, //一个控制 GridView 中子项布局的委托。
           itemCount: _itemCount, //子控件数量
-//              scrollDirection: Axis.vertical, //滚动方向
           reverse: false, //组件反向排序
-          // controller: null, //滚动控制（滚动监听）
-          // primary: null, //滚动控制（滚动监听）
-//           physics      滑动类型设置
-          physics: NeverScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(), //滑动类型设置
           shrinkWrap: false, //默认false   内容适配
           itemBuilder: (context, index) {
             Animation<Offset> slideAnimation;
@@ -234,7 +222,9 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
               // 	遍历数返回Widget
               return GridItem(
                 index: index,
-                child: _itemBuilder(context, index),
+                child: Material(
+                  child: ImageItem(imageFileList, index, _pickImageError),
+                ),
                 onItemSelectedChanged: onItemSelected,
                 singleDeleteStart: triggerSingleDelete,
                 singleDeleteCancle: cancleSingleDelete,
@@ -301,9 +291,15 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
 
   Widget add() {
     return GestureDetector(
-      onTap: _showDialog,
+      onTap: () async => {
+        await showDialog(
+          context: context,
+          builder: (ctx) {
+            return AddImageSelect(_onImageButtonPressed);
+          },
+        )
+      },
       child: Container(
-        // red box
         child: Icon(
           Icons.camera_alt,
           color: Colors.grey[500],
@@ -409,12 +405,6 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
         });
       });
     }
-  }
-
-  Widget _itemBuilder(BuildContext context, int index) {
-    return Material(
-      child: ImageItem(imageFileList, index, _pickImageError),
-    );
   }
 }
 
