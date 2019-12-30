@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 typedef ShowDialog = void Function();
 typedef OnItemBuild = void Function(Size size);
 
@@ -9,7 +10,6 @@ typedef OnActionFinished = int Function(
 
 typedef OnItemSelectedChanged = void Function(
     int index, bool isSelected); // 选中状态回调
-
 
 class GridItem extends StatefulWidget {
   final int index;
@@ -80,7 +80,8 @@ class _GridItemState extends State<GridItem> with TickerProviderStateMixin {
               color: Colors.transparent,
             )
           : buildItemChild()),
-      feedback: StatefulBuilder(builder: (context, state) { // 鼠标拖动时，显示的组件
+      feedback: StatefulBuilder(builder: (context, state) {
+        // 鼠标拖动时，显示的组件
         return SizedBox.fromSize(
             size: _size,
             child: Transform(
@@ -89,14 +90,16 @@ class _GridItemState extends State<GridItem> with TickerProviderStateMixin {
               transform: Matrix4.identity()..scale(1.2),
             ));
       }),
-      onDragStarted: () {   // 拖动开始回调   
+      onDragStarted: () {
+        // 拖动开始回调
         print('长按图片${widget.index}');
         setState(() {
           _isDragging = true;
           widget.singleDeleteStart();
         });
       },
-      onDragEnd: (details) { // 拖动结束回调
+      onDragEnd: (details) {
+        // 拖动结束回调
         print('放下图片');
         if (widget.singleDeleteCancle()) {
           _isDragging = false;
@@ -106,7 +109,8 @@ class _GridItemState extends State<GridItem> with TickerProviderStateMixin {
           });
         }
       },
-      onDraggableCanceled: (velocity, offset) { // 拖动取消回调
+      onDraggableCanceled: (velocity, offset) {
+        // 拖动取消回调
         setState(() {
           _isDragging = false;
           widget.singleDeleteCancle();
