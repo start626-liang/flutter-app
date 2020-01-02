@@ -1,18 +1,14 @@
 import 'dart:async';
 import 'dart:io';
-// import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:sqflite/sqflite.dart';
 
-// import '../db/db-data-mode.dart';
-// import '../db/db.dart';
-import './image-item.dart';
-import './grid-item.dart';
-import './bottom-column-icon.dart';
 import './add-image-select.dart';
+import './bottom-column-icon.dart';
+import './grid-item.dart';
+import './image-item.dart';
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -26,6 +22,38 @@ Future<String> get _localPath async {
     print(entity.path);
   }
   return directory.path;
+}
+
+Future<bool> _readFile(List<File> list) async {
+  final String path = await _localPath;
+  final String folderName = '222';
+  if (list.length > 0) {
+    list.forEach((e) async {
+      final List<String> array = e.path.split('/');
+
+      Future<String> a =
+          new File('$path/$folderName/${array[array.length - 1]}')
+              .create(recursive: true)
+              .then((file) {
+        print(file.path);
+      }).catchError((onError) {});
+      e.copy(await a);
+    });
+  }
+//  new Directory('$path/$folderName')
+//      .create(recursive: false)
+//      .then((Directory directory) async {
+//    print('path:${directory.path}');
+//    print('===================${await Directory('$path/22').exists()}');
+//
+//    directory
+//        .list(recursive: true, followLinks: false)
+//        .listen((FileSystemEntity entity) {
+//      print(entity.path);
+//    });
+//  });
+
+  return true;
 }
 
 class WritePage extends StatefulWidget {
@@ -107,19 +135,20 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
               // );
               // await insertDog(fido, db1);
               // print(await dogs(db1));
-              // _localPath
-              //     .then((onValue) => print(onValue))
-              //     .catchError((onError) => print(onError));
               // insertDog(null, database);
-              // print('==============222===============13');
-              if (_formKey.currentState.validate()) {
-                // If the form is valid, display a Snackbar.
-//                Scaffold.of(context)
-//                    .showSnackBar(SnackBar(content: Text('Processing Data')));
-                print(_content.text);
-              } else {
-                // print('==================================111');
-              }
+
+              _readFile(imageFileList)
+                  .then((onValue) => print(onValue))
+                  .catchError((onError) => print(onError));
+
+              // if (_formKey.currentState.validate()) {
+              //   // If the form is valid, display a Snackbar.
+              //  Scaffold.of(context)
+              //      .showSnackBar(SnackBar(content: Text('Processing Data')));
+              //   print(_content.text);
+              // } else {
+              //   print('==================================111');
+              // }
             },
           ),
         ],
