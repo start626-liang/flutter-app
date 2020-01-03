@@ -4,11 +4,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 import './add-image-select.dart';
 import './bottom-column-icon.dart';
 import './grid-item.dart';
 import './image-item.dart';
+import '../db/essay-mode.dart';
+import '../db/essay-sql.dart';
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -24,23 +27,21 @@ Future<String> get _localPath async {
   return directory.path;
 }
 
-Future<bool> _readFile(List<File> list) async {
+Future<bool> _readFile(List<File> list, String directory) async {
   final String path = await _localPath;
-  final String folderName = '222';
   if (list.length > 0) {
     list.forEach((e) async {
       final List<String> array = e.path.split('/');
 
-      Future<String> a =
-          new File('$path/$folderName/${array[array.length - 1]}')
-              .create(recursive: true)
-              .then((file) {
+      Future<String> a = new File('$path/$directory/${array[array.length - 1]}')
+          .create(recursive: true)
+          .then((file) {
         print(file.path);
       }).catchError((onError) {});
       e.copy(await a);
     });
   }
-//  new Directory('$path/$folderName')
+//  new Directory('$path/$directory')
 //      .create(recursive: false)
 //      .then((Directory directory) async {
 //    print('path:${directory.path}');
@@ -126,20 +127,22 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () async {
-              // Database db1;
-              // await db().then((onValue) => db1 = onValue);
-              // var fido = Dog(
-              //   id: Random().nextInt(10000),
-              //   name: 'Fido',
-              //   age: Random().nextInt(10000),
-              // );
-              // await insertDog(fido, db1);
-              // print(await dogs(db1));
-              // insertDog(null, database);
+              final String directory = '';
 
-              _readFile(imageFileList)
-                  .then((onValue) => print(onValue))
-                  .catchError((onError) => print(onError));
+              Database db;
+              await createDB().then((onValue) async {
+                db = onValue;
+                final Essay fido = Essay(
+                  // id: Random().nextInt(10000),
+                  text: _content.text,
+                  directory: directory,
+                );
+                await insert(fido, db);
+              });
+
+              // _readFile(imageFileList, directory)
+              //     .then((onValue) => print(onValue))
+              //     .catchError((onError) => print(onError));
 
               // if (_formKey.currentState.validate()) {
               //   // If the form is valid, display a Snackbar.
@@ -149,6 +152,16 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
               // } else {
               //   print('==================================111');
               // }
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.select_all),
+            onPressed: () async {
+              Database db;
+              await createDB().then((onValue) async {
+                db = onValue;
+                print(await selectAll(db));
+              });
             },
           ),
         ],
