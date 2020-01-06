@@ -36,6 +36,8 @@ dependencies:
 
   flutter_swiper: 1.1.6
 
+  jiffy: ^2.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

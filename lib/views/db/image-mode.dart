@@ -1,16 +1,14 @@
-class Image {
+class ImageDate {
   final int id;
-  final int essay_id;
-  final String directory;
+  final int directory;
   final String file_name;
   final String time;
 
-  Image({this.id, this.essay_id, this.directory, this.file_name, this.time});
+  ImageDate({this.id, this.directory, this.file_name, this.time});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'essay_id': essay_id,
       'directory': directory,
       'file_name': file_name,
       'time': time,
@@ -22,6 +20,6 @@ class Image {
   // 重写 toString 方法，以便使用 print 方法查看每个狗狗信息的时候能更清晰。
   @override
   String toString() {
-    return 'Dog{id: $id, essay_id: $essay_id, directory: $directory, file_name: $file_name, time: $time}';
+    return 'ImageDate {id: $id, directory: $directory, file_name: $file_name, time: $time}';
   }
 }

@@ -1,7 +1,7 @@
 class Essay {
   final int id;
   final String text;
-  final String directory;
+  final int directory;
   final String time;
 
   Essay({this.id, this.text, this.directory, this.time});
@@ -17,6 +17,6 @@ class Essay {
 
   @override
   String toString() {
-    return 'Essagy{id: $id, text: $text, directory: $directory}, time: $time}';
+    return 'Essagy {id: $id, text: $text, directory: $directory}, time: $time}';
   }
 }

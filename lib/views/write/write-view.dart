@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -10,8 +11,8 @@ import './add-image-select.dart';
 import './bottom-column-icon.dart';
 import './grid-item.dart';
 import './image-item.dart';
-import '../db/essay-mode.dart';
-import '../db/essay-sql.dart';
+import '../db/image-mode.dart';
+import '../db/image-sql.dart' as ImageSql;
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -22,26 +23,27 @@ Future<String> get _localPath async {
     //FileSystemEntityType有三个常量：
     //Directory、FILE、LINK、NOT_FOUND
     //FileSystemEntity.isFile .isLink .isDerectory可用于判断类型
-    print(entity.path);
+    // print(entity.path);
   }
   return directory.path;
 }
 
-Future<bool> _readFile(List<File> list, String directory) async {
+Future<List<String>> _readFile(List<File> list, int directory) async {
   final String path = await _localPath;
+  List<String> filePathList = [];
   if (list.length > 0) {
-    list.forEach((e) async {
+    list.forEach((e) {
       final List<String> array = e.path.split('/');
+      final String filePath = '$path/$directory/${array[array.length - 1]}';
+      new File(filePath).createSync(recursive: true);
+      e.copy(filePath);
 
-      Future<String> a = new File('$path/$directory/${array[array.length - 1]}')
-          .create(recursive: true)
-          .then((file) {
-        print(file.path);
-      }).catchError((onError) {});
-      e.copy(await a);
+      filePathList.add(filePath);
     });
   }
-//  new Directory('$path/$directory')
+
+  return filePathList;
+  //  new Directory('$path/$folderName')
 //      .create(recursive: false)
 //      .then((Directory directory) async {
 //    print('path:${directory.path}');
@@ -53,8 +55,6 @@ Future<bool> _readFile(List<File> list, String directory) async {
 //      print(entity.path);
 //    });
 //  });
-
-  return true;
 }
 
 class WritePage extends StatefulWidget {
@@ -127,22 +127,38 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () async {
-              final String directory = '';
+              final int directory = Jiffy().unix();
 
-              Database db;
-              await createDB().then((onValue) async {
-                db = onValue;
-                final Essay fido = Essay(
-                  // id: Random().nextInt(10000),
-                  text: _content.text,
-                  directory: directory,
-                );
-                await insert(fido, db);
-              });
+              // await EssaySql.createDB().then((onValue) async {
+              //   Database db = onValue;
+              //   final Essay fido = Essay(
+              //       // id: Random().nextInt(10000),
+              //       text: _content.text,
+              //       directory: directory,
+              //       time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+              //   EssaySql.insert(fido, db);
+              // });
 
-              // _readFile(imageFileList, directory)
-              //     .then((onValue) => print(onValue))
-              //     .catchError((onError) => print(onError));
+              _readFile(imageFileList, directory).then((list) {
+                if (0 < list.length) {
+                  ImageSql.createDB().then((onValue) async {
+                    Database db = onValue;
+                    List<ImageDate> inserList = [];
+                    list.forEach((e) {
+                      print(e);
+                      final ImageDate fido = ImageDate(
+                          // id: Random().nextInt(10000),
+                          directory: directory,
+                          file_name: e,
+                          time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+                      inserList.add(fido);
+                    });
+                    print(inserList);
+                    print('=================--');
+                    ImageSql.insert(inserList, db);
+                  });
+                }
+              }).catchError((onError) => print(onError));
 
               // if (_formKey.currentState.validate()) {
               //   // If the form is valid, display a Snackbar.
@@ -157,10 +173,17 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
           IconButton(
             icon: Icon(Icons.select_all),
             onPressed: () async {
+              // print(imageFileList);
+              // Database db;
+              // await EssaySql.createDB().then((onValue) async {
+              //   db = onValue;
+              //   print(await EssaySql.selectAll(db));
+              // });
+
               Database db;
-              await createDB().then((onValue) async {
+              await ImageSql.createDB().then((onValue) async {
                 db = onValue;
-                print(await selectAll(db));
+                print(await ImageSql.selectAll(db));
               });
             },
           ),
