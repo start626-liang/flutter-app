@@ -46,18 +46,6 @@ Future<List<String>> _readFile(List<File> list, int directory) async {
   }
 
   return filePathList;
-  //  new Directory('$path/$folderName')
-//      .create(recursive: false)
-//      .then((Directory directory) async {
-//    print('path:${directory.path}');
-//    print('===================${await Directory('$path/22').exists()}');
-//
-//    directory
-//        .list(recursive: true, followLinks: false)
-//        .listen((FileSystemEntity entity) {
-//      print(entity.path);
-//    });
-//  });
 }
 
 class WritePage extends StatefulWidget {
