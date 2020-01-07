@@ -8,6 +8,7 @@ import 'views/home/home-view.dart';
 import 'views/login/login-view.dart';
 import 'views/user/user-view.dart';
 import 'views/write/write-view.dart';
+import 'views/drafts/main.dart';
 
 class App extends StatelessWidget {
   final DevToolsStore<Store> store;
@@ -30,18 +31,23 @@ class App extends StatelessWidget {
     return WritePage();
   }
 
+  Widget buildDraftsPage(BuildContext context) {
+    return DraftsView();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      initialRoute: '/home',
+      initialRoute: '/drafts',
       home: BottomNavigationWidget(),
       routes: {
         '/home': (context) => buildHomeViewPage(context),
         '/user': (context) => buildUserViewPage(context),
         '/login': (context) => buildLoginViewPage(context),
         '/write': (context) => buildWritePage(context),
+        '/drafts': (context) => buildDraftsPage(context),
       },
     );
   }
