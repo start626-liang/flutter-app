@@ -11,6 +11,9 @@ import './add-image-select.dart';
 import './bottom-column-icon.dart';
 import './grid-item.dart';
 import './image-item.dart';
+import '../db/db.dart' as DB;
+import '../db/essay-mode.dart';
+import '../db/essay-sql.dart' as EssaySql;
 import '../db/image-mode.dart';
 import '../db/image-sql.dart' as ImageSql;
 
@@ -129,37 +132,35 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
             onPressed: () async {
               final int directory = Jiffy().unix();
 
-              // await EssaySql.createDB().then((onValue) async {
-              //   Database db = onValue;
-              //   final Essay fido = Essay(
-              //       // id: Random().nextInt(10000),
-              //       text: _content.text,
-              //       directory: directory,
-              //       time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-              //   EssaySql.insert(fido, db);
-              // });
+              await DB.createDB().then((onValue) async {
+                Database db = onValue;
+                final Essay fido = Essay(
+                    text: _content.text,
+                    directory: directory,
+                    time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+                await EssaySql.insert(fido, db);
+                DB.close(db);
+              });
 
-              _readFile(imageFileList, directory).then((list) {
+              await _readFile(imageFileList, directory).then((list) {
                 if (0 < list.length) {
-                  ImageSql.createDB().then((onValue) async {
+                  DB.createDB().then((onValue) async {
                     Database db = onValue;
-                    List<ImageDate> inserList = [];
-                    list.forEach((e) {
-                      print(e);
+                    Batch batch = db.batch();
+                    list.forEach((e) async {
                       final ImageDate fido = ImageDate(
-                          // id: Random().nextInt(10000),
                           directory: directory,
                           file_name: e,
                           time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                      inserList.add(fido);
+                      await ImageSql.insert(fido, batch);
                     });
-                    print(inserList);
-                    print('=================--');
-                    ImageSql.insert(inserList, db);
+                    List<dynamic> results = await batch.commit();
+//                    print(results);
+                    DB.close(db);
                   });
                 }
               }).catchError((onError) => print(onError));
-
+              Navigator.pop(context);
               // if (_formKey.currentState.validate()) {
               //   // If the form is valid, display a Snackbar.
               //  Scaffold.of(context)
@@ -170,23 +171,22 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
               // }
             },
           ),
-          IconButton(
-            icon: Icon(Icons.select_all),
-            onPressed: () async {
-              // print(imageFileList);
-              // Database db;
-              // await EssaySql.createDB().then((onValue) async {
-              //   db = onValue;
-              //   print(await EssaySql.selectAll(db));
-              // });
-
-              Database db;
-              await ImageSql.createDB().then((onValue) async {
-                db = onValue;
-                print(await ImageSql.selectAll(db));
-              });
-            },
-          ),
+//          IconButton(
+//            icon: Icon(Icons.select_all),
+//            onPressed: () async {
+//              // print(imageFileList);
+//              Database db;
+//              await DB.createDB().then((onValue) async {
+//                db = onValue;
+//                print(await EssaySql.selectAll(db));
+//              });
+//
+//              await DB.createDB().then((onValue) async {
+//                db = onValue;
+//                print(await ImageSql.selectAll(db));
+//              });
+//            },
+//          ),
         ],
       ),
       body: createGrid(),
