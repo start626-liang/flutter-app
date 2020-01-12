@@ -119,7 +119,6 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
             icon: Icon(Icons.save),
             onPressed: () async {
               final int directory = Jiffy().unix();
-
               await DB.createDB().then((onValue) async {
                 Database db = onValue;
                 final Essay fido = Essay(
@@ -148,7 +147,7 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
                   });
                 }
               }).catchError((onError) => print(onError));
-              Navigator.pop(context);
+              Navigator.of(context).pushReplacementNamed('/drafts');
               // if (_formKey.currentState.validate()) {
               //   // If the form is valid, display a Snackbar.
               //  Scaffold.of(context)
@@ -460,4 +459,3 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
     }
   }
 }
-
