@@ -461,28 +461,3 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
   }
 }
 
-//  右下角按钮
-//      floatingActionButton: Column(
-//        mainAxisAlignment: MainAxisAlignment.end,
-//        children: <Widget>[
-//          FloatingActionButton(
-//            onPressed: () {
-//              _onImageButtonPressed(ImageSource.gallery);
-//            },
-//            heroTag: 'image0',
-//            tooltip: 'Pick Image from gallery',
-//            child: const Icon(Icons.photo_library),
-//          ),
-//          Padding(
-//            padding: const EdgeInsets.only(top: 16.0),
-//            child: FloatingActionButton(
-//              onPressed: () {
-//                _onImageButtonPressed(ImageSource.camera);
-//              },
-//              heroTag: 'image1',
-//              tooltip: 'Take a Photo',
-//              child: const Icon(Icons.camera_alt),
-//            ),
-//          ),
-//        ],
-//      ),

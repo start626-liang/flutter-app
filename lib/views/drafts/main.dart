@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:test1/views/db/essay-mode.dart';
 
 import '../db/db.dart' as DB;
 import '../db/essay-sql.dart' as EssaySql;
-import '../db/essay-mode.dart';
 
 class DraftsView extends StatefulWidget {
   DraftsView({Key key}) : super(key: key);
@@ -15,23 +15,88 @@ class DraftsView extends StatefulWidget {
 }
 
 class DraftsViewState extends State<DraftsView> {
-  List<dynamic> _items = List<String>.generate(20, (i) => "Item ${i + 1}");
-  // @override
-  // void initState() async {
-  //   super.initState();
-  //   Database db;
-  //   await DB.createDB().then((onValue) async {
-  //     db = onValue;
-  //     setState(() async {
-  //       _items = await EssaySql.selectAll(db);
-  //     });
-  //   });
-  // }
+  List<dynamic> _contentList;
+  Future _future;
+  Future<void> futureDB() async {
+    Database db;
+    await DB.createDB().then((onValue) async {
+      db = onValue;
+      var list = await EssaySql.selectAll(db);
+      setState(() {
+        _contentList = list;
+      });
+      return;
+    });
+  }
+
+  Widget buildDelectBackground() {
+    return Container(
+      color: Colors.red,
+      child: ListTile(
+        subtitle: Center(
+          child: Text(
+            '删除',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        leading: Icon(
+          Icons.delete,
+          color: Colors.white,
+        ),
+        trailing: Icon(
+          Icons.delete,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget buildDelectContent(item) {
+    return ListTile(
+        title: Text(item.text, softWrap: false),
+        subtitle: Text(item.time, softWrap: false),
+        onTap: () {
+          print(item.id);
+        });
+  }
+
+  Widget buildItem(context, item, index) {
+    return Dismissible(
+      // 必须拖动项目的偏移阈值才能被视为已解除
+      dismissThresholds: {DismissDirection.horizontal: 500},
+      // Each Dismissible must contain a Key. Keys allow Flutter to
+      // uniquely identify widgets.
+      // 每个Dismissible实例都必须包含一个Key。Key让Flutter能够对Widgets做唯一标识。
+      key: Key(item.id.toString()),
+      // Provide a function that tells the app
+      // what to do after an item has been swiped away.
+      // 我们还需要提供一个函数，告诉应用，在项目被移出后，要做什么。
+      onDismissed: (direction) {
+        // Remove the item from the data source.
+        // 从数据源中移除项目
+        setState(() {
+          _contentList.removeAt(index);
+        });
+        // Then show a snackbar.
+        // 展示一个 snackbar！
+        Scaffold.of(context)
+            .showSnackBar(SnackBar(content: Text("${item.id} dismissed")));
+      },
+      // 列表项被滑出时，显示一个背景(Show a red background as the item is swiped away)
+      background: buildDelectBackground(),
+      child: buildDelectContent(item),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _future = futureDB();
+  }
 
   @override
   Widget build(BuildContext context) {
     final title = 'Dismissing _items';
-
     return MaterialApp(
       title: title,
       theme: ThemeData(
@@ -41,36 +106,38 @@ class DraftsViewState extends State<DraftsView> {
         appBar: AppBar(
           title: Text(title),
         ),
-        body: ListView.builder(
-          itemCount: _items.length,
-          itemBuilder: (context, index) {
-            final item = _items[index];
-
-            return Dismissible(
-              // Each Dismissible must contain a Key. Keys allow Flutter to
-              // uniquely identify widgets.
-              // 每个Dismissible实例都必须包含一个Key。Key让Flutter能够对Widgets做唯一标识。
-              key: Key(item),
-              // Provide a function that tells the app
-              // what to do after an item has been swiped away.
-              // 我们还需要提供一个函数，告诉应用，在项目被移出后，要做什么。
-              onDismissed: (direction) {
-                // Remove the item from the data source.
-                // 从数据源中移除项目
-                setState(() {
-                  _items.removeAt(index);
-                });
-
-                // Then show a snackbar.
-                // 展示一个 snackbar！
-                Scaffold.of(context)
-                    .showSnackBar(SnackBar(content: Text("$item dismissed")));
-              },
-              // Show a red background as the item is swiped away.
-              // 列表项被滑出时，显示一个红色背景(Show a red background as the item is swiped away)
-              background: Container(color: Colors.red),
-              child: ListTile(title: Text('$item')),
-            );
+        body: FutureBuilder<void>(
+          future: _future,
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Text('ConnectionState.none');
+              case ConnectionState.waiting:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              case ConnectionState.active:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              case ConnectionState.done:
+                return ListView.builder(
+                  itemCount: _contentList.length,
+                  itemBuilder: (context, index) {
+                    final Essay item = _contentList[index];
+                    return buildItem(context, item, index);
+                  },
+                );
+              default:
+                return Text('?????');
+            }
+          },
+        ),
+        //  右下角按钮
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.pushNamed(context, '/write');
           },
         ),
       ),
