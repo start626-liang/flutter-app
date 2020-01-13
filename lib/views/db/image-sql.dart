@@ -31,3 +31,23 @@ Future<List<ImageDate>> selectAll(Database db) async {
     );
   });
 }
+
+Future<void> deleteImageID(Database db, int id) async {
+  await db.delete(
+    Init.imageTatle,
+   // 使用 `where` 语句删除指定的数据
+    where: "id = ?",
+    // 通过 `whereArg` 将 参数 传递给 `delete` 方法，以防止 SQL 注入
+    whereArgs: [id],
+  );
+}
+
+Future<void> deleteImageDirectory(Database db, int directory) async {
+  await db.delete(
+    Init.imageTatle,
+    // 使用 `where` 语句删除指定的数据
+    where: "directory = ?",
+    // 通过 `whereArg` 将 参数 传递给 `delete` 方法，以防止 SQL 注入
+    whereArgs: [directory],
+  );
+}

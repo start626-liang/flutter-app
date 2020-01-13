@@ -30,3 +30,14 @@ Future<List<Essay>> selectAll(Database db) async {
     );
   });
 }
+
+Future<void> deleteEssay(Database db, int id) async {
+  // Remove the Dog from the Database.
+  await db.delete(
+    Init.essayTatle,
+    // 使用 `where` 语句删除指定的数据
+    where: "id = ?",
+    // 通过 `whereArg` 将 id 传递给 `delete` 方法，以防止 SQL 注入
+    whereArgs: [id],
+  );
+}

@@ -4,6 +4,7 @@ import 'package:test1/views/db/essay-mode.dart';
 
 import '../db/db.dart' as DB;
 import '../db/essay-sql.dart' as EssaySql;
+import '../db/image-sql.dart' as ImageSql;
 
 class DraftsView extends StatefulWidget {
   DraftsView({Key key}) : super(key: key);
@@ -21,7 +22,7 @@ class DraftsViewState extends State<DraftsView> {
     Database db;
     await DB.createDB().then((onValue) async {
       db = onValue;
-      var list = await EssaySql.selectAll(db);
+      List<Essay> list = await EssaySql.selectAll(db);
       setState(() {
         _contentList = list;
       });
@@ -79,8 +80,13 @@ class DraftsViewState extends State<DraftsView> {
         });
         // Then show a snackbar.
         // 展示一个 snackbar！
-        Scaffold.of(context)
-            .showSnackBar(SnackBar(content: Text("${item.id} dismissed")));
+        Database db;
+        DB.createDB().then((onValue) async {
+          db = onValue;
+          await EssaySql.deleteEssay(db, item.id);
+          await ImageSql.deleteImageDirectory(db, item.directory);
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text("ok")));
+        });
       },
       // 列表项被滑出时，显示一个背景(Show a red background as the item is swiped away)
       background: buildDelectBackground(),
