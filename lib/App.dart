@@ -47,7 +47,7 @@ class App extends StatelessWidget {
         '/user': (context) => buildUserViewPage(context),
         '/login': (context) => buildLoginViewPage(context),
         '/write': (context) => buildWritePage(context),
-        '/drafts': (context) => buildDraftsPage(context),
+        '/select': (context) => buildDraftsPage(context),
       },
     );
   }

@@ -139,62 +139,38 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () async {
-              final int directory = Jiffy().unix();
-              await DB.createDB().then((onValue) async {
-                final Database db = onValue;
-                final Essay fido = Essay(
-                    text: _content.text,
-                    directory: directory,
-                    time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                await EssaySql.insert(fido, db);
-                DB.close(db);
-              });
+//               final int directory = Jiffy().unix();
+//               await DB.createDB().then((onValue) async {
+//                 final Database db = onValue;
+//                 final Essay fido = Essay(
+//                     text: _content.text,
+//                     directory: directory,
+//                     time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+//                 await EssaySql.insert(fido, db);
+//                 DB.close(db);
+//               });
 
-              await _readFile(imageFileList, directory).then((list) {
-                if (0 < list.length) {
-                  DB.createDB().then((onValue) async {
-                    Database db = onValue;
-                    Batch batch = db.batch();
-                    list.forEach((e) async {
-                      final ImageDate fido = ImageDate(
-                          directory: directory,
-                          file_name: e,
-                          time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                      await ImageSql.insert(fido, batch);
-                    });
-                    List<dynamic> results = await batch.commit();
-//                    print(results);
-                    DB.close(db);
-                  });
-                }
-              }).catchError((onError) => print(onError));
-              Navigator.of(context).pushReplacementNamed('/drafts');
-              // if (_formKey.currentState.validate()) {
-              //   // If the form is valid, display a Snackbar.
-              //  Scaffold.of(context)
-              //      .showSnackBar(SnackBar(content: Text('Processing Data')));
-              //   print(_content.text);
-              // } else {
-              //   print('==================================111');
-              // }
+//               await _readFile(imageFileList, directory).then((list) {
+//                 if (0 < list.length) {
+//                   DB.createDB().then((onValue) async {
+//                     Database db = onValue;
+//                     Batch batch = db.batch();
+//                     list.forEach((e) async {
+//                       final ImageDate fido = ImageDate(
+//                           directory: directory,
+//                           file_name: e,
+//                           time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+//                       await ImageSql.insert(fido, batch);
+//                     });
+//                     List<dynamic> results = await batch.commit();
+// //                    print(results);
+//                     DB.close(db);
+//                   });
+//                 }
+//               }).catchError((onError) => print(onError));
+              Navigator.of(context).pushReplacementNamed('/selelct');
             },
           ),
-//          IconButton(
-//            icon: Icon(Icons.select_all),
-//            onPressed: () async {
-//              // print(imageFileList);
-//              Database db;
-//              await DB.createDB().then((onValue) async {
-//                db = onValue;
-//                print(await EssaySql.selectAll(db));
-//              });
-//
-//              await DB.createDB().then((onValue) async {
-//                db = onValue;
-//                print(await ImageSql.selectAll(db));
-//              });
-//            },
-//          ),
         ],
       ),
       body: createGrid(),
