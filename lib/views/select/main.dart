@@ -5,6 +5,7 @@ import 'package:test1/views/db/essay-mode.dart';
 import '../db/db.dart' as DB;
 import '../db/essay-sql.dart' as EssaySql;
 import '../db/image-sql.dart' as ImageSql;
+import '../update/update-view.dart';
 
 class DraftsView extends StatefulWidget {
   DraftsView({Key key}) : super(key: key);
@@ -58,6 +59,10 @@ class DraftsViewState extends State<DraftsView> {
         subtitle: Text(item.time, softWrap: false),
         onTap: () {
           print(item.id);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UpdatePage(id: item.id)),
+          );
         });
   }
 

@@ -6,9 +6,9 @@ import 'common/theme.dart';
 import 'model/Store.dart';
 import 'views/home/home-view.dart';
 import 'views/login/login-view.dart';
+import 'views/select/main.dart';
 import 'views/user/user-view.dart';
 import 'views/write/write-view.dart';
-import 'views/drafts/main.dart';
 
 class App extends StatelessWidget {
   final DevToolsStore<Store> store;

@@ -31,6 +31,26 @@ Future<List<Essay>> selectAll(Database db) async {
   });
 }
 
+Future<Essay> select(Database db, int id) async {
+  final List<Map<String, dynamic>> maps = await db.query(
+    Init.essayTatle, // 使用 `where` 语句删除指定的数据
+    where: "id = ?",
+    // 通过 `whereArg` 将 id 传递给 `delete` 方法，以防止 SQL 注入
+    whereArgs: [id],
+  );
+
+  if (1 == maps.length) {
+    return Essay(
+      id: maps[0]['id'],
+      text: maps[0]['text'],
+      directory: maps[0]['directory'],
+      time: maps[0]['time'],
+    );
+  } else {
+    throw FormatException('数据库数据异常，有两条!!!');
+  }
+}
+
 Future<void> deleteEssay(Database db, int id) async {
   // Remove the Dog from the Database.
   await db.delete(
