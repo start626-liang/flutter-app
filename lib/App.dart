@@ -40,7 +40,7 @@ class App extends StatelessWidget {
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      initialRoute: '/drafts',
+      initialRoute: '/select',
       home: BottomNavigationWidget(),
       routes: {
         '/home': (context) => buildHomeViewPage(context),

@@ -147,7 +147,7 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
                   });
                 }
               }).catchError((onError) => print(onError));
-              Navigator.of(context).pushReplacementNamed('/selelct');
+              Navigator.of(context).pushReplacementNamed('/select');
               // if (_formKey.currentState.validate()) {
               //   // If the form is valid, display a Snackbar.
               //  Scaffold.of(context)

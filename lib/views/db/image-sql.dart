@@ -32,10 +32,25 @@ Future<List<ImageDate>> selectAll(Database db) async {
   });
 }
 
+Future<List<ImageDate>> selectDirectory(Database db, directory) async {
+  final List<Map<String, dynamic>> maps = await db
+      .query(Init.imageTatle, where: "directory = ?", whereArgs: [directory]);
+
+  print('${Init.imageTatle}数据库数据数量：${maps.length}');
+  return List.generate(maps.length, (i) {
+    return ImageDate(
+      id: maps[i]["id"],
+      directory: maps[i]['directory'],
+      file_name: maps[i]['file_name'],
+      time: maps[i]['time'],
+    );
+  });
+}
+
 Future<void> deleteImageID(Database db, int id) async {
   await db.delete(
     Init.imageTatle,
-   // 使用 `where` 语句删除指定的数据
+    // 使用 `where` 语句删除指定的数据
     where: "id = ?",
     // 通过 `whereArg` 将 参数 传递给 `delete` 方法，以防止 SQL 注入
     whereArgs: [id],

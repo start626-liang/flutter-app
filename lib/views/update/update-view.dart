@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -108,9 +107,14 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
     await DB.createDB().then((onValue) async {
       db = onValue;
       final Essay essay = await EssaySql.select(db, widget.id);
-      print(essay);
+      final List<ImageDate> imageList =
+          await ImageSql.selectDirectory(db, essay.directory);
+      print(imageList);
       setState(() {
-        // _contentList = list;
+        _content = TextEditingController(text: essay.text);
+        imageFileList = List.generate(imageList.length, (i) {
+          return File(imageList[i].file_name);
+        });
       });
       return;
     });
@@ -173,11 +177,31 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
           ),
         ],
       ),
-      body: createGrid(),
+      body: FutureBuilder<void>(
+        future: _future,
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Text('ConnectionState.none');
+            case ConnectionState.waiting:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            case ConnectionState.active:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            case ConnectionState.done:
+              return createGrid();
+            default:
+              return Text('?????');
+          }
+        },
+      ),
     );
   }
 
-  final _content = TextEditingController();
+  TextEditingController _content;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
