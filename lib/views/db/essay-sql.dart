@@ -16,6 +16,15 @@ Future<void> insert(Essay essagy, Database db) async {
   );
 }
 
+Future<void> update(Essay essagy, Database db) async {
+  await db.update(
+    Init.essayTatle,
+    essagy.toMap(),
+    where: "id = ?",
+    whereArgs: [essagy.id],
+  );
+}
+
 Future<List<Essay>> selectAll(Database db) async {
   //  (查询数据表，获取所有的数据)
   final List<Map<String, dynamic>> maps = await db.query(Init.essayTatle);

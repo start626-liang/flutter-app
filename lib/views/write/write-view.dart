@@ -113,7 +113,7 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
     return Scaffold(
       // backgroundColor: Colors.blue,
       appBar: AppBar(
-        // title: Text("Sign in"),
+        title: Text("Write"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),

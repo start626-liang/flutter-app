@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -30,16 +31,20 @@ Future<String> get _localPath async {
   return directory.path;
 }
 
-Future<List<String>> _readFile(List<File> list, int directory) async {
+Future<List<String>> _readFile(
+    List<File> imageList, List<bool> imageFileListIndex, int directory) async {
   final String path = await _localPath;
   List<String> filePathList = [];
-  if (list.length > 0) {
-    list.forEach((e) {
-      final List<String> array = e.path.split('/');
+  if (imageList.length > 0) {
+    final Map<int, File> imageMap = imageList.asMap();
+    imageMap.forEach((index, file) {
+      final List<String> array = file.path.split('/');
       final String filePath = '$path/$directory/${array[array.length - 1]}';
-      new File(filePath).createSync(recursive: true);
-      e.copy(filePath);
 
+      if (!imageFileListIndex[index]) {
+        new File(filePath).createSync(recursive: true);
+        file.copy(filePath);
+      }
       filePathList.add(filePath);
     });
   }
@@ -58,6 +63,8 @@ class UpdatePage extends StatefulWidget {
 
 class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
   List<File> imageFileList = [];
+  List<bool> _imageFileListIndex = [];
+
   dynamic _pickImageError;
 
   final List<int> selectedItems = []; // 被选中的item的index集合
@@ -102,6 +109,7 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
     _future = futureDB();
   }
 
+  Essay _beforeEssay;
   Future<void> futureDB() async {
     Database db;
     await DB.createDB().then((onValue) async {
@@ -111,8 +119,10 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
           await ImageSql.selectDirectory(db, essay.directory);
       print(imageList);
       setState(() {
+        _beforeEssay = essay;
         _content = TextEditingController(text: essay.text);
         imageFileList = List.generate(imageList.length, (i) {
+          _imageFileListIndex.add(true);
           return File(imageList[i].file_name);
         });
       });
@@ -125,6 +135,7 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
       final File imageFile = await ImagePicker.pickImage(source: source);
       setState(() {
         imageFileList.add(imageFile);
+        _imageFileListIndex.add(false);
       });
     } catch (e) {
       setState(() {
@@ -138,41 +149,48 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
     return Scaffold(
       // backgroundColor: Colors.blue,
       appBar: AppBar(
-        // title: Text("Sign in"),
+        title: Text("Update"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () async {
-//               final int directory = Jiffy().unix();
-//               await DB.createDB().then((onValue) async {
-//                 final Database db = onValue;
-//                 final Essay fido = Essay(
-//                     text: _content.text,
-//                     directory: directory,
-//                     time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-//                 await EssaySql.insert(fido, db);
-//                 DB.close(db);
-//               });
+              await DB.createDB().then((onValue) async {
+                final Database db = onValue;
+                final Essay fido = Essay(
+                    id: _beforeEssay.id,
+                    text: _content.text,
+                    directory: _beforeEssay.directory,
+                    time: _beforeEssay.time);
+                await EssaySql.update(fido, db);
+                await ImageSql.deleteImageDirectory(db, _beforeEssay.directory);
+                DB.close(db);
+              });
 
-//               await _readFile(imageFileList, directory).then((list) {
-//                 if (0 < list.length) {
-//                   DB.createDB().then((onValue) async {
-//                     Database db = onValue;
-//                     Batch batch = db.batch();
-//                     list.forEach((e) async {
-//                       final ImageDate fido = ImageDate(
-//                           directory: directory,
-//                           file_name: e,
-//                           time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-//                       await ImageSql.insert(fido, batch);
-//                     });
-//                     List<dynamic> results = await batch.commit();
-// //                    print(results);
-//                     DB.close(db);
-//                   });
-//                 }
-//               }).catchError((onError) => print(onError));
-              Navigator.of(context).pushReplacementNamed('/selelct');
+              await _readFile(imageFileList, _imageFileListIndex,
+                      _beforeEssay.directory)
+                  .then((list) {
+                // print(list);
+                print(list.length);
+                DB.createDB().then((onValue) async {
+                  Database db = onValue;
+
+                  Batch batch = db.batch();
+
+                  list.forEach((e) async {
+                    final ImageDate fido = ImageDate(
+                        directory: _beforeEssay.directory,
+                        file_name: e,
+                        time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+                    await ImageSql.insert(fido, batch);
+                  });
+                  List<dynamic> results = await batch.commit();
+//                    print(results);
+
+                  DB.close(db);
+                });
+                if (0 < list.length) {}
+              }).catchError((onError) => print(onError));
+              Navigator.of(context).pushReplacementNamed('/select');
             },
           ),
         ],
@@ -387,9 +405,9 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
   }
 
   int onActionFinished(indexes) {
-    indexes.forEach((index) {
-      imageFileList.removeAt(index);
-    });
+    var deleteIndex = indexes[0];
+    imageFileList.removeAt(deleteIndex);
+    _imageFileListIndex.removeAt(deleteIndex);
     return imageFileList.length;
   }
 
