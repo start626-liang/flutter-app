@@ -64,13 +64,9 @@ class MyDrawer extends StatelessWidget {
                 ),
               ),
               ListTile(
-                title: Text('1231231321'),
+                title: Text('草稿箱'),
                 onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
-
-//              Navigator.pop(context);
+                  Navigator.pushNamed(context, '/draft_box/list');
                 },
               ),
             ],

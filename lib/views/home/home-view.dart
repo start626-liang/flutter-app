@@ -18,7 +18,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('First Screen'),
+        title: Text('Home'),
         leading: Builder(builder: (BuildContext context) {
           return IconButton(
             icon: Icon(Icons.menu, color: Colors.white), //自定义图标
@@ -31,7 +31,7 @@ class HomeView extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          MyImages(_img),
+          // MyImages(_img),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -45,7 +45,8 @@ class HomeView extends StatelessWidget {
       drawer: MyDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/write');
+          // Navigator.pushNamed(context, '/draft_box/write');
+          print(111);
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),

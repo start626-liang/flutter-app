@@ -29,14 +29,16 @@ dependencies:
   community_material_icon: 3.5.95
   path_provider: 1.5.1
 
-  video_player: 0.10.5
-  image_picker: 0.6.2+3
+  video_player: 0.10.5+2
+  image_picker: 0.6.3+1
 
   sqflite: ^1.2.0
 
   flutter_swiper: 1.1.6
 
   jiffy: ^2.1.2
+
+  table_calendar: ^2.2.2
 
 dev_dependencies:
   flutter_test:
