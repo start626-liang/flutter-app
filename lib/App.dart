@@ -6,9 +6,9 @@ import 'common/theme.dart';
 import 'model/Store.dart';
 import 'views/home/home-view.dart';
 import 'views/login/login-view.dart';
-import 'views/select/main.dart';
+import 'views/draft_box/select/main.dart';
 import 'views/user/user-view.dart';
-import 'views/write/write-view.dart';
+import 'views/draft_box/write/write-view.dart';
 
 class App extends StatelessWidget {
   final DevToolsStore<Store> store;
@@ -27,11 +27,11 @@ class App extends StatelessWidget {
     return HomeView();
   }
 
-  Widget buildWritePage(BuildContext context) {
+  Widget buildDraftsBoxWritePage(BuildContext context) {
     return WritePage();
   }
 
-  Widget buildDraftsPage(BuildContext context) {
+  Widget buildDraftsBoxPage(BuildContext context) {
     return DraftsView();
   }
 
@@ -40,14 +40,14 @@ class App extends StatelessWidget {
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      initialRoute: '/select',
+      initialRoute: '/draft_box/list',
       home: BottomNavigationWidget(),
       routes: {
         '/home': (context) => buildHomeViewPage(context),
         '/user': (context) => buildUserViewPage(context),
         '/login': (context) => buildLoginViewPage(context),
-        '/write': (context) => buildWritePage(context),
-        '/select': (context) => buildDraftsPage(context),
+        '/draft_box/write': (context) => buildDraftsBoxWritePage(context),
+        '/draft_box/list': (context) => buildDraftsBoxPage(context),
       },
     );
   }

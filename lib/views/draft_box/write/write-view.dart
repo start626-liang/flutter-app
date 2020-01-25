@@ -7,15 +7,15 @@ import 'package:jiffy/jiffy.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-import './add-image-select.dart';
-import './bottom-column-icon.dart';
-import './grid-item.dart';
-import './image-item.dart';
-import '../db/db.dart' as DB;
-import '../db/essay-mode.dart';
-import '../db/essay-sql.dart' as EssaySql;
-import '../db/image-mode.dart';
-import '../db/image-sql.dart' as ImageSql;
+import 'add-image-select.dart';
+import 'bottom-column-icon.dart';
+import 'grid-item.dart';
+import 'image-item.dart';
+import '../../db/db.dart' as DB;
+import '../../db/essay-mode.dart';
+import '../../db/essay-sql.dart' as EssaySql;
+import '../../db/image-mode.dart';
+import '../../db/image-sql.dart' as ImageSql;
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -147,7 +147,7 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
                   });
                 }
               }).catchError((onError) => print(onError));
-              Navigator.of(context).pushReplacementNamed('/select');
+              Navigator.of(context).pushReplacementNamed('/draft_box/list');
               // if (_formKey.currentState.validate()) {
               //   // If the form is valid, display a Snackbar.
               //  Scaffold.of(context)
