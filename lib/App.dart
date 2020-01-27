@@ -9,6 +9,7 @@ import 'views/login/login-view.dart';
 import 'views/draft_box/select/main.dart';
 import 'views/user/user-view.dart';
 import 'views/draft_box/write/write-view.dart';
+import 'views/calendar/calendar-page.dart';
 
 class App extends StatelessWidget {
   final DevToolsStore<Store> store;
@@ -35,12 +36,16 @@ class App extends StatelessWidget {
     return DraftsView();
   }
 
+   Widget buildCalendarPage(BuildContext context) {
+    return CalendarPage();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      // initialRoute: '/home',
+      initialRoute: '/calendar',  // 与底部导航栏互斥
       home: BottomNavigationWidget(),
       routes: {
         '/home': (context) => buildHomeViewPage(context),
@@ -48,6 +53,7 @@ class App extends StatelessWidget {
         '/login': (context) => buildLoginViewPage(context),
         '/draft_box/write': (context) => buildDraftsBoxWritePage(context),
         '/draft_box/list': (context) => buildDraftsBoxPage(context),
+        '/calendar': (context) => buildCalendarPage(context),
       },
     );
   }
