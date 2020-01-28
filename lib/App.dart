@@ -12,9 +12,9 @@ import 'views/draft_box/write/write-view.dart';
 import 'views/calendar/calendar-page.dart';
 
 class App extends StatelessWidget {
-  final DevToolsStore<Store> store;
+  final DevToolsStore<Store> _store;
 
-  App(this.store);
+  App(this._store);
 
   Widget buildLoginViewPage(BuildContext context) {
     return LoginView();

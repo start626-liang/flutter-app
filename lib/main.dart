@@ -20,14 +20,14 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final DevToolsStore<Store> store;
+  final DevToolsStore<Store> _store;
 
-  MyApp(this.store);
+  MyApp(this._store);
   @override
   Widget build(BuildContext context) {
     return new StoreProvider<Store>(
-      store: store,
-      child: new App(store),
+      store: _store,
+      child: new App(_store),
     );
   }
 }

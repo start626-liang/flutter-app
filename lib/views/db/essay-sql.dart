@@ -6,8 +6,6 @@ import 'package:test1/views/db/essay-mode.dart';
 import './essay-mode.dart';
 import './init-sql.dart' as Init;
 
-final String dbName = 'essay_database.db';
-
 Future<void> insert(Essay essagy, Database db) async {
   db.insert(
     Init.essayTatle,

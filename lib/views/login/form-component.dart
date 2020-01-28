@@ -25,12 +25,12 @@ class _LoginFormState extends State<LoginForm> {
 
 // Create a text controller and use it to retrieve the current value
   // of the TextField.
-  final account = TextEditingController();
-  final password = TextEditingController();
+  final _account = TextEditingController();
+  final _password = TextEditingController();
 
   TextFormField buildAccountFormField() {
     return TextFormField(
-      controller: account,
+      controller: _account,
       autofocus: true,
       decoration: InputDecoration(
           labelText: "Account",
@@ -47,7 +47,7 @@ class _LoginFormState extends State<LoginForm> {
 
   TextFormField buildPasswordFormField() {
     return TextFormField(
-      controller: password,
+      controller: _password,
       decoration: InputDecoration(
           labelText: "Password",
           hintText: "Your login password",
@@ -70,7 +70,7 @@ class _LoginFormState extends State<LoginForm> {
           // Validate returns true if the form is valid, or false
           // otherwise.
           if (_formKey.currentState.validate()) {
-            final User user = new User(account.text);
+            final User user = new User(_account.text);
             callback(user);
             Navigator.pop(context);
           } else {
@@ -99,7 +99,6 @@ class _LoginFormState extends State<LoginForm> {
         ),
       );
     });
-    // Build a Form widget using the _formKey created above.
   }
 }
 

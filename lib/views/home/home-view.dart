@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 
 import '../../views/home/drawer-component.dart';
-import '../../views/home/images.dart';
 import '../../views/home/enshrine-component.dart';
 import '../../views/home/like-component.dart';
 import '../../views/home/trample-component.dart';

@@ -5,8 +5,6 @@ import 'package:sqflite/sqflite.dart';
 import './image-mode.dart';
 import './init-sql.dart' as Init;
 
-final String dbName = 'essay_database.db';
-
 Future<void> insert(ImageDate image, Batch batch) async {
   batch.insert(
     Init.imageTatle,

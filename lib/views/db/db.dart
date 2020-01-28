@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 
 import './init-sql.dart' as Init;
 
-final String dbName = 'essay_database.db';
+final String _dbName = 'essay_database.db';
 Future<Database> createDB() async {
   return openDatabase(
     // Set the path to the database. Note: Using the `join` function from the
@@ -13,7 +13,7 @@ Future<Database> createDB() async {
     // constructed for each platform.
     // 设置数据库的路径。注意：使用 `path` 包中的 `join` 方法是
     // 确保在多平台上路径都正确的最佳实践。
-    join(await getDatabasesPath(), dbName),
+    join(await getDatabasesPath(), _dbName),
     // 当数据库第一次被创建的时候，创建一个数据表，用以存储数据。(只运行一次，卸载软件后才重新启动)
     onCreate: (db, version) {
       Init.init(db);
