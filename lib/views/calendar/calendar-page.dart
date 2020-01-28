@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import './event-list.dart';
+
 // Example holidays
 final Map<DateTime, List> _holidays = {
   DateTime(2020, 1, 1): ['New Year\'s Day'],
@@ -29,9 +31,6 @@ class _CalendarStatePage extends State<CalendarPage>
   void initState() {
     super.initState();
     final _selectedDay = DateTime.now();
-    print(_selectedDay);
-    print(_selectedDay.subtract(Duration(days: 27)));
-
     // 时间 : 行程 Map<DateTime, List> _events
     _events = {
       _selectedDay.subtract(Duration(days: 30)): [
@@ -112,28 +111,26 @@ class _CalendarStatePage extends State<CalendarPage>
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Table Calendar Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('calendar'),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('calendar'),
-        ),
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            // Switch out 2 lines below to play with TableCalendar's settings
-            //-----------------------
-            // _buildTableCalendar(), // 日历
-            _buildTableCalendarWithBuilders(),
-//            const SizedBox(height: 8.0),
-            // _buildButtons(),  // 日历控制器
-//            const SizedBox(height: 8.0),
-            Expanded(child: _buildEventList()), // 事务列表
-          ],
-        ),
+      floatingActionButton: FloatingActionButton(
+        mini: true,
+        onPressed: () {
+          // Navigator.pushNamed(context, '/draft_box/write');
+          print(111);
+        },
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          _buildTableCalendarWithBuilders(),
+          const SizedBox(height: 8.0),
+          Expanded(child: EventList(_selectedEvents)), // 事务列表
+        ],
       ),
     );
   }
@@ -148,33 +145,6 @@ class _CalendarStatePage extends State<CalendarPage>
   void _onVisibleDaysChanged(
       DateTime first, DateTime last, CalendarFormat format) {
     print('CALLBACK: _onVisibleDaysChanged??2222');
-  }
-
-  // Simple TableCalendar configuration (using Styles)
-  Widget _buildTableCalendar() {
-    return TableCalendar(
-      calendarController: _calendarController,
-      events: _events, // 行程表
-      holidays: _holidays, // 节假日
-      startingDayOfWeek: StartingDayOfWeek.monday, // 一周的起始时间
-      calendarStyle: CalendarStyle(
-        // 日历日期样式
-        selectedColor: Colors.deepOrange[400], // 所选日期的背景色
-        todayColor: Colors.deepOrange[200], // 今天的背景色
-        markersColor: Colors.brown[700], // 行程颜色
-        outsideDaysVisible: true, // 是否补全日历
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle:
-            TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-      ),
-      onDaySelected: _onDaySelected, // 点击事件
-      onVisibleDaysChanged: _onVisibleDaysChanged, //日历翻页事件
-    );
   }
 
   // More advanced TableCalendar configuration (using Builders & Styles)
@@ -194,7 +164,7 @@ class _CalendarStatePage extends State<CalendarPage>
       },
       calendarStyle: CalendarStyle(
         // 日历日期样式
-        outsideDaysVisible: true, // 是否补全日历
+        outsideDaysVisible: false, // 是否补全日历
         weekendStyle: TextStyle().copyWith(color: Colors.red), // 行程日样式
         holidayStyle: TextStyle().copyWith(color: Colors.blue[800]), // 节假日样式
       ),
@@ -303,76 +273,6 @@ class _CalendarStatePage extends State<CalendarPage>
       Icons.add_box,
       size: 20.0,
       color: Colors.blueGrey[800],
-    );
-  }
-
-  Widget _buildButtons() {
-    final dateTime = _events.keys.elementAt(_events.length - 2);
-
-    return Column(
-      children: <Widget>[
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            RaisedButton(
-              child: Text('Month'),
-              onPressed: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.month);
-                });
-              },
-            ),
-            RaisedButton(
-              child: Text('2 weeks'),
-              onPressed: () {
-                setState(() {
-                  _calendarController
-                      .setCalendarFormat(CalendarFormat.twoWeeks);
-                });
-              },
-            ),
-            RaisedButton(
-              child: Text('Week'),
-              onPressed: () {
-                setState(() {
-                  _calendarController.setCalendarFormat(CalendarFormat.week);
-                });
-              },
-            ),
-          ],
-        ),
-        const SizedBox(height: 8.0),
-        RaisedButton(
-          child: Text(
-              'Set day ${dateTime.day}-${dateTime.month}-${dateTime.year}'),
-          onPressed: () {
-            _calendarController.setSelectedDay(
-              DateTime(dateTime.year, dateTime.month, dateTime.day),
-              runCallback: true,
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEventList() {
-    return ListView(
-      children: _selectedEvents
-          .map((event) => Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.8),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: ListTile(
-                  title: Text(event.toString()),
-                  onTap: () => print('$event tapped!'),
-                ),
-              ))
-          .toList(),
     );
   }
 }
