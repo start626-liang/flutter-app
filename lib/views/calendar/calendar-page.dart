@@ -7,7 +7,8 @@ import './event-list.dart';
 final Map<DateTime, List> _holidays = {
   DateTime(2020, 1, 1): ['New Year\'s Day'],
   DateTime(2020, 1, 6): ['Epiphany'],
-  DateTime(2020, 1, 7): ['Epiphany'],
+  DateTime(2020, 1, 7): ['Epiphany22222222'],
+  DateTime(2020, 1, 27): ['Epiphany11111111'],
   DateTime(2020, 2, 14): ['Valentine\'s Day'],
   DateTime(2020, 4, 21): ['Easter Sunday'],
   DateTime(2020, 4, 22): ['Easter Monday'],
@@ -24,6 +25,7 @@ class _CalendarStatePage extends State<CalendarPage>
     with TickerProviderStateMixin {
   Map<DateTime, List> _events;
   List _selectedEvents;
+  List _selectedHolidays;
   AnimationController _animationController;
   CalendarController _calendarController;
 
@@ -33,24 +35,6 @@ class _CalendarStatePage extends State<CalendarPage>
     final _selectedDay = DateTime.now();
     // 时间 : 行程 Map<DateTime, List> _events
     _events = {
-      _selectedDay.subtract(Duration(days: 30)): [
-        'Event A0',
-        'Event B0',
-        'Event C0'
-      ],
-      _selectedDay.subtract(Duration(days: 27)): ['Event A1'],
-      _selectedDay.subtract(Duration(days: 21)): [
-        'Event ?????A2',
-        'Event???? B2',
-        'Event?????? C2',
-        'Event??? D2'
-      ],
-      _selectedDay.subtract(Duration(days: 16)): ['Event A3', 'Event B3'],
-      _selectedDay.subtract(Duration(days: 10)): [
-        'Event A4',
-        'Event B4',
-        'Event C4'
-      ],
       _selectedDay.subtract(Duration(days: 4)): [
         'Event A5',
         'Event B5',
@@ -76,22 +60,12 @@ class _CalendarStatePage extends State<CalendarPage>
         'Event B10',
         'Event C10'
       ],
-      _selectedDay.add(Duration(days: 11)): ['Event A11', 'Event B11'],
-      _selectedDay.add(Duration(days: 17)): [
-        'Event A12',
-        'Event B12',
-        'Event C12',
-        'Event D12'
-      ],
-      _selectedDay.add(Duration(days: 22)): ['Event A13', 'Event B13'],
-      _selectedDay.add(Duration(days: 26)): [
-        'Event A14',
-        'Event B14',
-        'Event C14'
-      ],
     };
 
     _selectedEvents = _events[_selectedDay] ?? [];
+    _selectedHolidays = _holidays[DateTime(
+            _selectedDay.year, _selectedDay.month, _selectedDay.day)] ??
+        [];
     _calendarController = CalendarController();
 
     _animationController = AnimationController(
@@ -129,7 +103,8 @@ class _CalendarStatePage extends State<CalendarPage>
         children: <Widget>[
           _buildTableCalendarWithBuilders(),
           const SizedBox(height: 8.0),
-          Expanded(child: EventList(_selectedEvents)), // 事务列表
+          Expanded(
+              child: EventList(_selectedEvents, _selectedHolidays)), // 事务列表
         ],
       ),
     );
@@ -137,9 +112,18 @@ class _CalendarStatePage extends State<CalendarPage>
 
   void _onDaySelected(DateTime day, List events) {
     print('CALLBACK: _onDaySelected??1111');
-    setState(() {
-      _selectedEvents = events;
-    });
+    final List holidaysList = _holidays[DateTime(day.year, day.month, day.day)];
+    if (holidaysList == null) {
+      setState(() {
+        _selectedHolidays = [];
+        _selectedEvents = events;
+      });
+    } else {
+      setState(() {
+        _selectedHolidays = holidaysList;
+        _selectedEvents = events;
+      });
+    }
   }
 
   void _onVisibleDaysChanged(
