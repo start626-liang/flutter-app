@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import './event-list.dart';
+import './add/add-journey.dart';
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
@@ -24,6 +25,8 @@ class CalendarPage extends StatefulWidget {
 class _CalendarStatePage extends State<CalendarPage>
     with TickerProviderStateMixin {
   Map<DateTime, List> _events;
+  DateTime __selectedDay;
+
   List _selectedEvents;
   List _selectedHolidays;
   AnimationController _animationController;
@@ -92,8 +95,10 @@ class _CalendarStatePage extends State<CalendarPage>
       floatingActionButton: FloatingActionButton(
         mini: true,
         onPressed: () {
-          // Navigator.pushNamed(context, '/draft_box/write');
-          print(111);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddJourneyPage(__selectedDay)));
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
@@ -112,16 +117,19 @@ class _CalendarStatePage extends State<CalendarPage>
 
   void _onDaySelected(DateTime day, List events) {
     print('CALLBACK: _onDaySelected??1111');
+    DateTime now = DateTime.now();
     final List holidaysList = _holidays[DateTime(day.year, day.month, day.day)];
     if (holidaysList == null) {
       setState(() {
         _selectedHolidays = [];
         _selectedEvents = events;
+        __selectedDay = now;
       });
     } else {
       setState(() {
         _selectedHolidays = holidaysList;
         _selectedEvents = events;
+        __selectedDay = now;
       });
     }
   }

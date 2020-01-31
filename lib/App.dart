@@ -36,7 +36,7 @@ class App extends StatelessWidget {
     return DraftsView();
   }
 
-   Widget buildCalendarPage(BuildContext context) {
+  Widget buildCalendarPage(BuildContext context) {
     return CalendarPage();
   }
 
@@ -45,7 +45,7 @@ class App extends StatelessWidget {
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      initialRoute: '/calendar',  // 与底部导航栏互斥
+      initialRoute: '/calendar', // 与底部导航栏互斥
       home: BottomNavigationWidget(),
       routes: {
         '/home': (context) => buildHomeViewPage(context),
