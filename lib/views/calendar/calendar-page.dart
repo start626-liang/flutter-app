@@ -95,10 +95,10 @@ class _CalendarStatePage extends State<CalendarPage>
       floatingActionButton: FloatingActionButton(
         mini: true,
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AddJourneyPage(__selectedDay)));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => AddJourneyPage(__selectedDay)));
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
