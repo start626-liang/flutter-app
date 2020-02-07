@@ -72,6 +72,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime nowTime = DateTime.now();
     return Scaffold(
       appBar: AppBar(
         title: Text("Sign in"),
@@ -81,15 +82,12 @@ class _AddJourneyState extends State<AddJourneyPage> {
             key: _formKey,
             child: ListView(
               children: <Widget>[
-                buildAccountFormField(),
-                buildPasswordFormField(),
-                buildPadding(),
+                // buildAccountFormField(),
+                // buildPasswordFormField(),
+                // buildPadding(),
                 FlatButton(
                     onPressed: () {
-                      DatePicker.showDatePicker(context,
-                          showTitleActions: true,
-                          minTime: DateTime(2018, 3, 5),
-                          maxTime: DateTime(2019, 6, 7),
+                      DatePicker.showDateTimePicker(context,
                           theme: DatePickerTheme(
                               headerColor: Colors.orange,
                               backgroundColor: Colors.blue,
@@ -98,66 +96,9 @@ class _AddJourneyState extends State<AddJourneyPage> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18),
                               doneStyle:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
-                          onChanged: (date) {
-                        print('change $date in time zone ' +
-                            date.timeZoneOffset.inHours.toString());
-                      }, onConfirm: (date) {
-                        print('confirm $date');
-                      }, currentTime: DateTime.now(), locale: LocaleType.en);
-                    },
-                    child: Text(
-                      'show date picker(custom theme &date time range)',
-                      style: TextStyle(color: Colors.blue),
-                    )),
-                FlatButton(
-                    onPressed: () {
-                      DatePicker.showTimePicker(context, showTitleActions: true,
-                          onChanged: (date) {
-                        print('change $date in time zone ' +
-                            date.timeZoneOffset.inHours.toString());
-                      }, onConfirm: (date) {
-                        print('confirm $date');
-                      }, currentTime: DateTime.now());
-                    },
-                    child: Text(
-                      'show time picker',
-                      style: TextStyle(color: Colors.blue),
-                    )),
-                FlatButton(
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(context,
-                          showTitleActions: true,
-                          minTime: DateTime(2020, 5, 5, 20, 50),
-                          maxTime: DateTime(2020, 6, 7, 05, 09),
-                          onChanged: (date) {
-                        print('change $date in time zone ' +
-                            date.timeZoneOffset.inHours.toString());
-                      }, onConfirm: (date) {
-                        print('confirm $date');
-                      }, locale: LocaleType.zh);
-                    },
-                    child: Text(
-                      'show date time picker (Chinese)',
-                      style: TextStyle(color: Colors.blue),
-                    )),
-                FlatButton(
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(context,
-                          showTitleActions: true, onChanged: (date) {
-                        print('change $date in time zone ' +
-                            date.timeZoneOffset.inHours.toString());
-                      }, onConfirm: (date) {
-                        print('confirm $date');
-                      }, currentTime: DateTime(2008, 12, 31, 23, 12, 34));
-                    },
-                    child: Text(
-                      'show date time picker (English-America)',
-                      style: TextStyle(color: Colors.blue),
-                    )),
-                FlatButton(
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(context,
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                              cancelStyle:
+                                  TextStyle(color: Colors.red, fontSize: 16)),
                           showTitleActions: true, onChanged: (date) {
                         print('change $date in time zone ' +
                             date.timeZoneOffset.inHours.toString());
@@ -165,61 +106,32 @@ class _AddJourneyState extends State<AddJourneyPage> {
                         print('confirm $date');
                       },
                           currentTime: DateTime(2008, 12, 31, 23, 12, 34),
-                          locale: LocaleType.nl);
+                          locale: LocaleType.zh);
                     },
-                    child: Text(
-                      'show date time picker (Dutch)',
-                      style: TextStyle(color: Colors.blue),
-                    )),
-                FlatButton(
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(context,
-                          showTitleActions: true, onChanged: (date) {
-                        print('change $date in time zone ' +
-                            date.timeZoneOffset.inHours.toString());
-                      }, onConfirm: (date) {
-                        print('confirm $date');
-                      },
-                          currentTime: DateTime(2008, 12, 31, 23, 12, 34),
-                          locale: LocaleType.ru);
-                    },
-                    child: Text(
-                      'show date time picker (Russian)',
-                      style: TextStyle(color: Colors.blue),
-                    )),
-                FlatButton(
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(context,
-                          showTitleActions: true, onChanged: (date) {
-                        print('change $date in time zone ' +
-                            date.timeZoneOffset.inHours.toString());
-                      }, onConfirm: (date) {
-                        print('confirm $date');
-                      },
-                          currentTime: DateTime.utc(2019, 12, 31, 23, 12, 34),
-                          locale: LocaleType.de);
-                    },
-                    child: Text(
-                      'show date time picker in UTC (German)',
-                      style: TextStyle(color: Colors.blue),
-                    )),
-                FlatButton(
-                    onPressed: () {
-                      DatePicker.showPicker(context, showTitleActions: true,
-                          onChanged: (date) {
-                        print('change $date in time zone ' +
-                            date.timeZoneOffset.inHours.toString());
-                      }, onConfirm: (date) {
-                        print('confirm $date');
-                      },
-                          pickerModel:
-                              CustomPicker(currentTime: DateTime.now()),
-                          locale: LocaleType.en);
-                    },
-                    child: Text(
-                      'show custom time picker,\nyou can custom picker model like this',
-                      style: TextStyle(color: Colors.blue),
-                    )),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '开始时间',
+                            style: TextStyle(color: Colors.blue, fontSize: 16),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                '${nowTime.year.toString()}-${nowTime.month.toString()}-${nowTime.day.toString()} 12:00',
+                                style:
+                                    TextStyle(color: Colors.blue, fontSize: 16),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                              )
+                            ],
+                          )
+                        ])),
               ],
             )),
       ),
