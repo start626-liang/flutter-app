@@ -13,19 +13,36 @@ class AddJourneyPage extends StatefulWidget {
 }
 
 class _AddJourneyState extends State<AddJourneyPage> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final _account = TextEditingController();
-  final _password = TextEditingController();
+  final TextEditingController _title = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+
+  DateTime _startTime = DateTime.now();
+  bool _warn = false;
 
   TextFormField buildAccountFormField() {
     return TextFormField(
-      controller: _account,
-      autofocus: true,
+      controller: _title,
       decoration: InputDecoration(
-          labelText: "Account",
-          hintText: "User name",
-          prefixIcon: Icon(Icons.person)),
+        filled: true,
+        fillColor: Colors.black12,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(30),
+          ),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(30),
+            ),
+            borderSide: BorderSide(
+              color: Colors.green,
+              width: 2,
+            )),
+        hintText: "事件标题",
+      ),
       validator: (value) {
         if (value.isEmpty) {
           return 'Please enter some text';
@@ -58,7 +75,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
       child: RaisedButton(
         onPressed: () {
           // if (_formKey.currentState.validate()) {
-          //   final User user = new User(_account.text);
+          //   final User user = new User(_title.text);
           //   callback(user);
           //   Navigator.pop(context);
           // } else {
@@ -72,19 +89,52 @@ class _AddJourneyState extends State<AddJourneyPage> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime nowTime = DateTime.now();
     return Scaffold(
       appBar: AppBar(
         title: Text("Sign in"),
+        centerTitle: true,
+        leading: Icon(Icons.home),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            padding: EdgeInsets.only(right: 3),
+            onPressed: () {
+              print(222);
+            },
+          )
+        ],
       ),
       body: Center(
         child: Form(
             key: _formKey,
             child: ListView(
               children: <Widget>[
-                // buildAccountFormField(),
+                buildAccountFormField(),
                 // buildPasswordFormField(),
                 // buildPadding(),
+                FlatButton(
+                    onPressed: () {
+                      setState(() {
+                        _warn = !_warn;
+                      });
+                    },
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '开始时间',
+                            style: TextStyle(color: Colors.blue, fontSize: 16),
+                          ),
+                          Switch(
+                            onChanged: (bool v) {
+                              setState(() {
+                                _warn = v;
+                              });
+                            },
+                            value: _warn,
+                          )
+                        ])),
                 FlatButton(
                     onPressed: () {
                       DatePicker.showDateTimePicker(context,
@@ -99,14 +149,14 @@ class _AddJourneyState extends State<AddJourneyPage> {
                                   TextStyle(color: Colors.white, fontSize: 16),
                               cancelStyle:
                                   TextStyle(color: Colors.red, fontSize: 16)),
-                          showTitleActions: true, onChanged: (date) {
+                          showTitleActions: true, onChanged: (DateTime date) {
                         print('change $date in time zone ' +
                             date.timeZoneOffset.inHours.toString());
-                      }, onConfirm: (date) {
-                        print('confirm $date');
-                      },
-                          currentTime: DateTime(2008, 12, 31, 23, 12, 34),
-                          locale: LocaleType.zh);
+                      }, onConfirm: (DateTime date) {
+                        setState(() {
+                          _startTime = date;
+                        });
+                      }, currentTime: _startTime, locale: LocaleType.zh);
                     },
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -121,7 +171,8 @@ class _AddJourneyState extends State<AddJourneyPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                '${nowTime.year.toString()}-${nowTime.month.toString()}-${nowTime.day.toString()} 12:00',
+                                '${_startTime.year.toString()}-${_startTime.month.toString()}-${_startTime.day.toString()} '
+                                '${_startTime.hour.toString()}:${_startTime.minute.toString()}',
                                 style:
                                     TextStyle(color: Colors.blue, fontSize: 16),
                               ),
