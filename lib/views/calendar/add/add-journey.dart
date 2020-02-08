@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-
+import 'package:jiffy/jiffy.dart';
 class AddJourneyPage extends StatefulWidget {
   // final DateTime time;
 
@@ -16,26 +16,27 @@ class _AddJourneyState extends State<AddJourneyPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _title = TextEditingController();
-  final TextEditingController _password = TextEditingController();
 
   DateTime _startTime = DateTime.now();
   bool _warn = false;
 
   TextFormField buildAccountFormField() {
+    final double _radiusNum = 40;
     return TextFormField(
       controller: _title,
       decoration: InputDecoration(
         filled: true,
+        contentPadding: EdgeInsets.only(left: 20),
         fillColor: Colors.black12,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(30),
+            Radius.circular(_radiusNum),
           ),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(
-              Radius.circular(30),
+              Radius.circular(_radiusNum),
             ),
             borderSide: BorderSide(
               color: Colors.green,
@@ -49,41 +50,6 @@ class _AddJourneyState extends State<AddJourneyPage> {
         }
         return null;
       },
-    );
-  }
-
-  TextFormField buildPasswordFormField() {
-    return TextFormField(
-      controller: _password,
-      decoration: InputDecoration(
-          labelText: "Password",
-          hintText: "Your login password",
-          prefixIcon: Icon(Icons.lock)),
-      obscureText: true,
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null;
-      },
-    );
-  }
-
-  Padding buildPadding() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: RaisedButton(
-        onPressed: () {
-          // if (_formKey.currentState.validate()) {
-          //   final User user = new User(_title.text);
-          //   callback(user);
-          //   Navigator.pop(context);
-          // } else {
-          //   Scaffold.of(context).showSnackBar(SnackBar(content: Text('?????')));
-          // }
-        },
-        child: Text('Sign In'),
-      ),
     );
   }
 
@@ -110,8 +76,6 @@ class _AddJourneyState extends State<AddJourneyPage> {
             child: ListView(
               children: <Widget>[
                 buildAccountFormField(),
-                // buildPasswordFormField(),
-                // buildPadding(),
                 FlatButton(
                     onPressed: () {
                       setState(() {
@@ -171,8 +135,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                '${_startTime.year.toString()}-${_startTime.month.toString()}-${_startTime.day.toString()} '
-                                '${_startTime.hour.toString()}:${_startTime.minute.toString()}',
+                                Jiffy(_startTime).format('yyyy-MM-dd h:mm:ss a'),
                                 style:
                                     TextStyle(color: Colors.blue, fontSize: 16),
                               ),
