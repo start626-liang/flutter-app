@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:jiffy/jiffy.dart';
+
 class AddJourneyPage extends StatefulWidget {
   // final DateTime time;
 
@@ -135,7 +136,8 @@ class _AddJourneyState extends State<AddJourneyPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                Jiffy(_startTime).format('yyyy-MM-dd h:mm:ss a'),
+                                Jiffy(_startTime)
+                                    .format('yyyy-MM-dd h:mm:ss a'),
                                 style:
                                     TextStyle(color: Colors.blue, fontSize: 16),
                               ),
