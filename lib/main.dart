@@ -13,7 +13,7 @@ import 'model/User.dart';
 
 final String notLogin = '未登录';
 void main() {
-  final Store initStore = new Store(new User(notLogin));
+  final Store initStore = new Store(new User(name: notLogin));
   final DevToolsStore store =
       new DevToolsStore<Store>(storeReducer, initialState: initStore);
   runApp(MyApp(store));

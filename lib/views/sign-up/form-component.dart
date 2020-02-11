@@ -84,7 +84,7 @@ class _SignUpFormState extends State<SignUpForm> {
               }).then((onValue) {
                 Navigator.of(context).pop(1);
                 if (onValue['success']) {
-                  final User user = new User(_account.text);
+                  final User user = new User(name: _account.text, id: onValue['id']);
                   callback(user);
                   Navigator.pop(context);
                 } else {

@@ -54,7 +54,7 @@ class MyDrawer extends StatelessWidget {
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 8.0),
-                        child: Text(user.name == notLogin ? '点击登录' : user.name),
+                        child: Text(user.name == notLogin ? '点击登录' : 'id: ${user.id}'),
                       ),
                     ],
                   ),
