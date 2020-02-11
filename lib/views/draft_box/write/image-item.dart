@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'custom-Pagination-builder.dart';
+import 'custom-pagination-builder.dart';
 
 void _previewImage(BuildContext context, List<File> _imageFileList) async {
   await showDialog(

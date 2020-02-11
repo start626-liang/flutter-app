@@ -5,7 +5,8 @@ import 'bottom_navigation_widget.dart';
 import 'common/theme.dart';
 import 'model/Store.dart';
 import 'views/home/home-view.dart';
-import 'views/login/login-view.dart';
+import 'views/sign-in/sign-in-view.dart';
+import 'views/sign-up/sign-up-view.dart';
 import 'views/draft_box/select/main.dart';
 import 'views/user/user-view.dart';
 import 'views/draft_box/write/write-view.dart';
@@ -17,8 +18,12 @@ class App extends StatelessWidget {
 
   App(this._store);
 
-  Widget buildLoginViewPage(BuildContext context) {
-    return LoginView();
+  Widget buildSignInViewPage(BuildContext context) {
+    return SignInView();
+  }
+
+  Widget buildSignUpViewPage(BuildContext context) {
+    return SignUpView();
   }
 
   Widget buildUserViewPage(BuildContext context) {
@@ -46,12 +51,13 @@ class App extends StatelessWidget {
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      initialRoute: '/t', // 与底部导航栏互斥
+      // initialRoute: '/sign-up', // 与底部导航栏互斥
       home: BottomNavigationWidget(),
       routes: {
         '/home': (context) => buildHomeViewPage(context),
         '/user': (context) => buildUserViewPage(context),
-        '/login': (context) => buildLoginViewPage(context),
+        '/sign-in': (context) => buildSignInViewPage(context),
+        '/sign-up': (context) => buildSignUpViewPage(context),
         '/draft_box/write': (context) => buildDraftsBoxWritePage(context),
         '/draft_box/list': (context) => buildDraftsBoxPage(context),
         '/calendar': (context) => buildCalendarPage(context),

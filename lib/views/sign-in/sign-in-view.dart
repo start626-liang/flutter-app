@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import './form-component.dart';
 
-class LoginView extends StatelessWidget {
+class SignInView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +14,7 @@ class LoginView extends StatelessWidget {
         title: Text("Sign in"),
       ),
       body: Center(
-        child: LoginForm(),
+        child: SignInForm(),
       ),
     );
   }

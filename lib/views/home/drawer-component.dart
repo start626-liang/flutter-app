@@ -23,7 +23,7 @@ class MyDrawer extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     if (user.name == notLogin) {
-                      Navigator.pushNamed(context, '/login');
+                      Navigator.pushNamed(context, '/sign-in');
                     }
                   },
                   child: ListView(
