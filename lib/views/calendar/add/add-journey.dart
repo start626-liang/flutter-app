@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:jiffy/jiffy.dart';
 
+import 'repetition-select.dart';
+
 class AddJourneyPage extends StatefulWidget {
   // final DateTime time;
 
@@ -19,7 +21,11 @@ class _AddJourneyState extends State<AddJourneyPage> {
   final TextEditingController _title = TextEditingController();
 
   DateTime _startTime = DateTime.now();
-  bool _warn = false;
+  DateTime _endTime = DateTime.now();
+
+  String _repetition = '一次性活动';
+  int _repetitionIndex = 0;
+//  bool _warn = false;
 
   TextFormField buildAccountFormField() {
     final double _radiusNum = 40;
@@ -54,6 +60,27 @@ class _AddJourneyState extends State<AddJourneyPage> {
     );
   }
 
+  Widget buildLineBetween() {
+    return Container(
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      child: Center(
+        child: Container(
+          width: 320, //max-width is 240
+          height: 1,
+          color: Colors.grey[300],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _repetition = '一次性活动';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,29 +104,29 @@ class _AddJourneyState extends State<AddJourneyPage> {
             child: ListView(
               children: <Widget>[
                 buildAccountFormField(),
-                FlatButton(
-                    onPressed: () {
-                      setState(() {
-                        _warn = !_warn;
-                      });
-                    },
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            '开始时间',
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                          Switch(
-                            onChanged: (bool v) {
-                              setState(() {
-                                _warn = v;
-                              });
-                            },
-                            value: _warn,
-                          )
-                        ])),
+//                FlatButton(
+//                    onPressed: () {
+//                      setState(() {
+//                        _warn = !_warn;
+//                      });
+//                    },
+//                    child: Row(
+//                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                        crossAxisAlignment: CrossAxisAlignment.center,
+//                        children: <Widget>[
+//                          Text(
+//                            '开始时间',
+//                            style: TextStyle(color: Colors.blue, fontSize: 16),
+//                          ),
+//                          Switch(
+//                            onChanged: (bool v) {
+//                              setState(() {
+//                                _warn = v;
+//                              });
+//                            },
+//                            value: _warn,
+//                          )
+//                        ])),
                 FlatButton(
                     onPressed: () {
                       DatePicker.showDateTimePicker(context,
@@ -114,10 +141,15 @@ class _AddJourneyState extends State<AddJourneyPage> {
                                   TextStyle(color: Colors.white, fontSize: 16),
                               cancelStyle:
                                   TextStyle(color: Colors.red, fontSize: 16)),
-                          showTitleActions: true, onChanged: (DateTime date) {
-                        print('change $date in time zone ' +
-                            date.timeZoneOffset.inHours.toString());
-                      }, onConfirm: (DateTime date) {
+                          showTitleActions: true,
+                          onChanged: (DateTime date) {},
+                          onConfirm: (DateTime date) {
+                        if (_endTime.millisecondsSinceEpoch <
+                            date.millisecondsSinceEpoch) {
+                          setState(() {
+                            _endTime = date;
+                          });
+                        }
                         setState(() {
                           _startTime = date;
                         });
@@ -148,6 +180,97 @@ class _AddJourneyState extends State<AddJourneyPage> {
                             ],
                           )
                         ])),
+                FlatButton(
+                    onPressed: () {
+                      DatePicker.showDateTimePicker(context,
+                          theme: DatePickerTheme(
+                              headerColor: Colors.orange,
+                              backgroundColor: Colors.blue,
+                              itemStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                              doneStyle:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                              cancelStyle:
+                                  TextStyle(color: Colors.red, fontSize: 16)),
+                          showTitleActions: true,
+                          onChanged: (DateTime date) {},
+                          onConfirm: (DateTime date) {
+                        if (_startTime.millisecondsSinceEpoch <
+                            date.millisecondsSinceEpoch) {
+                          setState(() {
+                            _endTime = date;
+                          });
+                        }
+                      }, currentTime: _endTime, locale: LocaleType.zh);
+                    },
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '结束时间',
+                            style: TextStyle(color: Colors.blue, fontSize: 16),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                Jiffy(_endTime).format('yyyy-MM-dd h:mm:ss a'),
+                                style:
+                                    TextStyle(color: Colors.blue, fontSize: 16),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                              )
+                            ],
+                          )
+                        ])),
+                FlatButton(
+                    onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EepetitionView(
+                                startTime: _startTime,
+                                index: _repetitionIndex,
+                                repetitionCallback:
+                                    (int index, String repetition) {
+                                  setState(() {
+                                    _repetitionIndex = index;
+                                    _repetition = repetition;
+                                  });
+                                })),
+                      );
+                    },
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '重复',
+                            style: TextStyle(color: Colors.blue, fontSize: 16),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                _repetition,
+                                style:
+                                    TextStyle(color: Colors.blue, fontSize: 16),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                              )
+                            ],
+                          )
+                        ])),
+                buildLineBetween(),
               ],
             )),
       ),
