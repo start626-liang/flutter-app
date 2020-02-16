@@ -3,6 +3,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:jiffy/jiffy.dart';
 
 import 'repetition-select.dart';
+import 'warn-select.dart';
 
 class AddJourneyPage extends StatefulWidget {
   // final DateTime time;
@@ -23,9 +24,22 @@ class _AddJourneyState extends State<AddJourneyPage> {
   DateTime _startTime = DateTime.now();
   DateTime _endTime = DateTime.now();
 
-  String _repetition = '一次性活动';
+  String _repetition = repetitionDefaultt;
   int _repetitionIndex = 0;
-//  bool _warn = false;
+
+  List _warnList = [
+    {'name': warnDefaultt, 'select': true},
+    {'name': '提前5分钟', 'select': false},
+    {'name': '提前10分钟', 'select': false},
+    {'name': '提前15分钟', 'select': false},
+    {'name': '提前30分钟', 'select': false},
+    {'name': '提前1小时', 'select': false},
+    {'name': '提前1天', 'select': false},
+    {'name': '提前2天', 'select': false},
+    {'name': '提前1周', 'select': false},
+  ];
+  String _warn = warnDefaultt;
+  bool _noWarn = false;
 
   TextFormField buildAccountFormField() {
     final double _radiusNum = 40;
@@ -76,16 +90,13 @@ class _AddJourneyState extends State<AddJourneyPage> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _repetition = '一次性活动';
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Sign in"),
+        title: Text("add"),
         centerTitle: true,
         leading: Icon(Icons.home),
         actions: <Widget>[
@@ -104,29 +115,6 @@ class _AddJourneyState extends State<AddJourneyPage> {
             child: ListView(
               children: <Widget>[
                 buildAccountFormField(),
-//                FlatButton(
-//                    onPressed: () {
-//                      setState(() {
-//                        _warn = !_warn;
-//                      });
-//                    },
-//                    child: Row(
-//                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                        crossAxisAlignment: CrossAxisAlignment.center,
-//                        children: <Widget>[
-//                          Text(
-//                            '开始时间',
-//                            style: TextStyle(color: Colors.blue, fontSize: 16),
-//                          ),
-//                          Switch(
-//                            onChanged: (bool v) {
-//                              setState(() {
-//                                _warn = v;
-//                              });
-//                            },
-//                            value: _warn,
-//                          )
-//                        ])),
                 FlatButton(
                     onPressed: () {
                       DatePicker.showDateTimePicker(context,
@@ -271,10 +259,62 @@ class _AddJourneyState extends State<AddJourneyPage> {
                           )
                         ])),
                 buildLineBetween(),
+                _buildWarnPage(context),
               ],
             )),
       ),
     );
+  }
+
+  Widget _buildWarnPage(BuildContext context) {
+    return FlatButton(
+        onPressed: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => WarnView(
+                    noWarn: _noWarn,
+                    initWarnList: _warnList,
+                    setNoWarnCallback: (bool value) {
+                      setState(() {
+                        _noWarn = value;
+                      });
+                    },
+                    selectWarnListCallback: (int item, bool value) {
+                      setState(() {
+                        _warnList[item]['select'] = value;
+                      });
+                    },
+                    setWarnCallback: (String warn) {
+                      setState(() {
+                        _warn = warn;
+                      });
+                    })),
+          );
+        },
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                '提醒',
+                style: TextStyle(color: Colors.blue, fontSize: 16),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    _warn,
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                  )
+                ],
+              )
+            ]));
   }
 }
 
