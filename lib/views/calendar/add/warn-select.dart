@@ -37,7 +37,7 @@ class WarnViewState extends State<WarnView> {
     });
   }
 
-  Widget buildLineBetween() {
+  Widget _buildLineBetween() {
     return Container(
       padding: EdgeInsets.only(top: 10, bottom: 10),
       child: Center(
@@ -83,13 +83,13 @@ class WarnViewState extends State<WarnView> {
                   _selectWarnList.add(e);
                 }
               });
-              warnShowString(_selectWarnList);
+              _warnShowString(_selectWarnList);
             },
           );
         });
   }
 
-  void warnShowString(List list) {
+  void _warnShowString(List list) {
     switch (list.length) {
       case 0:
         widget.setWarnCallback('无提醒');
@@ -107,7 +107,7 @@ class WarnViewState extends State<WarnView> {
     }
   }
 
-  Widget isWarn() {
+  Widget _isWarn() {
     return SwitchListTile(
       title: const Text('不提醒'),
       value: _warn,
@@ -141,8 +141,8 @@ class WarnViewState extends State<WarnView> {
         ),
         body: ListView(
           children: <Widget>[
-            isWarn(),
-            buildLineBetween(),
+            _isWarn(),
+            _buildLineBetween(),
             _warn ? _buildNoWarnList(context) : _buildSelectWarnList(context)
           ],
         ));

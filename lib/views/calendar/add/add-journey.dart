@@ -41,7 +41,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
   String _warn = warnDefaultt;
   bool _noWarn = false;
 
-  TextFormField buildAccountFormField() {
+  TextFormField _buildAccountFormField() {
     final double _radiusNum = 40;
     return TextFormField(
       controller: _title,
@@ -74,7 +74,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
     );
   }
 
-  Widget buildLineBetween() {
+  Widget _buildLineBetween() {
     return Container(
       padding: EdgeInsets.only(top: 10, bottom: 10),
       child: Center(
@@ -114,156 +114,156 @@ class _AddJourneyState extends State<AddJourneyPage> {
             key: _formKey,
             child: ListView(
               children: <Widget>[
-                buildAccountFormField(),
-                FlatButton(
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(context,
-                          theme: DatePickerTheme(
-                              headerColor: Colors.orange,
-                              backgroundColor: Colors.blue,
-                              itemStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                              doneStyle:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                              cancelStyle:
-                                  TextStyle(color: Colors.red, fontSize: 16)),
-                          showTitleActions: true,
-                          onChanged: (DateTime date) {},
-                          onConfirm: (DateTime date) {
-                        if (_endTime.millisecondsSinceEpoch <
-                            date.millisecondsSinceEpoch) {
-                          setState(() {
-                            _endTime = date;
-                          });
-                        }
-                        setState(() {
-                          _startTime = date;
-                        });
-                      }, currentTime: _startTime, locale: LocaleType.zh);
-                    },
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            '开始时间',
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                Jiffy(_startTime)
-                                    .format('yyyy-MM-dd h:mm:ss a'),
-                                style:
-                                    TextStyle(color: Colors.blue, fontSize: 16),
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                              )
-                            ],
-                          )
-                        ])),
-                FlatButton(
-                    onPressed: () {
-                      DatePicker.showDateTimePicker(context,
-                          theme: DatePickerTheme(
-                              headerColor: Colors.orange,
-                              backgroundColor: Colors.blue,
-                              itemStyle: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                              doneStyle:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                              cancelStyle:
-                                  TextStyle(color: Colors.red, fontSize: 16)),
-                          showTitleActions: true,
-                          onChanged: (DateTime date) {},
-                          onConfirm: (DateTime date) {
-                        if (_startTime.millisecondsSinceEpoch <
-                            date.millisecondsSinceEpoch) {
-                          setState(() {
-                            _endTime = date;
-                          });
-                        }
-                      }, currentTime: _endTime, locale: LocaleType.zh);
-                    },
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            '结束时间',
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                Jiffy(_endTime).format('yyyy-MM-dd h:mm:ss a'),
-                                style:
-                                    TextStyle(color: Colors.blue, fontSize: 16),
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                              )
-                            ],
-                          )
-                        ])),
-                FlatButton(
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EepetitionView(
-                                startTime: _startTime,
-                                index: _repetitionIndex,
-                                repetitionCallback:
-                                    (int index, String repetition) {
-                                  setState(() {
-                                    _repetitionIndex = index;
-                                    _repetition = repetition;
-                                  });
-                                })),
-                      );
-                    },
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            '重复',
-                            style: TextStyle(color: Colors.blue, fontSize: 16),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                _repetition,
-                                style:
-                                    TextStyle(color: Colors.blue, fontSize: 16),
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                size: 16,
-                              )
-                            ],
-                          )
-                        ])),
-                buildLineBetween(),
+                _buildAccountFormField(),
+                _buildStartTime(context),
+                _buildEndTime(context),
+                _buildRepetition(context),
+                _buildLineBetween(),
                 _buildWarnPage(context),
               ],
             )),
       ),
     );
+  }
+
+  Widget _buildRepetition(BuildContext context) {
+    return FlatButton(
+        onPressed: () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EepetitionView(
+                    startTime: _startTime,
+                    index: _repetitionIndex,
+                    repetitionCallback: (int index, String repetition) {
+                      setState(() {
+                        _repetitionIndex = index;
+                        _repetition = repetition;
+                      });
+                    })),
+          );
+        },
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                '重复',
+                style: TextStyle(color: Colors.blue, fontSize: 16),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    _repetition,
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                  )
+                ],
+              )
+            ]));
+  }
+
+  Widget _buildEndTime(BuildContext context) {
+    return FlatButton(
+        onPressed: () {
+          DatePicker.showDateTimePicker(context,
+              theme: DatePickerTheme(
+                  headerColor: Colors.orange,
+                  backgroundColor: Colors.blue,
+                  itemStyle: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                  doneStyle: TextStyle(color: Colors.white, fontSize: 16),
+                  cancelStyle: TextStyle(color: Colors.red, fontSize: 16)),
+              showTitleActions: true,
+              onChanged: (DateTime date) {}, onConfirm: (DateTime date) {
+            if (_startTime.millisecondsSinceEpoch <
+                date.millisecondsSinceEpoch) {
+              setState(() {
+                _endTime = date;
+              });
+            }
+          }, currentTime: _endTime, locale: LocaleType.zh);
+        },
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                '结束时间',
+                style: TextStyle(color: Colors.blue, fontSize: 16),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    Jiffy(_endTime).format('yyyy-MM-dd h:mm:ss a'),
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                  )
+                ],
+              )
+            ]));
+  }
+
+  Widget _buildStartTime(BuildContext context) {
+    return FlatButton(
+        onPressed: () {
+          DatePicker.showDateTimePicker(context,
+              theme: DatePickerTheme(
+                  headerColor: Colors.orange,
+                  backgroundColor: Colors.blue,
+                  itemStyle: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18),
+                  doneStyle: TextStyle(color: Colors.white, fontSize: 16),
+                  cancelStyle: TextStyle(color: Colors.red, fontSize: 16)),
+              showTitleActions: true,
+              onChanged: (DateTime date) {}, onConfirm: (DateTime date) {
+            if (_endTime.millisecondsSinceEpoch < date.millisecondsSinceEpoch) {
+              setState(() {
+                _endTime = date;
+              });
+            }
+            setState(() {
+              _startTime = date;
+            });
+          }, currentTime: _startTime, locale: LocaleType.zh);
+        },
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                '开始时间',
+                style: TextStyle(color: Colors.blue, fontSize: 16),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    Jiffy(_startTime).format('yyyy-MM-dd h:mm:ss a'),
+                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                  )
+                ],
+              )
+            ]));
   }
 
   Widget _buildWarnPage(BuildContext context) {
