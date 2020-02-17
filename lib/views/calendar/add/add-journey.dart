@@ -20,6 +20,8 @@ class _AddJourneyState extends State<AddJourneyPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _title = TextEditingController();
+  final TextEditingController _site = TextEditingController();
+  final TextEditingController _notes = TextEditingController();
 
   DateTime _startTime = DateTime.now();
   DateTime _endTime = DateTime.now();
@@ -41,10 +43,11 @@ class _AddJourneyState extends State<AddJourneyPage> {
   String _warn = warnDefaultt;
   bool _noWarn = false;
 
-  TextFormField _buildAccountFormField() {
+  TextFormField _buildGeneralFormField(
+      TextEditingController value, String hint) {
     final double _radiusNum = 40;
     return TextFormField(
-      controller: _title,
+      controller: value,
       decoration: InputDecoration(
         filled: true,
         contentPadding: EdgeInsets.only(left: 20),
@@ -63,14 +66,8 @@ class _AddJourneyState extends State<AddJourneyPage> {
               color: Colors.green,
               width: 2,
             )),
-        hintText: "事件标题",
+        hintText: hint,
       ),
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null;
-      },
     );
   }
 
@@ -114,41 +111,123 @@ class _AddJourneyState extends State<AddJourneyPage> {
             key: _formKey,
             child: ListView(
               children: <Widget>[
-                _buildAccountFormField(),
-                _buildStartTime(context),
-                _buildEndTime(context),
-                _buildRepetition(context),
+                _buildGeneralFormField(_title, '事件标题'),
+                _buildGeneralColumn(context, '开始时间',
+                    Jiffy(_startTime).format('yyyy-MM-dd h:mm:ss a'), () {
+                  DatePicker.showDateTimePicker(context,
+                      theme: DatePickerTheme(
+                          headerColor: Colors.orange,
+                          backgroundColor: Colors.blue,
+                          itemStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          doneStyle:
+                              TextStyle(color: Colors.white, fontSize: 16),
+                          cancelStyle:
+                              TextStyle(color: Colors.red, fontSize: 16)),
+                      showTitleActions: true,
+                      onChanged: (DateTime date) {},
+                      onConfirm: (DateTime date) {
+                    if (_endTime.millisecondsSinceEpoch <
+                        date.millisecondsSinceEpoch) {
+                      setState(() {
+                        _endTime = date;
+                      });
+                    }
+                    setState(() {
+                      _startTime = date;
+                    });
+                  }, currentTime: _startTime, locale: LocaleType.zh);
+                }),
+                _buildGeneralColumn(context, '结束时间',
+                    Jiffy(_endTime).format('yyyy-MM-dd h:mm:ss a'), () {
+                  DatePicker.showDateTimePicker(context,
+                      theme: DatePickerTheme(
+                          headerColor: Colors.orange,
+                          backgroundColor: Colors.blue,
+                          itemStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                          doneStyle:
+                              TextStyle(color: Colors.white, fontSize: 16),
+                          cancelStyle:
+                              TextStyle(color: Colors.red, fontSize: 16)),
+                      showTitleActions: true,
+                      onChanged: (DateTime date) {},
+                      onConfirm: (DateTime date) {
+                    if (_startTime.millisecondsSinceEpoch <
+                        date.millisecondsSinceEpoch) {
+                      setState(() {
+                        _endTime = date;
+                      });
+                    }
+                  }, currentTime: _endTime, locale: LocaleType.zh);
+                }),
+                _buildGeneralColumn(context, '重复', _repetition, () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EepetitionView(
+                            startTime: _startTime,
+                            index: _repetitionIndex,
+                            repetitionCallback: (int index, String repetition) {
+                              setState(() {
+                                _repetitionIndex = index;
+                                _repetition = repetition;
+                              });
+                            })),
+                  );
+                }),
                 _buildLineBetween(),
-                _buildWarnPage(context),
+                _buildGeneralColumn(context, '提醒', _warn, () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => WarnView(
+                            noWarn: _noWarn,
+                            initWarnList: _warnList,
+                            setNoWarnCallback: (bool value) {
+                              setState(() {
+                                _noWarn = value;
+                              });
+                            },
+                            selectWarnListCallback: (int item, bool value) {
+                              setState(() {
+                                _warnList[item]['select'] = value;
+                              });
+                            },
+                            setWarnCallback: (String warn) {
+                              setState(() {
+                                _warn = warn;
+                              });
+                            })),
+                  );
+                }),
+                _buildLineBetween(),
+                _buildGeneralFormField(_site, '地点'),
+                _buildGeneralFormField(_notes, '备注'),
               ],
             )),
       ),
     );
   }
 
-  Widget _buildRepetition(BuildContext context) {
+  Widget _buildGeneralColumn(
+    BuildContext context,
+    String title,
+    var value,
+    Function onPressed,
+  ) {
     return FlatButton(
-        onPressed: () async {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => EepetitionView(
-                    startTime: _startTime,
-                    index: _repetitionIndex,
-                    repetitionCallback: (int index, String repetition) {
-                      setState(() {
-                        _repetitionIndex = index;
-                        _repetition = repetition;
-                      });
-                    })),
-          );
-        },
+        onPressed: onPressed,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                '重复',
+                title,
                 style: TextStyle(color: Colors.blue, fontSize: 16),
               ),
               Row(
@@ -156,7 +235,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    _repetition,
+                    value,
                     style: TextStyle(color: Colors.blue, fontSize: 16),
                   ),
                   Icon(
@@ -166,230 +245,6 @@ class _AddJourneyState extends State<AddJourneyPage> {
                 ],
               )
             ]));
-  }
-
-  Widget _buildEndTime(BuildContext context) {
-    return FlatButton(
-        onPressed: () {
-          DatePicker.showDateTimePicker(context,
-              theme: DatePickerTheme(
-                  headerColor: Colors.orange,
-                  backgroundColor: Colors.blue,
-                  itemStyle: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
-                  doneStyle: TextStyle(color: Colors.white, fontSize: 16),
-                  cancelStyle: TextStyle(color: Colors.red, fontSize: 16)),
-              showTitleActions: true,
-              onChanged: (DateTime date) {}, onConfirm: (DateTime date) {
-            if (_startTime.millisecondsSinceEpoch <
-                date.millisecondsSinceEpoch) {
-              setState(() {
-                _endTime = date;
-              });
-            }
-          }, currentTime: _endTime, locale: LocaleType.zh);
-        },
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                '结束时间',
-                style: TextStyle(color: Colors.blue, fontSize: 16),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    Jiffy(_endTime).format('yyyy-MM-dd h:mm:ss a'),
-                    style: TextStyle(color: Colors.blue, fontSize: 16),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                  )
-                ],
-              )
-            ]));
-  }
-
-  Widget _buildStartTime(BuildContext context) {
-    return FlatButton(
-        onPressed: () {
-          DatePicker.showDateTimePicker(context,
-              theme: DatePickerTheme(
-                  headerColor: Colors.orange,
-                  backgroundColor: Colors.blue,
-                  itemStyle: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
-                  doneStyle: TextStyle(color: Colors.white, fontSize: 16),
-                  cancelStyle: TextStyle(color: Colors.red, fontSize: 16)),
-              showTitleActions: true,
-              onChanged: (DateTime date) {}, onConfirm: (DateTime date) {
-            if (_endTime.millisecondsSinceEpoch < date.millisecondsSinceEpoch) {
-              setState(() {
-                _endTime = date;
-              });
-            }
-            setState(() {
-              _startTime = date;
-            });
-          }, currentTime: _startTime, locale: LocaleType.zh);
-        },
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                '开始时间',
-                style: TextStyle(color: Colors.blue, fontSize: 16),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    Jiffy(_startTime).format('yyyy-MM-dd h:mm:ss a'),
-                    style: TextStyle(color: Colors.blue, fontSize: 16),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                  )
-                ],
-              )
-            ]));
-  }
-
-  Widget _buildWarnPage(BuildContext context) {
-    return FlatButton(
-        onPressed: () async {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => WarnView(
-                    noWarn: _noWarn,
-                    initWarnList: _warnList,
-                    setNoWarnCallback: (bool value) {
-                      setState(() {
-                        _noWarn = value;
-                      });
-                    },
-                    selectWarnListCallback: (int item, bool value) {
-                      setState(() {
-                        _warnList[item]['select'] = value;
-                      });
-                    },
-                    setWarnCallback: (String warn) {
-                      setState(() {
-                        _warn = warn;
-                      });
-                    })),
-          );
-        },
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                '提醒',
-                style: TextStyle(color: Colors.blue, fontSize: 16),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    _warn,
-                    style: TextStyle(color: Colors.blue, fontSize: 16),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 16,
-                  )
-                ],
-              )
-            ]));
-  }
-}
-
-class CustomPicker extends CommonPickerModel {
-  String digits(int value, int length) {
-    return '$value'.padLeft(length, "0");
-  }
-
-  CustomPicker({DateTime currentTime, LocaleType locale})
-      : super(locale: locale) {
-    this.currentTime = currentTime ?? DateTime.now();
-    this.setLeftIndex(this.currentTime.hour);
-    this.setMiddleIndex(this.currentTime.minute);
-    this.setRightIndex(this.currentTime.second);
-  }
-
-  @override
-  String leftStringAtIndex(int index) {
-    if (index >= 0 && index < 24) {
-      return this.digits(index, 2);
-    } else {
-      return null;
-    }
-  }
-
-  @override
-  String middleStringAtIndex(int index) {
-    if (index >= 0 && index < 60) {
-      return this.digits(index, 2);
-    } else {
-      return null;
-    }
-  }
-
-  @override
-  String rightStringAtIndex(int index) {
-    if (index >= 0 && index < 60) {
-      return this.digits(index, 2);
-    } else {
-      return null;
-    }
-  }
-
-  @override
-  String leftDivider() {
-    return "|";
-  }
-
-  @override
-  String rightDivider() {
-    return "|";
-  }
-
-  @override
-  List<int> layoutProportions() {
-    return [1, 2, 1];
-  }
-
-  @override
-  DateTime finalTime() {
-    return currentTime.isUtc
-        ? DateTime.utc(
-            currentTime.year,
-            currentTime.month,
-            currentTime.day,
-            this.currentLeftIndex(),
-            this.currentMiddleIndex(),
-            this.currentRightIndex())
-        : DateTime(
-            currentTime.year,
-            currentTime.month,
-            currentTime.day,
-            this.currentLeftIndex(),
-            this.currentMiddleIndex(),
-            this.currentRightIndex());
   }
 }
 
