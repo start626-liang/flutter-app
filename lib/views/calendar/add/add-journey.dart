@@ -6,9 +6,9 @@ import 'repetition-select.dart';
 import 'warn-select.dart';
 
 class AddJourneyPage extends StatefulWidget {
-  // final DateTime time;
-
-  // AddJourneyPage(this.time);
+  final DateTime time;
+  Map<DateTime, List> events;
+  AddJourneyPage({this.time, this.events});
 
   @override
   _AddJourneyState createState() {
@@ -23,8 +23,8 @@ class _AddJourneyState extends State<AddJourneyPage> {
   final TextEditingController _site = TextEditingController();
   final TextEditingController _notes = TextEditingController();
 
-  DateTime _startTime = DateTime.now();
-  DateTime _endTime = DateTime.now();
+  DateTime _startTime;
+  DateTime _endTime;
 
   String _repetition = repetitionDefaultt;
   int _repetitionIndex = 0;
@@ -87,6 +87,8 @@ class _AddJourneyState extends State<AddJourneyPage> {
   @override
   void initState() {
     super.initState();
+    _startTime = widget.time;
+    _endTime = widget.time;
   }
 
   @override
@@ -95,13 +97,24 @@ class _AddJourneyState extends State<AddJourneyPage> {
       appBar: AppBar(
         title: Text("add"),
         centerTitle: true,
-        leading: Icon(Icons.home),
+        leading: IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.check),
             padding: EdgeInsets.only(right: 3),
             onPressed: () {
-              print(222);
+              DateTime _time =
+                  DateTime(_startTime.year, _startTime.month, _startTime.day);
+              if (widget.events[_time] != null) {
+                widget.events[_time].add('2222');
+              } else {
+                widget.events[_time] = ['2222'];
+              }
+              Navigator.pop(context);
             },
           )
         ],

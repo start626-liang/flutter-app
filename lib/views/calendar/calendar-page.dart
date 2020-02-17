@@ -35,8 +35,10 @@ class _CalendarStatePage extends State<CalendarPage>
   @override
   void initState() {
     super.initState();
-    final _selectedDay = DateTime.now();
+    final _selectedDay =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     // 时间 : 行程 Map<DateTime, List> _events
+    __selectedDay = _selectedDay;
     _events = {
       _selectedDay.subtract(Duration(days: 4)): [
         'Event A5',
@@ -64,7 +66,7 @@ class _CalendarStatePage extends State<CalendarPage>
         'Event C10'
       ],
     };
-
+    
     _selectedEvents = _events[_selectedDay] ?? [];
     _selectedHolidays = _holidays[DateTime(
             _selectedDay.year, _selectedDay.month, _selectedDay.day)] ??
@@ -95,10 +97,12 @@ class _CalendarStatePage extends State<CalendarPage>
       floatingActionButton: FloatingActionButton(
         mini: true,
         onPressed: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => AddJourneyPage(__selectedDay)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    AddJourneyPage(time: __selectedDay, events: _events),
+              ));
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),
@@ -116,22 +120,18 @@ class _CalendarStatePage extends State<CalendarPage>
   }
 
   void _onDaySelected(DateTime day, List events) {
-    print('CALLBACK: _onDaySelected??1111');
-    DateTime now = DateTime.now();
+    print('$day== _onDaySelected??===$__selectedDay');
     final List holidaysList = _holidays[DateTime(day.year, day.month, day.day)];
-    if (holidaysList == null) {
-      setState(() {
+
+    setState(() {
+      _selectedEvents = events;
+      __selectedDay = day;
+      if (holidaysList == null) {
         _selectedHolidays = [];
-        _selectedEvents = events;
-        __selectedDay = now;
-      });
-    } else {
-      setState(() {
+      } else {
         _selectedHolidays = holidaysList;
-        _selectedEvents = events;
-        __selectedDay = now;
-      });
-    }
+      }
+    });
   }
 
   void _onVisibleDaysChanged(
