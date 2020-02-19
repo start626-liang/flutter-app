@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:time/time.dart';
 
 import 'repetition-select.dart';
 import 'warn-select.dart';
+import 'toast.dart';
 
 class AddJourneyPage extends StatefulWidget {
   final DateTime time;
@@ -88,7 +90,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
   void initState() {
     super.initState();
     _startTime = widget.time;
-    _endTime = widget.time;
+    _endTime = widget.time + 1.hours;
   }
 
   @override
@@ -100,7 +102,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
         leading: IconButton(
             icon: Icon(Icons.clear),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
             }),
         actions: <Widget>[
           IconButton(
@@ -110,11 +112,24 @@ class _AddJourneyState extends State<AddJourneyPage> {
               DateTime _time =
                   DateTime(_startTime.year, _startTime.month, _startTime.day);
               if (widget.events[_time] != null) {
-                widget.events[_time].add('2222');
+                widget.events[_time].add({
+                  'title': _title.text,
+                  'site': _site.text,
+                  'startTime': _startTime,
+                  'endTime': _endTime
+                });
               } else {
-                widget.events[_time] = ['2222'];
+                widget.events[_time] = [
+                  {
+                    'title': _title.text,
+                    'site': _site.text,
+                    'startTime': _startTime,
+                    'endTime': _endTime
+                  }
+                ];
               }
               Navigator.pop(context);
+              Toast.toast(context, msg: "添加成功！ ");
             },
           )
         ],
@@ -126,7 +141,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
               children: <Widget>[
                 _buildGeneralFormField(_title, '事件标题'),
                 _buildGeneralColumn(context, '开始时间',
-                    Jiffy(_startTime).format('yyyy-MM-dd h:mm:ss a'), () {
+                    '${Jiffy(_startTime).yMd} ${Jiffy(_startTime).Hm}', () {
                   DatePicker.showDateTimePicker(context,
                       theme: DatePickerTheme(
                           headerColor: Colors.orange,
@@ -145,7 +160,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
                     if (_endTime.millisecondsSinceEpoch <
                         date.millisecondsSinceEpoch) {
                       setState(() {
-                        _endTime = date;
+                        _endTime = date + 1.hours;
                       });
                     }
                     setState(() {
@@ -154,7 +169,7 @@ class _AddJourneyState extends State<AddJourneyPage> {
                   }, currentTime: _startTime, locale: LocaleType.zh);
                 }),
                 _buildGeneralColumn(context, '结束时间',
-                    Jiffy(_endTime).format('yyyy-MM-dd h:mm:ss a'), () {
+                    '${Jiffy(_endTime).yMd} ${Jiffy(_endTime).Hm}', () {
                   DatePicker.showDateTimePicker(context,
                       theme: DatePickerTheme(
                           headerColor: Colors.orange,

@@ -6,13 +6,9 @@ import './add/add-journey.dart';
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
-  DateTime(2020, 1, 1): ['New Year\'s Day'],
-  DateTime(2020, 1, 6): ['Epiphany'],
-  DateTime(2020, 1, 7): ['Epiphany22222222'],
-  DateTime(2020, 1, 27): ['Epiphany11111111'],
-  DateTime(2020, 2, 14): ['Valentine\'s Day'],
-  DateTime(2020, 4, 21): ['Easter Sunday'],
-  DateTime(2020, 4, 22): ['Easter Monday'],
+  DateTime(2020, 2, 14): [
+    {'title': 'Valentine\'s Day'}
+  ],
 };
 
 class CalendarPage extends StatefulWidget {
@@ -41,32 +37,31 @@ class _CalendarStatePage extends State<CalendarPage>
     __selectedDay = _selectedDay;
     _events = {
       _selectedDay.subtract(Duration(days: 4)): [
-        'Event A5',
-        'Event B5',
-        'Event C5'
+        {
+          'title': 'Event A5',
+          'site': '22222222222',
+          'startTime': '${DateTime.now()}',
+          'endTime': '${DateTime(2020)}'
+        }
       ],
-      _selectedDay.subtract(Duration(days: 2)): ['Event A6', 'Event B6'],
       _selectedDay: [
-        'Event A7222',
-        '111Event B7',
-        '222Event C7',
-        '333Event D7'
+        {
+          'title': 'Event A2225',
+          'site': '22222222222',
+          'startTime': '${DateTime.now()}',
+          'endTime': '${DateTime(2020)}'
+        },
       ],
-      _selectedDay.add(Duration(days: 1)): [
-        '距离1',
-        'Event B8',
-        'Event C8',
-        'Event D8'
-      ],
-      _selectedDay.add(Duration(days: 3)):
-          Set.from(['Event A9', 'Event A9', 'Event B9']).toList(),
-      _selectedDay.add(Duration(days: 7)): [
-        'Event A10',
-        'Event B10',
-        'Event C10'
+      _selectedDay.add(Duration(days: 3)): [
+        {
+          'title': 'Eve222nt A5',
+          'site': '22222222222',
+          'startTime': '${DateTime.now()}',
+          'endTime': '${DateTime(2020)}'
+        }
       ],
     };
-    
+
     _selectedEvents = _events[_selectedDay] ?? [];
     _selectedHolidays = _holidays[DateTime(
             _selectedDay.year, _selectedDay.month, _selectedDay.day)] ??

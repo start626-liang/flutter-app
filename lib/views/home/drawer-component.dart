@@ -69,6 +69,12 @@ class MyDrawer extends StatelessWidget {
                   Navigator.pushNamed(context, '/draft_box/list');
                 },
               ),
+              ListTile(
+                title: Text('日历'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/calendar');
+                },
+              ),
             ],
           ),
         );

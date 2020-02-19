@@ -11,7 +11,6 @@ import 'views/draft_box/select/main.dart';
 import 'views/user/user-view.dart';
 import 'views/draft_box/write/write-view.dart';
 import 'views/calendar/calendar-page.dart';
-import 'views/calendar/add/add-journey.dart';
 
 class App extends StatelessWidget {
   final DevToolsStore<Store> _store;
@@ -51,8 +50,8 @@ class App extends StatelessWidget {
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      // initialRoute: '/sign-up', // 与底部导航栏互斥
-      home: BottomNavigationWidget(),
+      // initialRoute: '/calendar', // 与底部导航栏互斥
+      home: BottomNavigationWidget(), // 底部导航栏
       routes: {
         '/home': (context) => buildHomeViewPage(context),
         '/user': (context) => buildUserViewPage(context),
@@ -61,7 +60,6 @@ class App extends StatelessWidget {
         '/draft_box/write': (context) => buildDraftsBoxWritePage(context),
         '/draft_box/list': (context) => buildDraftsBoxPage(context),
         '/calendar': (context) => buildCalendarPage(context),
-        '/t': (context) => AddJourneyPage(),
       },
     );
   }
