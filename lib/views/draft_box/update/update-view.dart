@@ -11,11 +11,11 @@ import 'add-image-select.dart';
 import 'bottom-column-icon.dart';
 import 'grid-item.dart';
 import 'image-item.dart';
-import '../../db/db.dart' as DB;
-import '../../db/essay-mode.dart';
-import '../../db/essay-sql.dart' as EssaySql;
-import '../../db/image-mode.dart';
-import '../../db/image-sql.dart' as ImageSql;
+import '../../../db/db.dart' as DB;
+import '../../../db/essay-mode.dart';
+import '../../../db/essay-sql.dart' as EssaySql;
+import '../../../db/image-mode.dart';
+import '../../../db/image-sql.dart' as ImageSql;
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();

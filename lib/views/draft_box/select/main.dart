@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:test1/views/db/essay-mode.dart';
 
-import '../../db/db.dart' as DB;
-import '../../db/essay-sql.dart' as EssaySql;
-import '../../db/image-sql.dart' as ImageSql;
+import '../../../db/essay-mode.dart';
+import '../../../db/db.dart' as DB;
+import '../../../db/essay-sql.dart' as EssaySql;
+import '../../../db/image-sql.dart' as ImageSql;
 import '../update/update-view.dart';
 
 class DraftsView extends StatefulWidget {

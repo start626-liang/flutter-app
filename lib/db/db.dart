@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import './init-sql.dart' as Init;
+import 'init-sql.dart' as Init;
 
 final String _dbName = 'essay_database.db';
 Future<Database> createDB() async {
