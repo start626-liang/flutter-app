@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:sqflite/sqflite.dart';
 
 import './event-list.dart';
-import './add/add-journey.dart';
+import './add/add-travel.dart';
+import '../../db/db.dart' as DB;
+import '../../db/calendar/travel-mode.dart';
+import '../../db/calendar/travel-sql.dart' as TravelSql;
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
@@ -35,6 +39,13 @@ class _CalendarStatePage extends State<CalendarPage>
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     // 时间 : 行程 Map<DateTime, List> _events
     __selectedDay = _selectedDay;
+    DB.createDB().then((onValue) async {
+      Database db = onValue;
+      List DataList = await TravelSql.selectAll(db);
+      DataList.forEach((e) {
+        print(e);
+      });
+    });
     _events = {
       _selectedDay.subtract(Duration(days: 4)): [
         {
@@ -96,7 +107,7 @@ class _CalendarStatePage extends State<CalendarPage>
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AddJourneyPage(time: __selectedDay, events: _events),
+                    AddTravelPage(time: __selectedDay, events: _events),
               ));
         },
         tooltip: 'Increment',

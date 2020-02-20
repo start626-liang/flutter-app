@@ -2,23 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:time/time.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'repetition-select.dart';
 import 'warn-select.dart';
 import 'toast.dart';
+import '../../../db/db.dart' as DB;
+import '../../../db/calendar/travel-mode.dart';
+import '../../../db/calendar/travel-sql.dart' as TravelSql;
 
-class AddJourneyPage extends StatefulWidget {
+class AddTravelPage extends StatefulWidget {
   final DateTime time;
   Map<DateTime, List> events;
-  AddJourneyPage({this.time, this.events});
+  AddTravelPage({this.time, this.events});
 
   @override
-  _AddJourneyState createState() {
-    return _AddJourneyState();
+  _AddTravelState createState() {
+    return _AddTravelState();
   }
 }
 
-class _AddJourneyState extends State<AddJourneyPage> {
+class _AddTravelState extends State<AddTravelPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _title = TextEditingController();
@@ -93,6 +97,52 @@ class _AddJourneyState extends State<AddJourneyPage> {
     _endTime = widget.time + 1.hours;
   }
 
+  void setTravelEvent(DateTime time, String title, String site,
+      DateTime startTime, DateTime endTime) {
+    if (widget.events[time] != null) {
+      widget.events[time].add({
+        'title': title,
+        'site': site,
+        'startTime': startTime,
+        'endTime': endTime
+      });
+    } else {
+      widget.events[time] = [
+        {
+          'title': title,
+          'site': site,
+          'startTime': startTime,
+          'endTime': endTime
+        }
+      ];
+    }
+  }
+
+  int addTravelEvent() {
+    final int days_num = _endTime.difference(_startTime).inDays;
+    if (0 == days_num) {
+      final DateTime _time =
+          DateTime(_startTime.year, _startTime.month, _startTime.day);
+      setTravelEvent(_time, _title.text, _site.text, _startTime, _endTime);
+    } else {
+      for (int i = 0; i <= days_num; i++) {
+        DateTime _time =
+            DateTime(_startTime.year, _startTime.month, _startTime.day + i);
+        if (0 == i) {
+          setTravelEvent(_time, _title.text, _site.text, _startTime,
+              DateTime(0, 0, 0, 24));
+        } else if (i == days_num) {
+          setTravelEvent(
+              _time, _title.text, _site.text, DateTime(0, 0, 0, 0), _endTime);
+        } else {
+          setTravelEvent(_time, _title.text, _site.text, DateTime(0, 0, 0, 0),
+              DateTime(0, 0, 0, 24));
+        }
+      }
+    }
+    return days_num;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,26 +158,29 @@ class _AddJourneyState extends State<AddJourneyPage> {
           IconButton(
             icon: Icon(Icons.check),
             padding: EdgeInsets.only(right: 3),
-            onPressed: () {
-              DateTime _time =
-                  DateTime(_startTime.year, _startTime.month, _startTime.day);
-              if (widget.events[_time] != null) {
-                widget.events[_time].add({
-                  'title': _title.text,
-                  'site': _site.text,
-                  'startTime': _startTime,
-                  'endTime': _endTime
-                });
-              } else {
-                widget.events[_time] = [
-                  {
-                    'title': _title.text,
-                    'site': _site.text,
-                    'startTime': _startTime,
-                    'endTime': _endTime
-                  }
-                ];
-              }
+            onPressed: () async {
+              final int num = addTravelEvent();
+
+              // await DB.createDB().then((onValue) async {
+              //   Database db = onValue;
+              //   await db.transaction((txn) async {
+              //     var batch = db.batch();
+              //     batch.insert("Test", {"name": "item"});
+              //     batch.update("Test", {"name": "new_item"},
+              //         where: "name = ?", whereArgs: ["item"]);
+              //     batch.delete("Test", where: "name = ?", whereArgs: ["item"]);
+              //     await batch.commit();
+              //   });
+              //   // final Travel fido = Travel(
+              //   //     title: _title.text,
+              //   //     site: _site.text,
+              //   //     startTime: _startTime.millisecondsSinceEpoch,
+              //   //     endTime: _endTime.millisecondsSinceEpoch,
+              //   //     time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+              //   // await TravelSql.insert(fido, db);
+              //   // DB.close(db);
+              // });
+
               Navigator.pop(context);
               Toast.toast(context, msg: "添加成功！ ");
             },

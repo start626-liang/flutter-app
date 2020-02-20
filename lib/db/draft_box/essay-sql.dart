@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 
 import 'essay-mode.dart';
-import 'init-sql.dart' as Init;
+import '../init-sql.dart' as Init;
 
 Future<void> insert(Essay essagy, Database db) async {
   db.insert(

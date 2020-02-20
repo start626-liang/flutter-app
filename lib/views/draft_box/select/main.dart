@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../db/draft_box/essay-mode.dart';
-import '../../../db/draft_box/db.dart' as DB;
+import '../../../db/db.dart' as DB;
 import '../../../db/draft_box/essay-sql.dart' as EssaySql;
 import '../../../db/draft_box/image-sql.dart' as ImageSql;
 import '../update/update-view.dart';

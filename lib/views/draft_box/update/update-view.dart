@@ -11,7 +11,7 @@ import 'add-image-select.dart';
 import 'bottom-column-icon.dart';
 import 'grid-item.dart';
 import 'image-item.dart';
-import '../../../db/draft_box/db.dart' as DB;
+import '../../../db/db.dart' as DB;
 import '../../../db/draft_box/essay-mode.dart';
 import '../../../db/draft_box/essay-sql.dart' as EssaySql;
 import '../../../db/draft_box/image-mode.dart';
