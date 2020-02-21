@@ -32,46 +32,73 @@ class _CalendarStatePage extends State<CalendarPage>
   AnimationController _animationController;
   CalendarController _calendarController;
 
+  void setEventsEvent(
+      Travel _item, DateTime key, DateTime _start, DateTime _end, int _num) {
+    if (_events[key.add(Duration(days: _num))] != null) {
+      _events[key.add(Duration(days: _num))].add({
+        'id': _item.id,
+        'title': _item.title,
+        'site': _item.site,
+        'startTime': _start,
+        'endTime': _end
+      });
+    } else {
+      _events[key.add(Duration(days: _num))] = [
+        {
+          'id': _item.id,
+          'title': _item.title,
+          'site': _item.site,
+          'startTime': _start,
+          'endTime': _end
+        }
+      ];
+    }
+  }
+
+  void setEventsShow(int _num, DateTime _start, DateTime start, DateTime _end,
+      DateTime end, Travel item) {
+    if (0 == _num) {
+      setEventsEvent(item, _start, start, end, 0);
+    } else {
+      for (int i = 0; i <= _num; i++) {
+        if (0 == i) {
+          setEventsEvent(item, _start, start, _end, i);
+        } else if (_num == i) {
+          setEventsEvent(item, _start, _start, end, i);
+        } else {
+          setEventsEvent(item, _start, _start, _end, i);
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    final _selectedDay =
-        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    final _selectedDay = DateTime.now();
     // 时间 : 行程 Map<DateTime, List> _events
     __selectedDay = _selectedDay;
+    _events = {};
     DB.createDB().then((onValue) async {
       Database db = onValue;
       List DataList = await TravelSql.selectAll(db);
       DataList.forEach((e) {
-        print(e);
+        final DateTime _startT =
+            DateTime.fromMillisecondsSinceEpoch(e.startTimeMilliseconds);
+        final DateTime _endT =
+            DateTime.fromMillisecondsSinceEpoch(e.endTimeMilliseconds);
+
+        final int days_num = _endT.difference(_startT).inDays;
+        setEventsShow(
+            days_num,
+            DateTime(_startT.year, _startT.month, _startT.day),
+            _startT,
+            DateTime(_endT.year, _endT.month, _endT.day),
+            _endT,
+            e);
       });
+      DB.close(db);
     });
-    _events = {
-      _selectedDay.subtract(Duration(days: 4)): [
-        {
-          'title': 'Event A5',
-          'site': '22222222222',
-          'startTime': '${DateTime.now()}',
-          'endTime': '${DateTime(2020)}'
-        }
-      ],
-      _selectedDay: [
-        {
-          'title': 'Event A2225',
-          'site': '22222222222',
-          'startTime': '${DateTime.now()}',
-          'endTime': '${DateTime(2020)}'
-        },
-      ],
-      _selectedDay.add(Duration(days: 3)): [
-        {
-          'title': 'Eve222nt A5',
-          'site': '22222222222',
-          'startTime': '${DateTime.now()}',
-          'endTime': '${DateTime(2020)}'
-        }
-      ],
-    };
 
     _selectedEvents = _events[_selectedDay] ?? [];
     _selectedHolidays = _holidays[DateTime(

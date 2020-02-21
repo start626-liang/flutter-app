@@ -118,7 +118,7 @@ class _AddTravelState extends State<AddTravelPage> {
     }
   }
 
-  int addTravelEvent() {
+  void addTravelEvent() {
     final int days_num = _endTime.difference(_startTime).inDays;
     if (0 == days_num) {
       final DateTime _time =
@@ -140,7 +140,6 @@ class _AddTravelState extends State<AddTravelPage> {
         }
       }
     }
-    return days_num;
   }
 
   @override
@@ -159,27 +158,19 @@ class _AddTravelState extends State<AddTravelPage> {
             icon: Icon(Icons.check),
             padding: EdgeInsets.only(right: 3),
             onPressed: () async {
-              final int num = addTravelEvent();
+              addTravelEvent();
 
-              // await DB.createDB().then((onValue) async {
-              //   Database db = onValue;
-              //   await db.transaction((txn) async {
-              //     var batch = db.batch();
-              //     batch.insert("Test", {"name": "item"});
-              //     batch.update("Test", {"name": "new_item"},
-              //         where: "name = ?", whereArgs: ["item"]);
-              //     batch.delete("Test", where: "name = ?", whereArgs: ["item"]);
-              //     await batch.commit();
-              //   });
-              //   // final Travel fido = Travel(
-              //   //     title: _title.text,
-              //   //     site: _site.text,
-              //   //     startTime: _startTime.millisecondsSinceEpoch,
-              //   //     endTime: _endTime.millisecondsSinceEpoch,
-              //   //     time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-              //   // await TravelSql.insert(fido, db);
-              //   // DB.close(db);
-              // });
+              await DB.createDB().then((onValue) async {
+                Database db = onValue;
+                final Travel fido = Travel(
+                    title: _title.text,
+                    site: _site.text,
+                    startTimeMilliseconds: _startTime.millisecondsSinceEpoch,
+                    endTimeMilliseconds: _endTime.millisecondsSinceEpoch,
+                    time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+                await TravelSql.insert(fido, db);
+                DB.close(db);
+              });
 
               Navigator.pop(context);
               Toast.toast(context, msg: "添加成功！ ");

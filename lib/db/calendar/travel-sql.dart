@@ -23,8 +23,8 @@ Future<List<Travel>> selectAll(Database db) async {
       id: maps[i]['id'],
       title: maps[i]['title'],
       site: maps[i]['site'],
-      startTime: maps[i]['startTime'],
-      endTime: maps[i]['endTime'],
+      startTimeMilliseconds: maps[i]['startTimeMilliseconds'],
+      endTimeMilliseconds: maps[i]['endTimeMilliseconds'],
       time: maps[i]['time'],
     );
   });
