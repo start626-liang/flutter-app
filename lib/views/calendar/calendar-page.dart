@@ -1,12 +1,54 @@
+import 'dart:ui';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../push/push.dart' as push;
 import './event-list.dart';
 import './add/add-travel.dart';
 import '../../db/db.dart' as DB;
 import '../../db/calendar/travel-mode.dart';
 import '../../db/calendar/travel-sql.dart' as TravelSql;
+
+import '../../main.dart';
+
+class SecondScreen extends StatefulWidget {
+  SecondScreen(this.payload);
+
+  final String payload;
+
+  @override
+  State<StatefulWidget> createState() => SecondScreenState();
+}
+
+class SecondScreenState extends State<SecondScreen> {
+  String _payload;
+  @override
+  void initState() {
+    super.initState();
+    _payload = widget.payload;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Second Screen with payload: ${(_payload ?? '')}'),
+      ),
+      body: Center(
+        child: RaisedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
@@ -24,6 +66,9 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarStatePage extends State<CalendarPage>
     with TickerProviderStateMixin {
+  final MethodChannel platform =
+      MethodChannel('crossingthestreams.io/resourceResolver');
+
   Map<DateTime, List> _events;
   DateTime __selectedDay;
 
@@ -75,9 +120,61 @@ class _CalendarStatePage extends State<CalendarPage>
   @override
   void initState() {
     super.initState();
+
+    // 推送
+    didReceiveLocalNotificationSubject.stream
+        .listen((ReceivedNotification receivedNotification) async {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: receivedNotification.title != null
+              ? Text(receivedNotification.title)
+              : null,
+          content: receivedNotification.body != null
+              ? Text(receivedNotification.body)
+              : null,
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: Text('Ok'),
+              onPressed: () async {
+                Navigator.of(context, rootNavigator: true).pop();
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SecondScreen(receivedNotification.payload),
+                  ),
+                );
+              },
+            )
+          ],
+        ),
+      );
+    });
+    selectNotificationSubject.stream.listen((String payload) async {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SecondScreen(payload)),
+      );
+    });
+
+    // 日历
     final _selectedDay = DateTime.now();
+    _selectedEvents = [];
+    _selectedHolidays = _holidays[DateTime(
+            _selectedDay.year, _selectedDay.month, _selectedDay.day)] ??
+        [];
+    _calendarController = CalendarController();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _animationController.forward();
+
     // 时间 : 行程 Map<DateTime, List> _events
-    __selectedDay = _selectedDay;
     _events = {};
     DB.createDB().then((onValue) async {
       Database db = onValue;
@@ -97,25 +194,20 @@ class _CalendarStatePage extends State<CalendarPage>
             _endT,
             e);
       });
+      _selectedEvents = _events[DateTime(
+              _selectedDay.year, _selectedDay.month, _selectedDay.day)] ??
+          [];
       DB.close(db);
     });
-
-    _selectedEvents = _events[_selectedDay] ?? [];
-    _selectedHolidays = _holidays[DateTime(
-            _selectedDay.year, _selectedDay.month, _selectedDay.day)] ??
-        [];
-    _calendarController = CalendarController();
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-
-    _animationController.forward();
   }
 
   @override
   void dispose() {
+    // 推送
+    didReceiveLocalNotificationSubject.close();
+    selectNotificationSubject.close();
+
+    // 日历
     _animationController.dispose();
     _calendarController.dispose();
     super.dispose();
@@ -145,6 +237,42 @@ class _CalendarStatePage extends State<CalendarPage>
         children: <Widget>[
           _buildTableCalendarWithBuilders(),
           const SizedBox(height: 8.0),
+          // FlatButton(
+          //     child: Text('每分钟重复一次通知'),
+          //     onPressed: () async {
+          //       await push.repeatNotification();
+          //     }),
+          // FlatButton(
+          //     child: Text('查看待处理的通知'),
+          //     onPressed: () async {
+          //       await push.checkPendingNotificationRequests(context);
+          //     }),
+          // FlatButton(
+          //     child: Text(
+          //       '每天大约上午10:00:00重复通知',
+          //     ),
+          //     onPressed: () async {
+          //       await push.showDailyAtTime();
+          //     }),
+          // FlatButton(
+          //     child: Text(
+          //       '每周星期一大约10:00:00重复发送通知',
+          //     ),
+          //     onPressed: () async {
+          //       await push.showWeeklyAtDayAndTime();
+          //     }),
+          // FlatButton(
+          //     child: Text(
+          //       'Cancel all notifications--取消所有通知',
+          //     ),
+          //     onPressed: () async {
+          //       await push.cancelAllNotifications();
+          //     }),
+          // FlatButton(
+          //     child: Text('安排在5秒钟内显示通知，自定义声音，红色，大图标，红色LED'),
+          //     onPressed: () async {
+          //       await push.scheduleNotification();
+          //     }),
           Expanded(
               child: EventList(_selectedEvents, _selectedHolidays)), // 事务列表
         ],

@@ -93,8 +93,14 @@ class _AddTravelState extends State<AddTravelPage> {
   @override
   void initState() {
     super.initState();
-    _startTime = widget.time;
-    _endTime = widget.time + 1.hours;
+    final _now = DateTime.now();
+    if (widget.time.day == _now.day) {
+      _startTime = _now + 1.hours;
+      _endTime = _now + 2.hours;
+    } else {
+      _startTime = _now;
+      _endTime = _now + 1.hours;
+    }
   }
 
   void setTravelEvent(DateTime time, String title, String site,
@@ -168,7 +174,8 @@ class _AddTravelState extends State<AddTravelPage> {
                     startTimeMilliseconds: _startTime.millisecondsSinceEpoch,
                     endTimeMilliseconds: _endTime.millisecondsSinceEpoch,
                     time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                await TravelSql.insert(fido, db);
+                final int id = await TravelSql.insert(fido, db);
+                Travel _item = await TravelSql.select(db, id);
                 DB.close(db);
               });
 
