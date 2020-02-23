@@ -10,6 +10,7 @@ import 'toast.dart';
 import '../../../db/db.dart' as DB;
 import '../../../db/calendar/travel-mode.dart';
 import '../../../db/calendar/travel-sql.dart' as TravelSql;
+import '../../../push/push.dart' as push;
 
 class AddTravelPage extends StatefulWidget {
   final DateTime time;
@@ -36,15 +37,60 @@ class _AddTravelState extends State<AddTravelPage> {
   int _repetitionIndex = 0;
 
   List _warnList = [
-    {'name': warnDefaultt, 'select': true},
-    {'name': '提前5分钟', 'select': false},
-    {'name': '提前10分钟', 'select': false},
-    {'name': '提前15分钟', 'select': false},
-    {'name': '提前30分钟', 'select': false},
-    {'name': '提前1小时', 'select': false},
-    {'name': '提前1天', 'select': false},
-    {'name': '提前2天', 'select': false},
-    {'name': '提前1周', 'select': false},
+    {
+      'name': warnDefaultt,
+      'select': true,
+      'time': (DateTime time) => time,
+      'id': 0
+    },
+    {
+      'name': '提前5分钟',
+      'select': false,
+      'time': (DateTime time) => time.subtract(Duration(minutes: 5)),
+      'id': 1
+    },
+    {
+      'name': '提前10分钟',
+      'select': false,
+      'time': (DateTime time) => time.subtract(Duration(minutes: 10)),
+      'id': 2
+    },
+    {
+      'name': '提前15分钟',
+      'select': false,
+      'time': (DateTime time) => time.subtract(Duration(minutes: 15)),
+      'id': 3
+    },
+    {
+      'name': '提前30分钟',
+      'select': false,
+      'time': (DateTime time) => time.subtract(Duration(minutes: 30)),
+      'id': 4
+    },
+    {
+      'name': '提前1小时',
+      'select': false,
+      'time': (DateTime time) => time.subtract(Duration(hours: 1)),
+      'id': 5
+    },
+    {
+      'name': '提前1天',
+      'select': false,
+      'time': (DateTime time) => time.subtract(Duration(days: 1)),
+      'id': 6
+    },
+    {
+      'name': '提前2天',
+      'select': false,
+      'time': (DateTime time) => time.subtract(Duration(days: 2)),
+      'id': 7
+    },
+    {
+      'name': '提前1周',
+      'select': false,
+      'time': (DateTime time) => time.subtract(Duration(days: 7)),
+      'id': 8
+    },
   ];
   String _warn = warnDefaultt;
   bool _noWarn = false;
@@ -171,19 +217,29 @@ class _AddTravelState extends State<AddTravelPage> {
 
               await DB.createDB().then((onValue) async {
                 Database db = onValue;
+                final String title = _title.text;
+                final String site = _site.text;
+                final String notes = _notes.text;
                 final Travel fido = Travel(
-                    title: _title.text,
-                    site: _site.text,
+                    title: title,
+                    site: site,
+                    notes: notes,
                     startTimeMilliseconds: _startTime.millisecondsSinceEpoch,
                     endTimeMilliseconds: _endTime.millisecondsSinceEpoch,
                     time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
                 final int id = await TravelSql.insert(fido, db);
                 Travel _item = await TravelSql.select(db, id);
+                _warnList.forEach((e) {
+                  if (e['select']) {
+                    push.setOneTime(_item.id * 10 + e['id'], title, notes,
+                        e['time'](_startTime));
+                  }
+                });
+
+                Navigator.pop(context);
+                Toast.toast(context, msg: "添加成功！ ");
                 DB.close(db);
               });
-
-              Navigator.pop(context);
-              Toast.toast(context, msg: "添加成功！ ");
             },
           )
         ],
@@ -248,19 +304,19 @@ class _AddTravelState extends State<AddTravelPage> {
                   }, currentTime: _endTime, locale: LocaleType.zh);
                 }),
                 _buildGeneralColumn(context, '重复', _repetition, () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EepetitionView(
-                            startTime: _startTime,
-                            index: _repetitionIndex,
-                            repetitionCallback: (int index, String repetition) {
-                              setState(() {
-                                _repetitionIndex = index;
-                                _repetition = repetition;
-                              });
-                            })),
-                  );
+//                  Navigator.push(
+//                    context,
+//                    MaterialPageRoute(
+//                        builder: (context) => EepetitionView(
+//                            startTime: _startTime,
+//                            index: _repetitionIndex,
+//                            repetitionCallback: (int index, String repetition) {
+//                              setState(() {
+//                                _repetitionIndex = index;
+//                                _repetition = repetition;
+//                              });
+//                            })),
+//                  );
                 }),
                 _buildLineBetween(),
                 _buildGeneralColumn(context, '提醒', _warn, () async {

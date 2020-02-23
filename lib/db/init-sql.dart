@@ -12,5 +12,5 @@ void init(Database db) {
     "CREATE TABLE IF NOT EXISTS $imageTatle(id INTEGER PRIMARY KEY,  directory INTEGER, file_name INTEGER, time TEXT)",
   );
   db.execute(
-      'CREATE TABLE IF NOT EXISTS $travelTatle(id INTEGER PRIMARY KEY, title TEXT, site TEXT, startTimeMilliseconds INTEGER, endTimeMilliseconds INTEGER, time TEXT)');
+      'CREATE TABLE IF NOT EXISTS $travelTatle(id INTEGER PRIMARY KEY, title TEXT, site TEXT, notes TEXT, startTimeMilliseconds INTEGER, endTimeMilliseconds INTEGER, time TEXT)');
 }

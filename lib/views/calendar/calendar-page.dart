@@ -195,9 +195,11 @@ class _CalendarStatePage extends State<CalendarPage>
             _endT,
             e);
       });
-      _selectedEvents = _events[DateTime(
-              _selectedDay.year, _selectedDay.month, _selectedDay.day)] ??
-          [];
+      setState(() {
+        _selectedEvents = _events[DateTime(
+                _selectedDay.year, _selectedDay.month, _selectedDay.day)] ??
+            [];
+      });
       DB.close(db);
     });
   }
@@ -217,9 +219,44 @@ class _CalendarStatePage extends State<CalendarPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('calendar'),
-      ),
+      appBar: AppBar(title: Text('calendar'), actions: <Widget>[
+        // FlatButton(
+        //     child: Text('每分钟重复一次通知'),
+        //     onPressed: () async {
+        //       await push.repeatNotification();
+        //     }),
+        FlatButton(
+            child: Text('查看待处理的通知'),
+            onPressed: () async {
+              await push.checkPendingNotificationRequests(context);
+            }),
+        // FlatButton(
+        //     child: Text(
+        //       '每天大约上午10:00:00重复通知',
+        //     ),
+        //     onPressed: () async {
+        //       await push.showDailyAtTime();
+        //     }),
+        // FlatButton(
+        //     child: Text(
+        //       '每周星期一大约10:00:00重复发送通知',
+        //     ),
+        //     onPressed: () async {
+        //       await push.showWeeklyAtDayAndTime();
+        //     }),
+        // FlatButton(
+        //     child: Text(
+        //       'Cancel all notifications--取消所有通知',
+        //     ),
+        //     onPressed: () async {
+        //       await push.cancelAllNotifications();
+        //     }),
+        // FlatButton(
+        //     child: Text('安排在5秒钟内显示通知，自定义声音，红色，大图标，红色LED'),
+        //     onPressed: () async {
+        //       await push.scheduleNotification();
+        //     }),
+      ]),
       floatingActionButton: FloatingActionButton(
         mini: true,
         onPressed: () {
@@ -238,42 +275,6 @@ class _CalendarStatePage extends State<CalendarPage>
         children: <Widget>[
           _buildTableCalendarWithBuilders(),
           const SizedBox(height: 8.0),
-          // FlatButton(
-          //     child: Text('每分钟重复一次通知'),
-          //     onPressed: () async {
-          //       await push.repeatNotification();
-          //     }),
-          // FlatButton(
-          //     child: Text('查看待处理的通知'),
-          //     onPressed: () async {
-          //       await push.checkPendingNotificationRequests(context);
-          //     }),
-          // FlatButton(
-          //     child: Text(
-          //       '每天大约上午10:00:00重复通知',
-          //     ),
-          //     onPressed: () async {
-          //       await push.showDailyAtTime();
-          //     }),
-          // FlatButton(
-          //     child: Text(
-          //       '每周星期一大约10:00:00重复发送通知',
-          //     ),
-          //     onPressed: () async {
-          //       await push.showWeeklyAtDayAndTime();
-          //     }),
-          // FlatButton(
-          //     child: Text(
-          //       'Cancel all notifications--取消所有通知',
-          //     ),
-          //     onPressed: () async {
-          //       await push.cancelAllNotifications();
-          //     }),
-          // FlatButton(
-          //     child: Text('安排在5秒钟内显示通知，自定义声音，红色，大图标，红色LED'),
-          //     onPressed: () async {
-          //       await push.scheduleNotification();
-          //     }),
           Expanded(
               child: EventList(_selectedEvents, _selectedHolidays)), // 事务列表
         ],
