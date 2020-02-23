@@ -161,6 +161,7 @@ class _CalendarStatePage extends State<CalendarPage>
 
     // 日历
     final _selectedDay = DateTime.now();
+    __selectedDay = _selectedDay;
     _selectedEvents = [];
     _selectedHolidays = _holidays[DateTime(
             _selectedDay.year, _selectedDay.month, _selectedDay.day)] ??

@@ -98,8 +98,11 @@ class _AddTravelState extends State<AddTravelPage> {
       _startTime = _now + 1.hours;
       _endTime = _now + 2.hours;
     } else {
-      _startTime = _now;
-      _endTime = _now + 1.hours;
+      _startTime = DateTime(widget.time.year, widget.time.month,
+          widget.time.day, _now.hour, _now.minute);
+      _endTime = DateTime(widget.time.year, widget.time.month, widget.time.day,
+              _now.hour, _now.minute) +
+          1.hours;
     }
   }
 
