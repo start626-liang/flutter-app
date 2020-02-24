@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'generalString.dart';
+
 typedef SetWarnCallback = Function(String warn);
 typedef SetNoWarn = Function(bool value);
 typedef SelectWarnList = Function(int item, bool value);
 
-final String warnDefaultt = '开始时';
 
 class WarnView extends StatefulWidget {
   final SetWarnCallback setWarnCallback;

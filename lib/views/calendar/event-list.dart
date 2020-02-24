@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart' as jiffy;
 
+import 'see/See.dart';
+
 class EventList extends StatelessWidget {
   final List _selectedEvents;
   final List _selectedHolidays;
@@ -16,7 +18,6 @@ class EventList extends StatelessWidget {
 
     return ListView(
       children: buildList.map((event) {
-        print(event);
         return Container(
           decoration: BoxDecoration(
             border: Border.all(width: 0.8),
@@ -27,7 +28,13 @@ class EventList extends StatelessWidget {
             title: Text('${event['title'] == '' ? '（无标题）' : event['title']}'),
             subtitle: Text(
                 '${jiffy.Jiffy(event['startTime']).Hm} - ${jiffy.Jiffy(event['endTime']).Hm}${event['site'] == '' ? '' : '  |  ${event['site']}'}'),
-            onTap: () => print('$event tapped!'),
+            onTap: () {
+              print('$event tapped!${event['id']}');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SeeView(id: event['id'])));
+            },
           ),
         );
       }).toList(),
