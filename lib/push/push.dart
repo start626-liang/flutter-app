@@ -71,7 +71,7 @@ Future<void> setOneTime(
   vibrationPattern[3] = 2000;
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      _id.toString(), _title, '~',
+      _id.toString(), _id.toString(), _id.toString(),
       icon: 'secondary_icon',
       sound: 'slow_spring_board',
       largeIcon: 'sample_large_icon',

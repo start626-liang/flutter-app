@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 typedef SetRepetitionIndex = Function(int index, String repetition);
 
 final String repetitionDefaultt = '一次性活动';
+
 class EepetitionView extends StatefulWidget {
   final DateTime startTime;
   final int index;
