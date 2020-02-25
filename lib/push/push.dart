@@ -17,6 +17,10 @@ Future<void> cancelAllNotifications() async {
   await flutterLocalNotificationsPlugin.cancelAll();
 }
 
+Future<void> cancelNotifications(int id) async {
+  await flutterLocalNotificationsPlugin.cancel(id);
+}
+
 String _toTwoDigitString(int value) {
   return value.toString().padLeft(2, '0');
 }
@@ -128,6 +132,17 @@ Future<void> scheduleNotification() async {
       'scheduled body',
       scheduledNotificationDateTime,
       platformChannelSpecifics);
+}
+
+Future<List<int>> allNotificationRequests() async {
+  var pendingNotificationRequests =
+      await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+
+  List<int> _list = [];
+  for (var pendingNotificationRequest in pendingNotificationRequests) {
+    _list.add(pendingNotificationRequest.id);
+  }
+  return _list;
 }
 
 Future<void> checkPendingNotificationRequests(BuildContext context) async {

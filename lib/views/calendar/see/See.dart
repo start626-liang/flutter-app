@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+
+import '../../../db/db.dart' as DB;
 
 import '../general-string.dart';
 import '../warn-select.dart';
 import '../../../general/toast.dart';
+import '../../../push/push.dart' as push;
+import '../../../db/calendar/travel-sql.dart' as TravelSql;
+import '../../../db/calendar/travel-mode.dart';
 
 class SeeView extends StatefulWidget {
   final int id;
@@ -73,19 +79,88 @@ class _SeeViewState extends State<SeeView> {
   String _warn = warnDefaultt;
   bool _noWarn = false;
 
+  void _warnShowString(List<String> list) {
+    setState(() {
+      switch (list.length) {
+        case 0:
+          _warn = '无提醒';
+          break;
+        case 1:
+          _warn = list[0];
+          break;
+        case 2:
+          _warn = '${list[1]},${list[0]}';
+          break;
+        default:
+          _warn = '${list.last},${list[list.length - 2]},...';
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      push.allNotificationRequests().then((onValue) {
+        List<String> selectList = [];
+        for (int i = 0; i < 10; i++) {
+          if (onValue.indexOf(i + widget.id * 10) != -1) {
+            _warnList[i]['select'] = true;
+            selectList.add(_warnList[i]['name']);
+          }
+        }
+        _warnShowString(selectList);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double _width = 380;
     return Scaffold(
         appBar: AppBar(
           title: Text('查看'),
+          centerTitle: true,
           leading: IconButton(
-              icon: Icon(Icons.clear),
+              icon: Icon(
+                Icons.keyboard_arrow_left,
+                size: 32,
+              ),
               onPressed: () {
-
                 Navigator.of(context).pop();
-                Toast.toast(context, msg: "添加成功！ ");
               }),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.check),
+              padding: EdgeInsets.only(right: 3),
+              onPressed: () async {
+                // print(widget.id);
+                for (int i = 0; i < 10; i++) {
+                  final int _id = widget.id * 10 + i;
+                  push.cancelNotifications(_id);
+                }
+
+                DB.createDB().then((onValue) async {
+                  Database db = onValue;
+                  Travel _item = await TravelSql.select(db, widget.id);
+                  _warnList.forEach((e) {
+                    if (e['select']) {
+                      push.setOneTime(
+                          _item.id * 10 + e['id'],
+                          _item.title,
+                          _item.notes,
+                          e['time'](DateTime.fromMillisecondsSinceEpoch(
+                              _item.startTimeMilliseconds)));
+                    }
+                  });
+                  DB.close(db);
+                  Navigator.of(context).pop();
+                  Toast.toast(context, msg: "编辑成功！ ");
+                });
+              },
+            )
+          ],
         ),
         body: ConstrainedBox(
           constraints: BoxConstraints.expand(),
