@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../generalString.dart';
+import '../general-string.dart';
 import '../warn-select.dart';
+import '../../../general/toast.dart';
 
 class SeeView extends StatefulWidget {
   final int id;
@@ -76,7 +77,16 @@ class _SeeViewState extends State<SeeView> {
   Widget build(BuildContext context) {
     final double _width = 380;
     return Scaffold(
-        appBar: AppBar(title: Text('查看')),
+        appBar: AppBar(
+          title: Text('查看'),
+          leading: IconButton(
+              icon: Icon(Icons.clear),
+              onPressed: () {
+
+                Navigator.of(context).pop();
+                Toast.toast(context, msg: "添加成功！ ");
+              }),
+        ),
         body: ConstrainedBox(
           constraints: BoxConstraints.expand(),
           child: Stack(alignment: Alignment.center, children: <Widget>[

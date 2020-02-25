@@ -6,12 +6,12 @@ import 'package:sqflite/sqflite.dart';
 
 import 'repetition-select.dart';
 import '../warn-select.dart';
-import 'toast.dart';
+import '../../../general/toast.dart';
 import '../../../db/db.dart' as DB;
 import '../../../db/calendar/travel-mode.dart';
 import '../../../db/calendar/travel-sql.dart' as TravelSql;
 import '../../../push/push.dart' as push;
-import '../generalString.dart';
+import '../general-string.dart';
 
 class AddTravelPage extends StatefulWidget {
   final DateTime time;

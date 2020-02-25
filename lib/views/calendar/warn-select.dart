@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'generalString.dart';
+import 'general-string.dart';
 
 typedef SetWarnCallback = Function(String warn);
 typedef SetNoWarn = Function(bool value);
