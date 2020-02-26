@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart' as jiffy;
 
-import 'see/See.dart';
+import 'see/see.dart';
 
 class EventList extends StatelessWidget {
   final List _selectedEvents;

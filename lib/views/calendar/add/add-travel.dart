@@ -4,7 +4,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:time/time.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'repetition-select.dart';
+import '../repetition-select.dart';
 import '../warn-select.dart';
 import '../../../general/toast.dart';
 import '../../../db/db.dart' as DB;
@@ -16,7 +16,7 @@ import '../general-string.dart';
 class AddTravelPage extends StatefulWidget {
   final DateTime time;
   Map<DateTime, List> events;
-  AddTravelPage({this.time, this.events});
+  AddTravelPage(this.time, this.events);
 
   @override
   _AddTravelState createState() {
@@ -308,10 +308,9 @@ class _AddTravelState extends State<AddTravelPage> {
 //                  Navigator.push(
 //                    context,
 //                    MaterialPageRoute(
-//                        builder: (context) => EepetitionView(
-//                            startTime: _startTime,
-//                            index: _repetitionIndex,
-//                            repetitionCallback: (int index, String repetition) {
+//                        builder: (context) =>
+//                            EepetitionView(_startTime, _repetitionIndex,
+//                                (int index, String repetition) {
 //                              setState(() {
 //                                _repetitionIndex = index;
 //                                _repetition = repetition;
@@ -324,20 +323,16 @@ class _AddTravelState extends State<AddTravelPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => WarnView(
-                            noWarn: _noWarn,
-                            initWarnList: _warnList,
-                            setNoWarnCallback: (bool value) {
+                        builder: (context) =>
+                            WarnView(_noWarn, _warnList, (bool value) {
                               setState(() {
                                 _noWarn = value;
                               });
-                            },
-                            selectWarnListCallback: (int item, bool value) {
+                            }, (int item, bool value) {
                               setState(() {
                                 _warnList[item]['select'] = value;
                               });
-                            },
-                            setWarnCallback: (String warn) {
+                            }, (String warn) {
                               setState(() {
                                 _warn = warn;
                               });

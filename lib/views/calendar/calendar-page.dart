@@ -263,8 +263,7 @@ class _CalendarStatePage extends State<CalendarPage>
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    AddTravelPage(time: __selectedDay, events: _events),
+                builder: (context) => AddTravelPage(__selectedDay, _events),
               ));
         },
         tooltip: 'Increment',

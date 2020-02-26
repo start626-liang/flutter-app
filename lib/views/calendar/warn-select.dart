@@ -12,12 +12,8 @@ class WarnView extends StatefulWidget {
   final SelectWarnList selectWarnListCallback;
   final bool noWarn;
   final List initWarnList;
-  WarnView(
-      {this.noWarn,
-      this.setNoWarnCallback,
-      this.setWarnCallback,
-      this.selectWarnListCallback,
-      this.initWarnList});
+  WarnView(this.noWarn, this.initWarnList, this.setNoWarnCallback,
+      this.selectWarnListCallback, this.setWarnCallback);
 
   @override
   State<StatefulWidget> createState() {

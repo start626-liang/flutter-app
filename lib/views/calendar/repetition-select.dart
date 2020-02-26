@@ -9,7 +9,7 @@ class EepetitionView extends StatefulWidget {
   final int index;
   final SetRepetitionIndex repetitionCallback;
 
-  EepetitionView({this.startTime, this.index, this.repetitionCallback});
+  EepetitionView(this.startTime, this.index, this.repetitionCallback);
 
   @override
   State<StatefulWidget> createState() {
