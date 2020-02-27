@@ -53,3 +53,12 @@ Future<Travel> select(Database db, int id) async {
     throw FormatException('数据库数据异常，有两条!!!');
   }
 }
+
+Future<void> update(Travel travel, Database db) async {
+  await db.update(
+    Init.travelTatle,
+    travel.toMap(),
+    where: "id = ?",
+    whereArgs: [travel.id],
+  );
+}

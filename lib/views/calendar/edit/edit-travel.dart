@@ -13,18 +13,18 @@ import '../../../db/calendar/travel-sql.dart' as TravelSql;
 import '../../../push/push.dart' as push;
 import '../general-string.dart';
 
-class AddTravelPage extends StatefulWidget {
-  final DateTime time;
-  Map<DateTime, List> events;
-  AddTravelPage(this.time, this.events);
+class EditTravelPage extends StatefulWidget {
+  List warnList;
+  Travel item;
+  EditTravelPage(this.item, this.warnList);
 
   @override
-  _AddTravelState createState() {
-    return _AddTravelState();
+  _EditTravelState createState() {
+    return _EditTravelState();
   }
 }
 
-class _AddTravelState extends State<AddTravelPage> {
+class _EditTravelState extends State<EditTravelPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final TextEditingController _title = TextEditingController();
@@ -37,62 +37,6 @@ class _AddTravelState extends State<AddTravelPage> {
   String _repetition = repetitionDefaultt;
   int _repetitionIndex = 0;
 
-  List _warnList = [
-    {
-      'name': warnDefaultt,
-      'select': true,
-      'time': (DateTime time) => time,
-      'id': 0
-    },
-    {
-      'name': '提前5分钟',
-      'select': false,
-      'time': (DateTime time) => time.subtract(Duration(minutes: 5)),
-      'id': 1
-    },
-    {
-      'name': '提前10分钟',
-      'select': false,
-      'time': (DateTime time) => time.subtract(Duration(minutes: 10)),
-      'id': 2
-    },
-    {
-      'name': '提前15分钟',
-      'select': false,
-      'time': (DateTime time) => time.subtract(Duration(minutes: 15)),
-      'id': 3
-    },
-    {
-      'name': '提前30分钟',
-      'select': false,
-      'time': (DateTime time) => time.subtract(Duration(minutes: 30)),
-      'id': 4
-    },
-    {
-      'name': '提前1小时',
-      'select': false,
-      'time': (DateTime time) => time.subtract(Duration(hours: 1)),
-      'id': 5
-    },
-    {
-      'name': '提前1天',
-      'select': false,
-      'time': (DateTime time) => time.subtract(Duration(days: 1)),
-      'id': 6
-    },
-    {
-      'name': '提前2天',
-      'select': false,
-      'time': (DateTime time) => time.subtract(Duration(days: 2)),
-      'id': 7
-    },
-    {
-      'name': '提前1周',
-      'select': false,
-      'time': (DateTime time) => time.subtract(Duration(days: 7)),
-      'id': 8
-    },
-  ];
   String _warn = warnDefaultt;
   bool _noWarn = false;
 
@@ -137,65 +81,42 @@ class _AddTravelState extends State<AddTravelPage> {
     );
   }
 
+  void _warnShowString(List<String> list) {
+    setState(() {
+      switch (list.length) {
+        case 0:
+          _warn = '无提醒';
+          break;
+        case 1:
+          _warn = list[0];
+          break;
+        case 2:
+          _warn = '${list[1]},${list[0]}';
+          break;
+        default:
+          _warn = '${list.last},${list[list.length - 2]},...';
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    final _now = DateTime.now();
-    if (widget.time.day == _now.day) {
-      _startTime = _now + 1.hours;
-      _endTime = _now + 2.hours;
-    } else {
-      _startTime = DateTime(widget.time.year, widget.time.month,
-          widget.time.day, _now.hour, _now.minute);
-      _endTime = DateTime(widget.time.year, widget.time.month, widget.time.day,
-              _now.hour, _now.minute) +
-          1.hours;
-    }
-  }
+    _startTime = DateTime.fromMillisecondsSinceEpoch(
+        (widget.item.startTimeMilliseconds));
+    _endTime =
+        DateTime.fromMillisecondsSinceEpoch(widget.item.endTimeMilliseconds);
+    _title.text = widget.item.title;
+    _site.text = widget.item.site;
+    _notes.text = widget.item.notes;
 
-  void setTravelEvent(DateTime time, String title, String site,
-      DateTime startTime, DateTime endTime) {
-    if (widget.events[time] != null) {
-      widget.events[time].add({
-        'title': title,
-        'site': site,
-        'startTime': startTime,
-        'endTime': endTime
-      });
-    } else {
-      widget.events[time] = [
-        {
-          'title': title,
-          'site': site,
-          'startTime': startTime,
-          'endTime': endTime
-        }
-      ];
-    }
-  }
-
-  void addTravelEvent() {
-    final int days_num = _endTime.difference(_startTime).inDays;
-    if (0 == days_num) {
-      final DateTime _time =
-          DateTime(_startTime.year, _startTime.month, _startTime.day);
-      setTravelEvent(_time, _title.text, _site.text, _startTime, _endTime);
-    } else {
-      for (int i = 0; i <= days_num; i++) {
-        DateTime _time =
-            DateTime(_startTime.year, _startTime.month, _startTime.day + i);
-        if (0 == i) {
-          setTravelEvent(_time, _title.text, _site.text, _startTime,
-              DateTime(0, 0, 0, 24));
-        } else if (i == days_num) {
-          setTravelEvent(
-              _time, _title.text, _site.text, DateTime(0, 0, 0, 0), _endTime);
-        } else {
-          setTravelEvent(_time, _title.text, _site.text, DateTime(0, 0, 0, 0),
-              DateTime(0, 0, 0, 24));
-        }
+    List<String> _selectWarnList = [];
+    widget.warnList.forEach((e) {
+      if (e['select']) {
+        _selectWarnList.add(e['name']);
       }
-    }
+    });
+    _warnShowString(_selectWarnList);
   }
 
   @override
@@ -214,31 +135,37 @@ class _AddTravelState extends State<AddTravelPage> {
             icon: Icon(Icons.check),
             padding: EdgeInsets.only(right: 3),
             onPressed: () async {
-              addTravelEvent();
+              //删除本次提醒
+              for (int i = 0; i < 10; i++) {
+                final int _id = widget.item.id * 10 + i;
+                push.cancelNotifications(_id);
+              }
 
-              await DB.createDB().then((onValue) async {
+              DB.createDB().then((onValue) async {
                 Database db = onValue;
                 final String title = _title.text;
                 final String site = _site.text;
                 final String notes = _notes.text;
                 final Travel fido = Travel(
+                    id: widget.item.id,
                     title: title,
                     site: site,
                     notes: notes,
                     startTimeMilliseconds: _startTime.millisecondsSinceEpoch,
                     endTimeMilliseconds: _endTime.millisecondsSinceEpoch,
                     time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                final int id = await TravelSql.insert(fido, db);
-                Travel _item = await TravelSql.select(db, id);
-                _warnList.forEach((e) {
+                TravelSql.update(fido, db);
+
+                Travel _item = await TravelSql.select(db, widget.item.id);
+                widget.warnList.forEach((e) {
                   if (e['select']) {
                     push.setOneTime(_item.id * 10 + e['id'], title, notes,
                         e['time'](_startTime));
                   }
                 });
 
-                Navigator.pop(context);
-                Toast.toast(context, msg: "添加成功！ ");
+                Navigator.pushReplacementNamed(context, '/calendar');
+                Toast.toast(context, msg: "已保存！ ", showTime: 3000);
                 DB.close(db);
               });
             },
@@ -305,18 +232,18 @@ class _AddTravelState extends State<AddTravelPage> {
                   }, currentTime: _endTime, locale: LocaleType.zh);
                 }),
                 _buildGeneralColumn(context, '重复', _repetition, () async {
-//                  Navigator.push(
-//                    context,
-//                    MaterialPageRoute(
-//                        builder: (context) =>
-//                            EepetitionView(_startTime, _repetitionIndex,
-//                                (int index, String repetition) {
-//                              setState(() {
-//                                _repetitionIndex = index;
-//                                _repetition = repetition;
-//                              });
-//                            })),
-//                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            EepetitionView(_startTime, _repetitionIndex,
+                                (int index, String repetition) {
+                              setState(() {
+                                _repetitionIndex = index;
+                                _repetition = repetition;
+                              });
+                            })),
+                  );
                 }),
                 _buildLineBetween(),
                 _buildGeneralColumn(context, '提醒', _warn, () async {
@@ -324,13 +251,13 @@ class _AddTravelState extends State<AddTravelPage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            WarnView(_noWarn, _warnList, (bool value) {
+                            WarnView(_noWarn, widget.warnList, (bool value) {
                               setState(() {
                                 _noWarn = value;
                               });
                             }, (int item, bool value) {
                               setState(() {
-                                _warnList[item]['select'] = value;
+                                widget.warnList[item]['select'] = value;
                               });
                             }, (String warn) {
                               setState(() {

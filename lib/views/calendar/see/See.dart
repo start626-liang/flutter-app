@@ -9,6 +9,7 @@ import '../../../general/toast.dart';
 import '../../../push/push.dart' as push;
 import '../../../db/calendar/travel-sql.dart' as TravelSql;
 import '../../../db/calendar/travel-mode.dart';
+import '../edit/edit-travel.dart';
 
 class SeeView extends StatefulWidget {
   final int id;
@@ -23,7 +24,7 @@ class _SeeViewState extends State<SeeView> {
   List _warnList = [
     {
       'name': warnDefaultt,
-      'select': true,
+      'select': false,
       'time': (DateTime time) => time,
       'id': 0
     },
@@ -78,6 +79,7 @@ class _SeeViewState extends State<SeeView> {
   ];
   String _warn = warnDefaultt;
   bool _noWarn = false;
+  Travel _item;
 
   void _warnShowString(List<String> list) {
     setState(() {
@@ -101,17 +103,24 @@ class _SeeViewState extends State<SeeView> {
   void initState() {
     super.initState();
 
-    setState(() {
-      push.allNotificationRequests().then((onValue) {
-        List<String> selectList = [];
-        for (int i = 0; i < 10; i++) {
-          if (onValue.indexOf(i + widget.id * 10) != -1) {
-            _warnList[i]['select'] = true;
-            selectList.add(_warnList[i]['name']);
-          }
-        }
-        _warnShowString(selectList);
+    DB.createDB().then((onValue) async {
+      Database db = onValue;
+      Travel data = await TravelSql.select(db, widget.id);
+      setState(() {
+        _item = data;
       });
+      DB.close(db);
+    });
+
+    push.allNotificationRequests().then((onValue) {
+      List<String> selectList = [];
+      for (int i = 0; i < 10; i++) {
+        if (onValue.indexOf(i + widget.id * 10) != -1) {
+          _warnList[i]['select'] = true;
+          selectList.add(_warnList[i]['name']);
+        }
+      }
+      _warnShowString(selectList);
     });
   }
 
@@ -135,29 +144,24 @@ class _SeeViewState extends State<SeeView> {
               icon: Icon(Icons.check),
               padding: EdgeInsets.only(right: 3),
               onPressed: () async {
-                // print(widget.id);
+                //删除本次提醒
                 for (int i = 0; i < 10; i++) {
                   final int _id = widget.id * 10 + i;
                   push.cancelNotifications(_id);
                 }
 
-                DB.createDB().then((onValue) async {
-                  Database db = onValue;
-                  Travel _item = await TravelSql.select(db, widget.id);
-                  _warnList.forEach((e) {
-                    if (e['select']) {
-                      push.setOneTime(
-                          _item.id * 10 + e['id'],
-                          _item.title,
-                          _item.notes,
-                          e['time'](DateTime.fromMillisecondsSinceEpoch(
-                              _item.startTimeMilliseconds)));
-                    }
-                  });
-                  DB.close(db);
-                  Navigator.of(context).pop();
-                  Toast.toast(context, msg: "编辑成功！ ");
+                _warnList.forEach((e) {
+                  if (e['select']) {
+                    push.setOneTime(
+                        _item.id * 10 + e['id'],
+                        _item.title,
+                        _item.notes,
+                        e['time'](DateTime.fromMillisecondsSinceEpoch(
+                            _item.startTimeMilliseconds)));
+                  }
                 });
+                Navigator.of(context).pop();
+                Toast.toast(context, msg: "编辑保存！ ");
               },
             )
           ],
@@ -193,21 +197,16 @@ class _SeeViewState extends State<SeeView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => WarnView(
-                                    noWarn: _noWarn,
-                                    initWarnList: _warnList,
-                                    setNoWarnCallback: (bool value) {
+                                builder: (context) =>
+                                    WarnView(_noWarn, _warnList, (bool value) {
                                       setState(() {
                                         _noWarn = value;
                                       });
-                                    },
-                                    selectWarnListCallback:
-                                        (int item, bool value) {
+                                    }, (int item, bool value) {
                                       setState(() {
                                         _warnList[item]['select'] = value;
                                       });
-                                    },
-                                    setWarnCallback: (String warn) {
+                                    }, (String warn) {
                                       setState(() {
                                         _warn = warn;
                                       });
@@ -259,7 +258,11 @@ class _SeeViewState extends State<SeeView> {
                         ],
                       ),
                       onPressed: () {
-                        print(22);
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    EditTravelPage(_item, _warnList)));
                       },
                     ),
                     FlatButton(
