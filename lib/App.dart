@@ -50,7 +50,7 @@ class App extends StatelessWidget {
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      initialRoute: '/calendar', // 与底部导航栏互斥
+      // initialRoute: '/calendar', // 与底部导航栏互斥
       home: BottomNavigationWidget(), // 底部导航栏
       routes: {
         '/home': (context) => buildHomeViewPage(context),
