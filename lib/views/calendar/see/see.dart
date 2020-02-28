@@ -273,7 +273,95 @@ class _SeeViewState extends State<SeeView> {
                         ],
                       ),
                       onPressed: () {
-                        print(111);
+                        showGeneralDialog(
+                          context: context,
+                          pageBuilder: (BuildContext buildContext,
+                              Animation<double> animation,
+                              Animation<double> secondaryAnimation) {
+                            return Dialog(
+                                backgroundColor:
+                                    Theme.of(context).dialogBackgroundColor,
+                                elevation: 24.0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(2.0))),
+                                child: IntrinsicWidth(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.fromLTRB(
+                                            24.0, 24.0, 24.0, 20.0),
+                                        child: DefaultTextStyle(
+                                          style:
+                                              Theme.of(context).textTheme.title,
+                                          child: Semantics(
+                                            child: Text("提示"),
+                                            namesRoute: true,
+                                            container: true,
+                                          ),
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              24.0, 20.0, 24.0, 24.0),
+                                          child: DefaultTextStyle(
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .title,
+                                            child: Text("您确定要删除当前文件吗?"),
+                                          ),
+                                        ),
+                                      ),
+                                      ButtonBar(
+                                        children: <Widget>[
+                                          FlatButton(
+                                            child: Text("取消"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop(true);
+                                            }, //关闭对话框
+                                          ),
+                                          FlatButton(
+                                            child: Text("删除"),
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(true); //关闭对话框
+                                              DB
+                                                  .createDB()
+                                                  .then((onValue) async {
+                                                Database db = onValue;
+                                                TravelSql.delete(db, widget.id);
+
+                                                //删除本次提醒
+                                                for (int i = 0; i < 10; i++) {
+                                                  final int _id =
+                                                      widget.id * 10 + i;
+                                                  push.cancelNotifications(_id);
+                                                }
+
+                                                Navigator.pushReplacementNamed(
+                                                    context, '/calendar');
+                                                db.close();
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ));
+                          },
+                          barrierDismissible: true,
+                          barrierLabel: MaterialLocalizations.of(context)
+                              .modalBarrierDismissLabel,
+                          barrierColor: Colors.black54,
+                          transitionDuration: const Duration(milliseconds: 150),
+                          transitionBuilder: _buildMaterialDialogTransitions,
+                          useRootNavigator: true,
+                        );
                       },
                     )
                   ],
@@ -284,5 +372,19 @@ class _SeeViewState extends State<SeeView> {
             ),
           ]),
         ));
+  }
+
+  Widget _buildMaterialDialogTransitions(
+      BuildContext context,
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child) {
+    return FadeTransition(
+      opacity: CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOut,
+      ),
+      child: child,
+    );
   }
 }
