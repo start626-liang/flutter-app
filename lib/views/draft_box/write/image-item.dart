@@ -52,6 +52,7 @@ class ImageItem extends StatefulWidget {
 
 class _ImageItemState extends State<ImageItem> {
   String _retrieveDataError;
+
   Widget _buildImageWidget(data) {
     final Text retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
@@ -65,10 +66,7 @@ class _ImageItemState extends State<ImageItem> {
         textAlign: TextAlign.center,
       );
     } else {
-      return const Text(
-        '1111.',
-        textAlign: TextAlign.center,
-      );
+      return Text('没有选择图片?', textAlign: TextAlign.center);
     }
   }
 
@@ -86,12 +84,7 @@ class _ImageItemState extends State<ImageItem> {
     if (response.isEmpty) {
       return;
     }
-    if (response.file != null) {
-      setState(() {
-        File imageFile = response.file;
-        widget._imageFileList.add(imageFile);
-      });
-    } else {
+    if (response.file == null) {
       _retrieveDataError = response.exception.code;
     }
   }
@@ -114,10 +107,7 @@ class _ImageItemState extends State<ImageItem> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
                     case ConnectionState.waiting:
-                      return const Text(
-                        '2222.',
-                        textAlign: TextAlign.center,
-                      );
+                      return CircularProgressIndicator();
                     case ConnectionState.done:
                       return _buildImageWidget(indexFile);
                     default:

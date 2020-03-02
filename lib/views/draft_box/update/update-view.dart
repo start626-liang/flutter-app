@@ -17,6 +17,8 @@ import '../../../db/draft_box/essay-sql.dart' as EssaySql;
 import '../../../db/draft_box/image-mode.dart';
 import '../../../db/draft_box/image-sql.dart' as ImageSql;
 
+import '../../../general/toast.dart';
+
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
 
@@ -133,10 +135,12 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
   void _onImageButtonPressed(ImageSource source) async {
     try {
       final File imageFile = await ImagePicker.pickImage(source: source);
-      setState(() {
-        imageFileList.add(imageFile);
-        _imageFileListIndex.add(false);
-      });
+      if (null != imageFile) {
+        setState(() {
+          imageFileList.add(imageFile);
+          _imageFileListIndex.add(false);
+        });
+      }
     } catch (e) {
       setState(() {
         _pickImageError = e;
@@ -191,6 +195,8 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
                 if (0 < list.length) {}
               }).catchError((onError) => print(onError));
               Navigator.of(context).pushReplacementNamed('/draft_box/list');
+
+              Toast.toast(context, msg: '编辑成功！');
             },
           ),
         ],

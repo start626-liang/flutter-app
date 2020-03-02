@@ -17,6 +17,8 @@ import '../../../db/draft_box/essay-sql.dart' as EssaySql;
 import '../../../db/draft_box/image-mode.dart';
 import '../../../db/draft_box/image-sql.dart' as ImageSql;
 
+import '../../../general/toast.dart';
+
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
 
@@ -98,9 +100,11 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
   void _onImageButtonPressed(ImageSource source) async {
     try {
       File imageFile = await ImagePicker.pickImage(source: source);
-      setState(() {
-        imageFileList.add(imageFile);
-      });
+      if (null != imageFile) {
+        setState(() {
+          imageFileList.add(imageFile);
+        });
+      }
     } catch (e) {
       setState(() {
         _pickImageError = e;
@@ -148,6 +152,9 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
                 }
               }).catchError((onError) => print(onError));
               Navigator.of(context).pushReplacementNamed('/draft_box/list');
+
+              Toast.toast(context, msg: '创建成功！');
+
               // if (_formKey.currentState.validate()) {
               //   // If the form is valid, display a Snackbar.
               //  Scaffold.of(context)
