@@ -42,10 +42,10 @@ class MyDrawer extends StatelessWidget {
                               //设置四周边框
                               border:
                                   new Border.all(width: 2, color: Colors.white),
-                              image: DecorationImage(
-                                  image: new NetworkImage(user.name != notLogin
-                                      ? 'https://tse3-mm.cn.bing.net/th?id=OIP.dXCIsZadSAJ3uGlYfRljmgHaHa&w=204&h=196&c=7&o=5&pid=1.7'
-                                      : '')),
+//                              image: DecorationImage(
+//                                  image: new NetworkImage(user.name != notLogin
+//                                      ? 'https://tse3-mm.cn.bing.net/th?id=OIP.dXCIsZadSAJ3uGlYfRljmgHaHa&w=204&h=196&c=7&o=5&pid=1.7'
+//                                      : '')),
                             ),
                             child: Icon(Icons.account_circle,
                                 color: Colors.black12, size: 60),
