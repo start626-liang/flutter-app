@@ -148,7 +148,7 @@ class DraftsViewState extends State<DraftsView> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {
-            Navigator.pushNamed(context, '/draft_box/write');
+            Navigator.of(context).pushReplacementNamed('/draft_box/write');
           },
         ),
       ),
