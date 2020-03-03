@@ -22,14 +22,14 @@ import '../../../general/toast.dart';
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
 
-  await for (FileSystemEntity entity in directory.list()) {
-    //文件、目录和链接都继承自FileSystemEntity
-    //FileSystemEntity.type静态函数返回值为FileSystemEntityType
-    //FileSystemEntityType有三个常量：
-    //Directory、FILE、LINK、NOT_FOUND
-    //FileSystemEntity.isFile .isLink .isDerectory可用于判断类型
-    // print(entity.path);
-  }
+//  await for (FileSystemEntity entity in directory.list()) {
+//    //文件、目录和链接都继承自FileSystemEntity
+//    //FileSystemEntity.type静态函数返回值为FileSystemEntityType
+//    //FileSystemEntityType有三个常量：
+//    //Directory、FILE、LINK、NOT_FOUND
+//    //FileSystemEntity.isFile .isLink .isDerectory可用于判断类型
+//    // print(entity.path);
+//  }
   return directory.path;
 }
 
@@ -125,7 +125,7 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
         _content = TextEditingController(text: essay.text);
         imageFileList = List.generate(imageList.length, (i) {
           _imageFileListIndex.add(true);
-          return File(imageList[i].file_name);
+          return File(imageList[i].fileName);
         });
       });
       return;
@@ -181,13 +181,12 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
                   Batch batch = db.batch();
 
                   list.forEach((e) async {
-                    final ImageDate fido = ImageDate(
-                        directory: _beforeEssay.directory,
-                        file_name: e,
-                        time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+                    final ImageDate fido = ImageDate(_beforeEssay.directory, e,
+                        Jiffy().format('yyyy-MM-dd h:mm:ss a'));
                     await ImageSql.insert(fido, batch);
                   });
-                  List<dynamic> results = await batch.commit();
+                  await batch.commit();
+//                  List<dynamic> results = await batch.commit();
 //                    print(results);
 
                   DB.close(db);
@@ -447,7 +446,7 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
       return tween.animate(
           CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
     } else {
-      if (!remainsItems.isEmpty) {
+      if (remainsItems.isNotEmpty) {
         int startIndex = remainsItems[index];
         if (startIndex != index) {
           Tween<Offset> tween = Tween(

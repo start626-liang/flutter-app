@@ -53,8 +53,12 @@ class WarnViewState extends State<WarnView> {
         itemCount: _warnList.length,
         itemBuilder: (context, item) {
           return CheckboxListTile(
-            title: Text(_warnList[item]['name']),
+            title: Text(
+              _warnList[item]['name'],
+              style: TextStyle(color: Colors.black26),
+            ),
             value: false,
+            onChanged: (bool value) {},
           );
         });
   }

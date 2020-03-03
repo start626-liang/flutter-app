@@ -7,7 +7,6 @@ import '../../model/User.dart';
 class UserView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return new StoreConnector<Store, User>(
       converter: (store) => store.state.user,
       builder: (BuildContext context, User user) {

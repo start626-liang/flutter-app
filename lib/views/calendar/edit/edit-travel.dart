@@ -14,8 +14,8 @@ import '../../../push/push.dart' as push;
 import '../general-string.dart';
 
 class EditTravelPage extends StatefulWidget {
-  List warnList;
-  Travel item;
+  final List warnList;
+  final Travel item;
   EditTravelPage(this.item, this.warnList);
 
   @override

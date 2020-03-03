@@ -17,7 +17,6 @@ class TrampleState extends State<Trample> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return IconButton(
       icon: Icon(_isTrample
           ? CommunityMaterialIcons.thumb_up

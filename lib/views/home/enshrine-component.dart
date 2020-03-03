@@ -14,7 +14,6 @@ class EnshrineState extends State<Enshrine> {
   EnshrineState(this._isEnshrine);
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return IconButton(
       icon: Icon(_isEnshrine ? Icons.star : Icons.star_border),
       onPressed: () {

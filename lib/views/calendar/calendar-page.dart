@@ -179,16 +179,16 @@ class _CalendarStatePage extends State<CalendarPage>
     _events = {};
     DB.createDB().then((onValue) async {
       Database db = onValue;
-      List DataList = await TravelSql.selectAll(db);
-      DataList.forEach((e) {
+      List dataList = await TravelSql.selectAll(db);
+      dataList.forEach((e) {
         final DateTime _startT =
             DateTime.fromMillisecondsSinceEpoch(e.startTimeMilliseconds);
         final DateTime _endT =
             DateTime.fromMillisecondsSinceEpoch(e.endTimeMilliseconds);
 
-        final int days_num = _endT.difference(_startT).inDays;
+        final int daysNum = _endT.difference(_startT).inDays;
         setEventsShow(
-            days_num,
+            daysNum,
             DateTime(_startT.year, _startT.month, _startT.day),
             _startT,
             DateTime(_endT.year, _endT.month, _endT.day),

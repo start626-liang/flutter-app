@@ -7,7 +7,7 @@ import '../../../general/toast.dart';
 typedef ImageButtonPressed = void Function(ImageSource source);
 
 class AddImageSelect extends StatelessWidget {
-  ImageButtonPressed _onImageButtonPressed;
+  final ImageButtonPressed _onImageButtonPressed;
 
   AddImageSelect(this._onImageButtonPressed);
 

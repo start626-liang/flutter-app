@@ -22,10 +22,10 @@ Future<List<ImageDate>> selectAll(Database db) async {
   print('${Init.imageTatle}数据库数据数量：${maps.length}');
   return List.generate(maps.length, (i) {
     return ImageDate(
+      maps[i]['directory'],
+      maps[i]['fileName'],
+      maps[i]['time'],
       id: maps[i]["id"],
-      directory: maps[i]['directory'],
-      file_name: maps[i]['file_name'],
-      time: maps[i]['time'],
     );
   });
 }
@@ -37,10 +37,10 @@ Future<List<ImageDate>> selectDirectory(Database db, directory) async {
   print('${Init.imageTatle}数据库数据数量：${maps.length}');
   return List.generate(maps.length, (i) {
     return ImageDate(
+      maps[i]['directory'],
+      maps[i]['fileName'],
+      maps[i]['time'],
       id: maps[i]["id"],
-      directory: maps[i]['directory'],
-      file_name: maps[i]['file_name'],
-      time: maps[i]['time'],
     );
   });
 }

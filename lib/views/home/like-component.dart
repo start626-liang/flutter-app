@@ -17,7 +17,6 @@ class LikeState extends State<Like> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return IconButton(
       icon: Icon(_isLike
           ? CommunityMaterialIcons.thumb_down

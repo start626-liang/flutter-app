@@ -41,9 +41,9 @@ void _previewImage(BuildContext context, List<File> _imageFileList) async {
 }
 
 class ImageItem extends StatefulWidget {
-  List<File> _imageFileList;
-  int index;
-  dynamic _pickImageError;
+  final List<File> _imageFileList;
+  final int index;
+  final dynamic _pickImageError;
   ImageItem(this._imageFileList, this.index, this._pickImageError);
 
   @override

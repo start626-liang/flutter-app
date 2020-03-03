@@ -1,7 +1,3 @@
-// Copyright 2019 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:flutter/material.dart';
 
 import '../../views/home/drawer-component.dart';
@@ -10,8 +6,8 @@ import '../../views/home/like-component.dart';
 import '../../views/home/trample-component.dart';
 
 class HomeView extends StatelessWidget {
-  final String _img =
-      'https://cn.bing.com/th?id=OIP.lZiy3876vC2hTJ5ERvg05wHaEn&pid=Api&rs=1';
+//  final String _img =
+//      'https://cn.bing.com/th?id=OIP.lZiy3876vC2hTJ5ERvg05wHaEn&pid=Api&rs=1';
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +41,7 @@ class HomeView extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigator.pushNamed(context, '/draft_box/write');
-          print(111);
+          Navigator.pushNamed(context, '/permission_handler');
         },
         tooltip: 'Increment',
         child: Icon(Icons.add),

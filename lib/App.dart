@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:redux_dev_tools/redux_dev_tools.dart';
+//import 'package:redux_dev_tools/redux_dev_tools.dart';
 
 import 'bottom_navigation_widget.dart';
 import 'common/theme.dart';
-import 'model/Store.dart';
+//import 'model/Store.dart';
 import 'views/home/home-view.dart';
 import 'views/sign-in/sign-in-view.dart';
 import 'views/sign-up/sign-up-view.dart';
@@ -12,10 +12,13 @@ import 'views/user/user-view.dart';
 import 'views/draft_box/write/write-view.dart';
 import 'views/calendar/calendar-page.dart';
 
-class App extends StatelessWidget {
-  final DevToolsStore<Store> _store;
+import 'views/permission-handler.dart';
 
-  App(this._store);
+class App extends StatelessWidget {
+//  final DevToolsStore<Store> _store;
+
+  App();
+//  App(this._store);
 
   Widget buildSignInViewPage(BuildContext context) {
     return SignInView();
@@ -60,6 +63,7 @@ class App extends StatelessWidget {
         '/draft_box/write': (context) => buildDraftsBoxWritePage(context),
         '/draft_box/list': (context) => buildDraftsBoxPage(context),
         '/calendar': (context) => buildCalendarPage(context),
+        '/permission_handler': (context) => PermissionHandlerPage(),
       },
     );
   }

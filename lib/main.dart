@@ -75,7 +75,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new StoreProvider<Store>(
       store: _store,
-      child: new App(_store),
+//      child: new App(_store),
+      child: new App(),
     );
   }
 }

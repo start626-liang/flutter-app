@@ -15,7 +15,7 @@ import '../general-string.dart';
 
 class AddTravelPage extends StatefulWidget {
   final DateTime time;
-  Map<DateTime, List> events;
+  final Map<DateTime, List> events;
   AddTravelPage(this.time, this.events);
 
   @override
@@ -35,7 +35,7 @@ class _AddTravelState extends State<AddTravelPage> {
   DateTime _endTime;
 
   String _repetition = repetitionDefaultt;
-  int _repetitionIndex = 0;
+//  int _repetitionIndex = 0;
 
   List _warnList = [
     {
@@ -175,19 +175,19 @@ class _AddTravelState extends State<AddTravelPage> {
   }
 
   void addTravelEvent() {
-    final int days_num = _endTime.difference(_startTime).inDays;
-    if (0 == days_num) {
+    final int daysNum = _endTime.difference(_startTime).inDays;
+    if (0 == daysNum) {
       final DateTime _time =
           DateTime(_startTime.year, _startTime.month, _startTime.day);
       setTravelEvent(_time, _title.text, _site.text, _startTime, _endTime);
     } else {
-      for (int i = 0; i <= days_num; i++) {
+      for (int i = 0; i <= daysNum; i++) {
         DateTime _time =
             DateTime(_startTime.year, _startTime.month, _startTime.day + i);
         if (0 == i) {
           setTravelEvent(_time, _title.text, _site.text, _startTime,
               DateTime(0, 0, 0, 24));
-        } else if (i == days_num) {
+        } else if (i == daysNum) {
           setTravelEvent(
               _time, _title.text, _site.text, DateTime(0, 0, 0, 0), _endTime);
         } else {
