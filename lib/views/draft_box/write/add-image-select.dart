@@ -1,5 +1,8 @@
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../../general/toast.dart';
 
 typedef ImageButtonPressed = void Function(ImageSource source);
 
@@ -21,9 +24,18 @@ class AddImageSelect extends StatelessWidget {
   List<Widget> _buildAddImageSelect(BuildContext context) {
     return [
       GestureDetector(
-        onTap: () {
-          _onImageButtonPressed(ImageSource.gallery);
-          Navigator.pop(context);
+        onTap: () async {
+          PermissionStatus permission = await PermissionHandler()
+              .checkPermissionStatus(PermissionGroup.storage);
+
+          switch (permission.value) {
+            case 4:
+              Toast.toast(context, msg: 'photo拒绝访问，并不提示');
+              break;
+            default:
+              _onImageButtonPressed(ImageSource.gallery);
+              Navigator.pop(context);
+          }
         },
         child: Container(
           padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -53,9 +65,18 @@ class AddImageSelect extends StatelessWidget {
         height: 1,
       ),
       GestureDetector(
-        onTap: () {
-          _onImageButtonPressed(ImageSource.camera);
-          Navigator.pop(context);
+        onTap: () async {
+          PermissionStatus permission = await PermissionHandler()
+              .checkPermissionStatus(PermissionGroup.camera);
+
+          switch (permission.value) {
+            case 4:
+              Toast.toast(context, msg: 'camera拒绝访问，并不提示');
+              break;
+            default:
+              _onImageButtonPressed(ImageSource.camera);
+              Navigator.pop(context);
+          }
         },
         child: Container(
           padding: EdgeInsets.only(top: 10, bottom: 10),
