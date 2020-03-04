@@ -123,7 +123,7 @@ class _EditTravelState extends State<EditTravelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("add"),
+        title: Text("edit"),
         centerTitle: true,
         leading: IconButton(
             icon: Icon(Icons.clear),
@@ -223,7 +223,7 @@ class _EditTravelState extends State<EditTravelPage> {
                       showTitleActions: true,
                       onChanged: (DateTime date) {},
                       onConfirm: (DateTime date) {
-                    if (_startTime.millisecondsSinceEpoch <
+                    if (_startTime.millisecondsSinceEpoch <=
                         date.millisecondsSinceEpoch) {
                       setState(() {
                         _endTime = date;

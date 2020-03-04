@@ -12,50 +12,55 @@ import './add/add-travel.dart';
 import '../../db/db.dart' as DB;
 import '../../db/calendar/travel-mode.dart';
 import '../../db/calendar/travel-sql.dart' as TravelSql;
-
+import 'second-screen.dart';
 import '../../main.dart';
-
-class SecondScreen extends StatefulWidget {
-  SecondScreen(this.payload);
-
-  final String payload;
-
-  @override
-  State<StatefulWidget> createState() => SecondScreenState();
-}
-
-class SecondScreenState extends State<SecondScreen> {
-  String _payload;
-  @override
-  void initState() {
-    super.initState();
-    _payload = widget.payload;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Second Screen with payload: ${(_payload ?? '')}'),
-      ),
-      body: Center(
-        child: RaisedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Go back!'),
-        ),
-      ),
-    );
-  }
-}
 
 // Example holidays
 final Map<DateTime, List> _holidays = {
-  DateTime(2020, 2, 14): [
+  DateTime.now(): [
     {'title': 'Valentine\'s Day'}
   ],
 };
+
+void setEventsEvent(Travel _item, DateTime key, DateTime _start, DateTime _end,
+    int _num, Map<DateTime, List> _events) {
+  if (_events[key.add(Duration(days: _num))] != null) {
+    _events[key.add(Duration(days: _num))].add({
+      'id': _item.id,
+      'title': _item.title,
+      'site': _item.site,
+      'startTime': _start,
+      'endTime': _end
+    });
+  } else {
+    _events[key.add(Duration(days: _num))] = [
+      {
+        'id': _item.id,
+        'title': _item.title,
+        'site': _item.site,
+        'startTime': _start,
+        'endTime': _end
+      }
+    ];
+  }
+}
+
+void setEventsShow(int _num, DateTime _start, DateTime start, DateTime _end,
+    DateTime end, Travel item, Map<DateTime, List> _events) {
+  if (0 == _num) {
+    setEventsEvent(item, _start, start, end, 0, _events);
+  } else {
+    for (int i = 0; i <= _num; i++) {
+      if (0 == i) {
+        setEventsEvent(item, _start, start, _end, i, _events);
+      } else if (_num == i) {
+        setEventsEvent(item, _start, _start, end, i, _events);
+      } else {
+        setEventsEvent(item, _start, _start, _end, i, _events);
+      }
+    }
+  }
+}
 
 class CalendarPage extends StatefulWidget {
   CalendarPage({Key key}) : super(key: key);
@@ -76,46 +81,6 @@ class _CalendarStatePage extends State<CalendarPage>
   List _selectedHolidays;
   AnimationController _animationController;
   CalendarController _calendarController;
-
-  void setEventsEvent(
-      Travel _item, DateTime key, DateTime _start, DateTime _end, int _num) {
-    if (_events[key.add(Duration(days: _num))] != null) {
-      _events[key.add(Duration(days: _num))].add({
-        'id': _item.id,
-        'title': _item.title,
-        'site': _item.site,
-        'startTime': _start,
-        'endTime': _end
-      });
-    } else {
-      _events[key.add(Duration(days: _num))] = [
-        {
-          'id': _item.id,
-          'title': _item.title,
-          'site': _item.site,
-          'startTime': _start,
-          'endTime': _end
-        }
-      ];
-    }
-  }
-
-  void setEventsShow(int _num, DateTime _start, DateTime start, DateTime _end,
-      DateTime end, Travel item) {
-    if (0 == _num) {
-      setEventsEvent(item, _start, start, end, 0);
-    } else {
-      for (int i = 0; i <= _num; i++) {
-        if (0 == i) {
-          setEventsEvent(item, _start, start, _end, i);
-        } else if (_num == i) {
-          setEventsEvent(item, _start, _start, end, i);
-        } else {
-          setEventsEvent(item, _start, _start, _end, i);
-        }
-      }
-    }
-  }
 
   @override
   void initState() {
@@ -186,14 +151,17 @@ class _CalendarStatePage extends State<CalendarPage>
         final DateTime _endT =
             DateTime.fromMillisecondsSinceEpoch(e.endTimeMilliseconds);
 
-        final int daysNum = _endT.difference(_startT).inDays;
+        final int daysNum = DateTime(_endT.year, _endT.month, _endT.day)
+            .difference(DateTime(_startT.year, _startT.month, _startT.day))
+            .inDays;
         setEventsShow(
             daysNum,
             DateTime(_startT.year, _startT.month, _startT.day),
             _startT,
             DateTime(_endT.year, _endT.month, _endT.day),
             _endT,
-            e);
+            e,
+            _events);
       });
       setState(() {
         _selectedEvents = _events[DateTime(
@@ -220,42 +188,11 @@ class _CalendarStatePage extends State<CalendarPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('calendar'), actions: <Widget>[
-        // FlatButton(
-        //     child: Text('每分钟重复一次通知'),
-        //     onPressed: () async {
-        //       await push.repeatNotification();
-        //     }),
         FlatButton(
             child: Text('查看待处理的通知'),
             onPressed: () async {
               await push.checkPendingNotificationRequests(context);
             }),
-        // FlatButton(
-        //     child: Text(
-        //       '每天大约上午10:00:00重复通知',
-        //     ),
-        //     onPressed: () async {
-        //       await push.showDailyAtTime();
-        //     }),
-        // FlatButton(
-        //     child: Text(
-        //       '每周星期一大约10:00:00重复发送通知',
-        //     ),
-        //     onPressed: () async {
-        //       await push.showWeeklyAtDayAndTime();
-        //     }),
-        // FlatButton(
-        //     child: Text(
-        //       'Cancel all notifications--取消所有通知',
-        //     ),
-        //     onPressed: () async {
-        //       await push.cancelAllNotifications();
-        //     }),
-        // FlatButton(
-        //     child: Text('安排在5秒钟内显示通知，自定义声音，红色，大图标，红色LED'),
-        //     onPressed: () async {
-        //       await push.scheduleNotification();
-        //     }),
       ]),
       floatingActionButton: FloatingActionButton(
         mini: true,

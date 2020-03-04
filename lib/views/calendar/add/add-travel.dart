@@ -238,6 +238,7 @@ class _AddTravelState extends State<AddTravelPage> {
                 });
 
                 Navigator.pop(context);
+                Navigator.of(context).pushReplacementNamed('/calendar');
                 Toast.toast(context, msg: "添加成功！ ");
                 DB.close(db);
               });
@@ -296,7 +297,7 @@ class _AddTravelState extends State<AddTravelPage> {
                       showTitleActions: true,
                       onChanged: (DateTime date) {},
                       onConfirm: (DateTime date) {
-                    if (_startTime.millisecondsSinceEpoch <
+                    if (_startTime.millisecondsSinceEpoch <=
                         date.millisecondsSinceEpoch) {
                       setState(() {
                         _endTime = date;
