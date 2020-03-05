@@ -10,7 +10,7 @@ import '../../../general/toast.dart';
 import '../../../db/db.dart' as DB;
 import '../../../db/calendar/travel-mode.dart';
 import '../../../db/calendar/travel-sql.dart' as TravelSql;
-import '../../../push/push.dart' as push;
+import '../../../general/push.dart' as push;
 import '../general-string.dart';
 
 class EditTravelPage extends StatefulWidget {

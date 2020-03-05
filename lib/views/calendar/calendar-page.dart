@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../push/push.dart' as push;
+import '../../general/push.dart' as push;
 import './event-list.dart';
 import './add/add-travel.dart';
 import '../../db/db.dart' as DB;
@@ -71,9 +71,6 @@ class CalendarPage extends StatefulWidget {
 
 class _CalendarStatePage extends State<CalendarPage>
     with TickerProviderStateMixin {
-  final MethodChannel platform =
-      MethodChannel('crossingthestreams.io/resourceResolver');
-
   Map<DateTime, List> _events;
   DateTime __selectedDay;
 

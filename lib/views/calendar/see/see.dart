@@ -6,7 +6,7 @@ import '../../../db/db.dart' as DB;
 import '../general-string.dart';
 import '../warn-select.dart';
 import '../../../general/toast.dart';
-import '../../../push/push.dart' as push;
+import '../../../general/push.dart' as push;
 import '../../../db/calendar/travel-sql.dart' as TravelSql;
 import '../../../db/calendar/travel-mode.dart';
 import '../edit/edit-travel.dart';
