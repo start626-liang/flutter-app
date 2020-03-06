@@ -76,6 +76,8 @@ Future<void> setOneTime(
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       _id.toString(), _id.toString(), _id.toString(),
+      importance: Importance.Max,
+      priority: Priority.Max,
       icon: 'secondary_icon',
       sound: 'slow_spring_board',
       largeIcon: 'sample_large_icon',
@@ -94,7 +96,7 @@ Future<void> setOneTime(
   var platformChannelSpecifics = NotificationDetails(
       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin.schedule(
-      _id, _title, _body, _time, platformChannelSpecifics);
+      0, _title, _body, _time, platformChannelSpecifics);
 }
 
 /// Schedules a notification that specifies a different icon, sound and vibration pattern
