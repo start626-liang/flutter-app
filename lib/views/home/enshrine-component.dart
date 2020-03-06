@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 
 class Enshrine extends StatefulWidget {
-  final bool _isEnshrine;
+  final bool enshrineDefault;
 
-  Enshrine(this._isEnshrine);
+  Enshrine(this.enshrineDefault);
 
   @override
-  EnshrineState createState() => EnshrineState(this._isEnshrine);
+  EnshrineState createState() => EnshrineState();
 }
 
 class EnshrineState extends State<Enshrine> {
   bool _isEnshrine;
-  EnshrineState(this._isEnshrine);
+  
+  @override
+  void initState() {
+    super.initState();
+    _isEnshrine = widget.enshrineDefault;
+  }
+
   @override
   Widget build(BuildContext context) {
     return IconButton(

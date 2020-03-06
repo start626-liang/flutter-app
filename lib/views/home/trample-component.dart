@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 
 class Trample extends StatefulWidget {
-  final bool _isTrample;
+  final bool trampleDefault;
 
-  Trample(this._isTrample);
+  Trample(this.trampleDefault);
 
   @override
-  TrampleState createState() => TrampleState(this._isTrample);
+  TrampleState createState() => TrampleState();
 }
 
 class TrampleState extends State<Trample> {
   bool _isTrample;
 
-  TrampleState(this._isTrample);
+  @override
+  void initState() {
+    super.initState();
+    _isTrample = widget.trampleDefault;
+  }
 
   @override
   Widget build(BuildContext context) {

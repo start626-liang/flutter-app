@@ -2,18 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 
 class Like extends StatefulWidget {
-  final bool _isLike;
+  final bool likeDefault;
 
-  Like(this._isLike);
+  Like(this.likeDefault);
 
   @override
-  LikeState createState() => LikeState(this._isLike);
+  LikeState createState() => LikeState();
 }
 
 class LikeState extends State<Like> {
   bool _isLike;
 
-  LikeState(this._isLike);
+  @override
+  void initState() {
+    super.initState();
+    _isLike = widget.likeDefault;
+  }
 
   @override
   Widget build(BuildContext context) {
