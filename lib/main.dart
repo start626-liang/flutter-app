@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:redux_dev_tools/redux_dev_tools.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'App.dart';
+import 'app.dart';
 import 'model/Store.dart';
 import 'redux/reducers.dart';
 import 'model/User.dart';

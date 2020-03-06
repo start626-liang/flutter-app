@@ -12,10 +12,10 @@ import 'bottom-column-icon.dart';
 import 'grid-item.dart';
 import 'image-item.dart';
 import '../../../db/db.dart' as DB;
-import '../../../db/draft_box/essay-mode.dart';
-import '../../../db/draft_box/essay-sql.dart' as EssaySql;
-import '../../../db/draft_box/image-mode.dart';
-import '../../../db/draft_box/image-sql.dart' as ImageSql;
+import '../../../db/draft-box/essay-mode.dart';
+import '../../../db/draft-box/essay-sql.dart' as EssaySql;
+import '../../../db/draft-box/image-mode.dart';
+import '../../../db/draft-box/image-sql.dart' as ImageSql;
 
 import '../../../general/toast.dart';
 
@@ -33,20 +33,16 @@ Future<String> get _localPath async {
   return directory.path;
 }
 
-Future<List<String>> _readFile(
-    List<File> imageList, List<bool> imageFileListIndex, int directory) async {
+Future<List<String>> _readFile(List<File> list, int directory) async {
   final String path = await _localPath;
   List<String> filePathList = [];
-  if (imageList.length > 0) {
-    final Map<int, File> imageMap = imageList.asMap();
-    imageMap.forEach((index, file) {
-      final List<String> array = file.path.split('/');
+  if (list.length > 0) {
+    list.forEach((e) {
+      final List<String> array = e.path.split('/');
       final String filePath = '$path/$directory/${array[array.length - 1]}';
+      new File(filePath).createSync(recursive: true);
+      e.copy(filePath);
 
-      if (!imageFileListIndex[index]) {
-        new File(filePath).createSync(recursive: true);
-        file.copy(filePath);
-      }
       filePathList.add(filePath);
     });
   }
@@ -54,19 +50,13 @@ Future<List<String>> _readFile(
   return filePathList;
 }
 
-class UpdatePage extends StatefulWidget {
-  final int id;
-
-  UpdatePage({Key key, @required this.id}) : super(key: key);
-
+class WritePage extends StatefulWidget {
   @override
-  UpdatePageState createState() => UpdatePageState();
+  WritePageState createState() => WritePageState();
 }
 
-class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
+class WritePageState extends State<WritePage> with TickerProviderStateMixin {
   List<File> imageFileList = [];
-  List<bool> _imageFileListIndex = [];
-
   dynamic _pickImageError;
 
   final List<int> selectedItems = []; // 被选中的item的index集合
@@ -94,8 +84,6 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
     childAspectRatio: 1.0, //子元素的宽高比例
   );
 
-  Future _future;
-
   @override
   void initState() {
     super.initState();
@@ -107,38 +95,14 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
         Tween(begin: Offset(0.0, 1.0), end: Offset(0.0, 0.0)).animate(
             CurvedAnimation(
                 parent: _deleteSheetController, curve: Curves.easeOut));
-
-    _future = futureDB();
-  }
-
-  Essay _beforeEssay;
-  Future<void> futureDB() async {
-    Database db;
-    await DB.createDB().then((onValue) async {
-      db = onValue;
-      final Essay essay = await EssaySql.select(db, widget.id);
-      final List<ImageDate> imageList =
-          await ImageSql.selectDirectory(db, essay.directory);
-      print(imageList);
-      setState(() {
-        _beforeEssay = essay;
-        _content = TextEditingController(text: essay.text);
-        imageFileList = List.generate(imageList.length, (i) {
-          _imageFileListIndex.add(true);
-          return File(imageList[i].fileName);
-        });
-      });
-      return;
-    });
   }
 
   void _onImageButtonPressed(ImageSource source) async {
     try {
-      final File imageFile = await ImagePicker.pickImage(source: source);
+      File imageFile = await ImagePicker.pickImage(source: source);
       if (null != imageFile) {
         setState(() {
           imageFileList.add(imageFile);
-          _imageFileListIndex.add(false);
         });
       }
     } catch (e) {
@@ -153,78 +117,76 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
     return Scaffold(
       // backgroundColor: Colors.blue,
       appBar: AppBar(
-        title: Text("Update"),
+        title: Text("Write"),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () async {
+              final int directory = Jiffy().unix();
               await DB.createDB().then((onValue) async {
-                final Database db = onValue;
+                Database db = onValue;
                 final Essay fido = Essay(
-                    id: _beforeEssay.id,
                     text: _content.text,
-                    directory: _beforeEssay.directory,
-                    time: _beforeEssay.time);
-                await EssaySql.update(fido, db);
-                await ImageSql.deleteImageDirectory(db, _beforeEssay.directory);
+                    directory: directory,
+                    time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+                await EssaySql.insert(fido, db);
                 DB.close(db);
               });
 
-              await _readFile(imageFileList, _imageFileListIndex,
-                      _beforeEssay.directory)
-                  .then((list) {
-                // print(list);
-                print(list.length);
-                DB.createDB().then((onValue) async {
-                  Database db = onValue;
-
-                  Batch batch = db.batch();
-
-                  list.forEach((e) async {
-                    final ImageDate fido = ImageDate(_beforeEssay.directory, e,
-                        Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                    await ImageSql.insert(fido, batch);
-                  });
-                  await batch.commit();
-//                  List<dynamic> results = await batch.commit();
+              await _readFile(imageFileList, directory).then((list) {
+                if (0 < list.length) {
+                  DB.createDB().then((onValue) async {
+                    Database db = onValue;
+                    Batch batch = db.batch();
+                    list.forEach((e) async {
+                      final ImageDate fido = ImageDate(
+                          directory, e, Jiffy().format('yyyy-MM-dd h:mm:ss a'));
+                      await ImageSql.insert(fido, batch);
+                    });
+                    await batch.commit();
+//                    List<dynamic> results = await batch.commit();
 //                    print(results);
-
-                  DB.close(db);
-                });
-                if (0 < list.length) {}
+                    DB.close(db);
+                  });
+                }
               }).catchError((onError) => print(onError));
               Navigator.of(context).pushReplacementNamed('/draft_box/list');
 
-              Toast.toast(context, msg: '编辑成功！');
+              Toast.toast(context, msg: '创建成功！');
+
+              // if (_formKey.currentState.validate()) {
+              //   // If the form is valid, display a Snackbar.
+              //  Scaffold.of(context)
+              //      .showSnackBar(SnackBar(content: Text('Processing Data')));
+              //   print(_content.text);
+              // } else {
+              //   print('==================================111');
+              // }
             },
           ),
+//          IconButton(
+//            icon: Icon(Icons.select_all),
+//            onPressed: () async {
+//              // print(imageFileList);
+//              Database db;
+//              await DB.createDB().then((onValue) async {
+//                db = onValue;
+//                print(await EssaySql.selectAll(db));
+//              });
+//
+//              await DB.createDB().then((onValue) async {
+//                db = onValue;
+//                print(await ImageSql.selectAll(db));
+//              });
+//            },
+//          ),
         ],
       ),
-      body: FutureBuilder<void>(
-        future: _future,
-        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return Text('ConnectionState.none');
-            case ConnectionState.waiting:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            case ConnectionState.active:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            case ConnectionState.done:
-              return createGrid();
-            default:
-              return Text('?????');
-          }
-        },
-      ),
+      body: createGrid(),
     );
   }
 
-  TextEditingController _content;
+  final _content = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
@@ -410,9 +372,9 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
   }
 
   int onActionFinished(indexes) {
-    var deleteIndex = indexes[0];
-    imageFileList.removeAt(deleteIndex);
-    _imageFileListIndex.removeAt(deleteIndex);
+    indexes.forEach((index) {
+      imageFileList.removeAt(index);
+    });
     return imageFileList.length;
   }
 

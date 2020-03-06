@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 //import 'package:redux_dev_tools/redux_dev_tools.dart';
 
-import 'bottom_navigation_widget.dart';
+import 'bottom-navigation-widget.dart';
 import 'common/theme.dart';
 //import 'model/Store.dart';
 import 'views/home/home-view.dart';
 import 'views/sign-in/sign-in-view.dart';
 import 'views/sign-up/sign-up-view.dart';
-import 'views/draft_box/select/main.dart';
+import 'views/draft-box/select/main.dart';
 import 'views/user/user-view.dart';
-import 'views/draft_box/write/write-view.dart';
+import 'views/draft-box/write/write-view.dart';
 import 'views/calendar/calendar-page.dart';
 
 import 'views/permission-handler.dart';
