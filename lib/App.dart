@@ -50,11 +50,13 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _list = [];
+    _list..add(HomeView())..add(UserView());
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
       // initialRoute: '/calendar', // 与底部导航栏互斥
-      home: BottomNavigationWidget(), // 底部导航栏
+      home: BottomNavigationWidget(_list), // 底部导航栏
       routes: {
         '/home': (context) => buildHomeViewPage(context),
         '/user': (context) => buildUserViewPage(context),

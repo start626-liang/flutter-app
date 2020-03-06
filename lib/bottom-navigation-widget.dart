@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'views/home/home-view.dart';
-import 'views/user/user-view.dart';
-
 class BottomNavigationWidget extends StatefulWidget {
+  final List<Widget> list;
+
+  BottomNavigationWidget(this.list);
+
   @override
   State<StatefulWidget> createState() => BottomNavigationWidgetState();
 }
@@ -11,18 +12,11 @@ class BottomNavigationWidget extends StatefulWidget {
 class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   final _bottomNavigationColor = Colors.blue;
   int _currentIndex = 0;
-  List<Widget> _list = List();
-
-  @override
-  void initState() {
-    _list..add(HomeView())..add(UserView());
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _list[_currentIndex],
+      body: widget.list[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
