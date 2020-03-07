@@ -12,11 +12,7 @@ class MyDrawer extends StatelessWidget {
       converter: (store) => store.state.user,
       builder: (BuildContext context, User user) {
         return Drawer(
-          // Add a ListView to the drawer. This ensures the user can scroll
-          // through the options in the drawer if there isn't enough vertical
-          // space to fit everything.
           child: ListView(
-            // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
@@ -54,7 +50,8 @@ class MyDrawer extends StatelessWidget {
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 8.0),
-                        child: Text(user.name == notLogin ? '点击登录' : 'id: ${user.id}'),
+                        child: Text(
+                            user.name == notLogin ? '点击登录' : 'id: ${user.id}'),
                       ),
                     ],
                   ),

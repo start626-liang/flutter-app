@@ -4,11 +4,15 @@ import '../../views/home/drawer-component.dart';
 import '../../views/home/enshrine-component.dart';
 import '../../views/home/like-component.dart';
 import '../../views/home/trample-component.dart';
+import 'images.dart';
+
+Image buildImage(BuildContext context) {
+  return Image(
+    image: AssetImage('1.jpg'),
+  );
+}
 
 class HomeView extends StatelessWidget {
-//  final String _img =
-//      'https://cn.bing.com/th?id=OIP.lZiy3876vC2hTJ5ERvg05wHaEn&pid=Api&rs=1';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +30,7 @@ class HomeView extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-          // MyImages(_img),
+          MyImages(buildImage(context)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -41,6 +45,7 @@ class HomeView extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigator.pushNamed(context, '/draft_box/write');
+          // 权限列表
           Navigator.pushNamed(context, '/permission_handler');
         },
         tooltip: 'Increment',
@@ -48,6 +53,4 @@ class HomeView extends StatelessWidget {
       ),
     );
   }
-
-  HomeView();
 }
