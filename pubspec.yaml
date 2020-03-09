@@ -55,6 +55,9 @@ dependencies:
   rxdart: ^0.23.1
 
   permission_handler: '^4.3.0'
+
+  simple_gesture_detector: ^0.1.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

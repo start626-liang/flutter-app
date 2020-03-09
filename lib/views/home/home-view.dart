@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
 import '../../views/home/drawer-component.dart';
 import '../../views/home/enshrine-component.dart';
@@ -12,7 +13,32 @@ Image buildImage(BuildContext context) {
   );
 }
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
+  @override
+  State<HomeView> createState() {
+    return HomeViewState();
+  }
+}
+
+class HomeViewState extends State<HomeView> {
+  void _onVerticalSwipe(SwipeDirection direction) {
+    setState(() {
+      if (direction == SwipeDirection.up) {
+        print('Swiped up!');
+      } else {
+        print('Swiped down!');
+      }
+    });
+  }
+
+  void _onHorizontalSwipe(SwipeDirection direction) {
+    setState(() {
+      if (direction == SwipeDirection.left) {
+        print('Swiped left!');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,18 +54,31 @@ class HomeView extends StatelessWidget {
           );
         }),
       ),
-      body: ListView(
-        children: <Widget>[
-          MyImages(buildImage(context)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: SimpleGestureDetector(
+        onVerticalSwipe: _onVerticalSwipe,
+        onHorizontalSwipe: _onHorizontalSwipe,
+        swipeConfig: SimpleSwipeConfig(
+          verticalThreshold: 40.0,
+          horizontalThreshold: 40.0,
+          swipeDetectionBehavior: SwipeDetectionBehavior.continuousDistinct,
+        ),
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
             children: <Widget>[
-              Enshrine(false),
-              Like(false),
-              Trample(false),
+              MyImages(buildImage(context)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Enshrine(false),
+                  Like(false),
+                  Trample(false),
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
       drawer: MyDrawer(),
       floatingActionButton: FloatingActionButton(
