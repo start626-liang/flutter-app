@@ -65,6 +65,7 @@ class HomeViewState extends State<HomeView> {
         child: Container(
           width: double.infinity,
           height: double.infinity,
+          color: Colors.white,
           child: Column(
             children: <Widget>[
               MyImages(buildImage(context)),
