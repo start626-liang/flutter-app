@@ -11,7 +11,7 @@ import 'views/draft-box/select/main.dart';
 import 'views/user/user-view.dart';
 import 'views/draft-box/write/write-view.dart';
 import 'views/calendar/calendar-page.dart';
-
+import 'views/search/search-page.dart';
 import 'views/permission-handler.dart';
 
 class App extends StatelessWidget {
@@ -48,14 +48,17 @@ class App extends StatelessWidget {
     return CalendarPage();
   }
 
+  Widget buildSearchPage(BuildContext context) {
+    return SearchPage();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _list = [];
-    _list..add(HomeView())..add(UserView());
+    final _list = [HomeView(), UserView()];
     return new MaterialApp(
       title: 'Provider Demo',
       theme: appTheme,
-      // initialRoute: '/calendar', // 与底部导航栏互斥
+      initialRoute: '/search', // 与底部导航栏互斥
       home: BottomNavigationWidget(_list), // 底部导航栏
       routes: {
         '/home': (context) => buildHomeViewPage(context),
@@ -65,6 +68,7 @@ class App extends StatelessWidget {
         '/draft_box/write': (context) => buildDraftsBoxWritePage(context),
         '/draft_box/list': (context) => buildDraftsBoxPage(context),
         '/calendar': (context) => buildCalendarPage(context),
+        '/search': (context) => buildSearchPage(context),
         '/permission_handler': (context) => PermissionHandlerPage(),
       },
     );
