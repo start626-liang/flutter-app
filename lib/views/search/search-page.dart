@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:extended_tabs/extended_tabs.dart';
+
+import 'page-view.dart' as page;
 
 class SearchPage extends StatefulWidget {
   @override
@@ -11,23 +12,28 @@ class SearchPage extends StatefulWidget {
 class SearchPageState extends State<SearchPage> {
   TextEditingController _searchController = new TextEditingController();
 
+  bool _search = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('search')),
       body: ListView(
-//        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           buildConstrainedBox(),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: 400,
-            ),
-            child: MyHomePage(),
-          ),
+          _search ? page.PageView() : buildSearchResult(context),
         ],
       ),
     );
+  }
+
+  Widget buildSearchResult(BuildContext context) {
+    return Text('data');
   }
 
   ConstrainedBox buildConstrainedBox() {
@@ -35,11 +41,10 @@ class SearchPageState extends State<SearchPage> {
       constraints: BoxConstraints(
         maxHeight: 40,
       ),
-      child: TextFormField(
+      child: TextField(
         cursorWidth: 2,
         textInputAction: TextInputAction.search,
         controller: _searchController,
-        autovalidate: true,
         decoration: const InputDecoration(
           contentPadding: EdgeInsets.only(top: 5),
           border: OutlineInputBorder(
@@ -54,72 +59,25 @@ class SearchPageState extends State<SearchPage> {
             Icons.search,
 //                  color: Colors.white,
           ),
-          hintText: '??????????',
+          hintText: '请输入',
           filled: true,
-          suffixIcon: Icon(
-            Icons.remove_red_eye,
-            color: Colors.white,
-          ),
           fillColor: Colors.red,
         ),
         onChanged: (val) {
-          print(val);
+          if (0 == val.length) {
+            setState(() {
+              _search = true;
+            });
+          } else {
+            setState(() {
+              _search = false;
+            });
+          }
         },
         onEditingComplete: () {
           print("点击了键盘上的动作按钮");
         },
-        validator: (value) {
-          if (value.isNotEmpty) {
-            print('222222222222');
-          }
-          return null;
-        },
       ),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
-  TabController tabController;
-  final List<Tab> tabList = [
-    Tab(text: "部门反馈"),
-    Tab(text: "学术交流"),
-    Tab(text: "活动反馈")
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    tabController = TabController(length: tabList.length, vsync: this);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        TabBar(
-          labelColor: Colors.black,
-          tabs: tabList,
-          controller: tabController,
-        ),
-        Expanded(
-          child: ExtendedTabBarView(
-            children: <Widget>[
-              Text("Tab000"),
-              Text("Tab001"),
-              Text("Tab002"),
-            ],
-            controller: tabController,
-            linkWithAncestor: true,
-            cacheExtent: 1,
-          ),
-        )
-      ],
     );
   }
 }
