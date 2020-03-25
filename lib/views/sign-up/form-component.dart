@@ -4,7 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import '../../model/Store.dart';
 import '../../redux/actions.dart';
 import '../../model/User.dart';
-import '../../http/post.dart' as http;
+import '../../http/sign-up-post.dart' as http;
 
 // Create a Form widget.
 class SignUpForm extends StatefulWidget {
@@ -77,25 +77,45 @@ class _SignUpFormState extends State<SignUpForm> {
             // otherwise.
             if (_formKey.currentState.validate()) {
               _showDialog();
-              await http.fetchPost({
-                'name': _account.text,
-                'password': _password.text,
-                'type': 'default'
-              }).then((onValue) {
-                Navigator.of(context).pop(1);
-                if (onValue['success']) {
-                  final User user = new User(name: _account.text, id: onValue['id']);
-                  callback(user);
-                  Navigator.pop(context);
+
+              try {
+                final data = await http.signUpPost(
+                    {'name': _account.text, 'password': _password.text});
+                print(data);
+                if (data['success']) {
+//                  final User user = new User(name: _account.text, id: onValue['id']);
+//                  callback(user);
                 } else {
-                  Scaffold.of(context)
-                      .showSnackBar(SnackBar(content: Text(onValue['msg'])));
+                      .showSnackBar(SnackBar(content: Text(data['msg'])));
                 }
-              }).catchError((onError) {
-                Navigator.of(context).pop(1);
+              } on Exception {
+                print(2222222222);
                 Scaffold.of(context)
                     .showSnackBar(SnackBar(content: Text('Error:unknown')));
-              });
+              } finally {
+                Navigator.of(context).pop();
+              }
+
+//              http.signUpPost({
+//                'name': _account.text,
+//                'password': _password.text
+//              }).then((onValue) {
+//                Navigator.of(context).pop();
+//                print(onValue);
+//                if (onValue['success']) {
+//                  final User user = new User(name: _account.text, id: onValue['id']);
+//                  callback(user);
+//                  Navigator.pop(context);
+//                } else {
+//                  Scaffold.of(context)
+//                      .showSnackBar(SnackBar(content: Text(onValue['msg'])));
+//                }
+//              }).catchError((onError) {
+////
+//              });
+
+
+
             } else {
               Scaffold.of(context)
                   .showSnackBar(SnackBar(content: Text('null')));

@@ -78,6 +78,7 @@ class _SignInFormState extends State<SignInForm> {
               // final User user = new User(_account.text);
               // callback(user);
               // Navigator.pop(context);
+              print('${_account.text}=============${_password.text}');
             } else {
               Scaffold.of(context)
                   .showSnackBar(SnackBar(content: Text('?????')));
@@ -96,7 +97,7 @@ class _SignInFormState extends State<SignInForm> {
         child: FlatButton(
           color: Colors.red,
           onPressed: () {
-             Navigator.of(context).pushReplacementNamed('/sign-up');
+             Navigator.of(context).pushNamed('/sign-up');
           },
           child: Text('Sign Up'),
         ),

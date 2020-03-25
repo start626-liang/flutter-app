@@ -12,6 +12,7 @@ class SignInView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Sign in"),
+        leading: Icon(Icons.dehaze),
       ),
       body: Center(
         child: SignInForm(),
