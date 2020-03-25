@@ -86,6 +86,7 @@ class _SignUpFormState extends State<SignUpForm> {
 //                  final User user = new User(name: _account.text, id: onValue['id']);
 //                  callback(user);
                 } else {
+                  Scaffold.of(context)
                       .showSnackBar(SnackBar(content: Text(data['msg'])));
                 }
               } on Exception {
