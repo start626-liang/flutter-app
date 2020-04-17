@@ -44,7 +44,7 @@ Future<void> setOneTime(
   var platformChannelSpecifics = NotificationDetails(
       androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin.schedule(
-      0, _title, _body, _time, platformChannelSpecifics);
+      _id, _title, _body, _time, platformChannelSpecifics);
 }
 
 Future<List<int>> allNotificationRequests() async {
