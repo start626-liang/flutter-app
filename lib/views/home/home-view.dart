@@ -41,10 +41,6 @@ class HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-        centerTitle: true,
-      ),
       body: SimpleGestureDetector(
         onVerticalSwipe: _onVerticalSwipe,
         onHorizontalSwipe: _onHorizontalSwipe,
