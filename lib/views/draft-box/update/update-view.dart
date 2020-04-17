@@ -33,15 +33,25 @@ Future<String> get _localPath async {
   return directory.path;
 }
 
+int arrayLastIndex(int length) {
+  return length - 1;
+}
+
+List<String> arraySplit(File file) {
+  return file.path.split('/');
+}
+
+String returnFilePath(List<String> array, int directory, String path) {
+  return '$path/$directory/${array[arrayLastIndex(array.length)]}';
+}
+
 Future<List<String>> _readFile(
     List<File> imageList, List<bool> imageFileListIndex, int directory) async {
   final String path = await _localPath;
   List<String> filePathList = [];
   if (imageList.length > 0) {
-    final Map<int, File> imageMap = imageList.asMap();
-    imageMap.forEach((index, file) {
-      final List<String> array = file.path.split('/');
-      final String filePath = '$path/$directory/${array[array.length - 1]}';
+    imageList.asMap().forEach((index, file) {
+      final String filePath = returnFilePath(arraySplit(file), directory, path);
 
       if (!imageFileListIndex[index]) {
         new File(filePath).createSync(recursive: true);
@@ -113,9 +123,7 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
 
   Essay _beforeEssay;
   Future<void> futureDB() async {
-    Database db;
-    await DB.createDB().then((onValue) async {
-      db = onValue;
+    await DB.createDB().then((db) async {
       final Essay essay = await EssaySql.select(db, widget.id);
       final List<ImageDate> imageList =
           await ImageSql.selectDirectory(db, essay.directory);
@@ -128,6 +136,8 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
           return File(imageList[i].fileName);
         });
       });
+
+      DB.close(db);
       return;
     });
   }
@@ -158,14 +168,14 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () async {
-              await DB.createDB().then((onValue) async {
-                final Database db = onValue;
-                final Essay fido = Essay(
-                    id: _beforeEssay.id,
-                    text: _content.text,
-                    directory: _beforeEssay.directory,
-                    time: _beforeEssay.time);
-                await EssaySql.update(fido, db);
+              await DB.createDB().then((db) async {
+                await EssaySql.update(
+                    Essay(
+                        id: _beforeEssay.id,
+                        text: _content.text,
+                        directory: _beforeEssay.directory,
+                        time: _beforeEssay.time),
+                    db);
                 await ImageSql.deleteImageDirectory(db, _beforeEssay.directory);
                 DB.close(db);
               });
@@ -175,15 +185,14 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
                   .then((list) {
                 // print(list);
                 print(list.length);
-                DB.createDB().then((onValue) async {
-                  Database db = onValue;
-
-                  Batch batch = db.batch();
+                DB.createDB().then((db) async {
+                  final Batch batch = db.batch();
 
                   list.forEach((e) async {
-                    final ImageDate fido = ImageDate(_beforeEssay.directory, e,
-                        Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                    await ImageSql.insert(fido, batch);
+                    await ImageSql.insert(
+                        ImageDate(_beforeEssay.directory, e,
+                            Jiffy().format('yyyy-MM-dd h:mm:ss a')),
+                        batch);
                   });
                   await batch.commit();
 //                  List<dynamic> results = await batch.commit();
@@ -440,21 +449,19 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
 
   // 创建指定item的位移动画
   Animation<Offset> createTargetItemSlideAnimation(int index) {
-    if (remainsItems.length == index) {
-      Tween<Offset> tween = Tween(
-          begin: getTargetOffset(index - 1, index), end: Offset(0.0, 0.0));
-      return tween.animate(
-          CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
-    } else {
-      if (remainsItems.isNotEmpty) {
-        int startIndex = remainsItems[index];
-        if (startIndex != index) {
-          Tween<Offset> tween = Tween(
-              begin: getTargetOffset(remainsItems[index], index),
-              end: Offset(0.0, 0.0));
-          return tween.animate(
-              CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
-        }
+    if (remainsItems.length > 0) {
+      final int startIndex = remainsItems[index];
+      if (remainsItems.length == index) {
+        return Tween(
+                begin: getTargetOffset(index - 1, index), end: Offset(0.0, 0.0))
+            .animate(CurvedAnimation(
+                parent: _slideController, curve: Curves.easeOut));
+      } else if (remainsItems.isNotEmpty && startIndex != index) {
+        return Tween(
+                begin: getTargetOffset(remainsItems[index], index),
+                end: Offset(0.0, 0.0))
+            .animate(CurvedAnimation(
+                parent: _slideController, curve: Curves.easeOut));
       }
     }
 
@@ -463,19 +470,17 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
 
   // 返回动画的位置
   Offset getTargetOffset(int startIndex, int endIndex) {
-    SliverGridDelegateWithFixedCrossAxisCount delegate = _delegate;
-    int horizionalSeparation = (startIndex % delegate.crossAxisCount) -
-        (endIndex % delegate.crossAxisCount);
-    int verticalSeparation = (startIndex ~/ delegate.crossAxisCount) -
-        (endIndex ~/ delegate.crossAxisCount);
+    final SliverGridDelegateWithFixedCrossAxisCount delegate = _delegate;
 
-    double dx = (delegate.crossAxisSpacing + _itemSize.width) *
-        horizionalSeparation /
-        _itemSize.width;
-    double dy = (delegate.mainAxisSpacing + _itemSize.height) *
-        verticalSeparation /
-        _itemSize.width;
-    return Offset(dx, dy);
+    return Offset(
+        (delegate.crossAxisSpacing + _itemSize.width) *
+            ((startIndex % delegate.crossAxisCount) -
+                (endIndex % delegate.crossAxisCount)) /
+            _itemSize.width,
+        (delegate.mainAxisSpacing + _itemSize.height) *
+            ((startIndex ~/ delegate.crossAxisCount) -
+                (endIndex ~/ delegate.crossAxisCount)) /
+            _itemSize.width);
   }
 
   // 删除Item，执行动画，完成后重绘界面

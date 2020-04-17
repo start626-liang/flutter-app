@@ -25,7 +25,7 @@ class AddImageSelect extends StatelessWidget {
     return [
       GestureDetector(
         onTap: () async {
-          PermissionStatus permission = await PermissionHandler()
+          final PermissionStatus permission = await PermissionHandler()
               .checkPermissionStatus(PermissionGroup.storage);
 
           switch (permission.value) {
@@ -66,7 +66,7 @@ class AddImageSelect extends StatelessWidget {
       ),
       GestureDetector(
         onTap: () async {
-          PermissionStatus permission = await PermissionHandler()
+          final PermissionStatus permission = await PermissionHandler()
               .checkPermissionStatus(PermissionGroup.camera);
 
           switch (permission.value) {
