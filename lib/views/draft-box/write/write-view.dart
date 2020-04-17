@@ -33,13 +33,24 @@ Future<String> get _localPath async {
   return directory.path;
 }
 
+int arrayLastIndex(int length) {
+  return length - 1;
+}
+
+List<String> arraySplit(File file) {
+  return file.path.split('/');
+}
+
+String returnFilePath(List<String> array, int directory, String path) {
+  return '$path/$directory/${array[arrayLastIndex(array.length)]}';
+}
+
 Future<List<String>> _readFile(List<File> list, int directory) async {
   final String path = await _localPath;
   List<String> filePathList = [];
   if (list.length > 0) {
     list.forEach((e) {
-      final List<String> array = e.path.split('/');
-      final String filePath = '$path/$directory/${array[array.length - 1]}';
+      final String filePath = returnFilePath(arraySplit(e), directory, path);
       new File(filePath).createSync(recursive: true);
       e.copy(filePath);
 
@@ -97,14 +108,17 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
                 parent: _deleteSheetController, curve: Curves.easeOut));
   }
 
+  void imageFileIsNull(File imageFile) {
+    if (null != imageFile) {
+      setState(() {
+        imageFileList.add(imageFile);
+      });
+    }
+  }
+
   void _onImageButtonPressed(ImageSource source) async {
     try {
-      File imageFile = await ImagePicker.pickImage(source: source);
-      if (null != imageFile) {
-        setState(() {
-          imageFileList.add(imageFile);
-        });
-      }
+      imageFileIsNull(await ImagePicker.pickImage(source: source));
     } catch (e) {
       setState(() {
         _pickImageError = e;
@@ -123,25 +137,25 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
             icon: Icon(Icons.save),
             onPressed: () async {
               final int directory = Jiffy().unix();
-              await DB.createDB().then((onValue) async {
-                Database db = onValue;
-                final Essay fido = Essay(
-                    text: _content.text,
-                    directory: directory,
-                    time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                await EssaySql.insert(fido, db);
+              await DB.createDB().then((db) async {
+                await EssaySql.insert(
+                    Essay(
+                        text: _content.text,
+                        directory: directory,
+                        time: Jiffy().format('yyyy-MM-dd h:mm:ss a')),
+                    db);
                 DB.close(db);
               });
 
               await _readFile(imageFileList, directory).then((list) {
                 if (0 < list.length) {
-                  DB.createDB().then((onValue) async {
-                    Database db = onValue;
-                    Batch batch = db.batch();
+                  DB.createDB().then((db) async {
+                    final Batch batch = db.batch();
                     list.forEach((e) async {
-                      final ImageDate fido = ImageDate(
-                          directory, e, Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                      await ImageSql.insert(fido, batch);
+                      await ImageSql.insert(
+                          ImageDate(directory, e,
+                              Jiffy().format('yyyy-MM-dd h:mm:ss a')),
+                          batch);
                     });
                     await batch.commit();
 //                    List<dynamic> results = await batch.commit();
@@ -403,21 +417,16 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
   // 创建指定item的位移动画
   Animation<Offset> createTargetItemSlideAnimation(int index) {
     if (remainsItems.length == index) {
-      Tween<Offset> tween = Tween(
-          begin: getTargetOffset(index - 1, index), end: Offset(0.0, 0.0));
-      return tween.animate(
-          CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
-    } else {
-      if (remainsItems.isNotEmpty) {
-        int startIndex = remainsItems[index];
-        if (startIndex != index) {
-          Tween<Offset> tween = Tween(
-              begin: getTargetOffset(remainsItems[index], index),
-              end: Offset(0.0, 0.0));
-          return tween.animate(
+      return Tween(
+              begin: getTargetOffset(index - 1, index), end: Offset(0.0, 0.0))
+          .animate(
               CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
-        }
-      }
+    } else if (remainsItems.isNotEmpty && remainsItems[index] != index) {
+      return Tween(
+              begin: getTargetOffset(remainsItems[index], index),
+              end: Offset(0.0, 0.0))
+          .animate(
+              CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
     }
 
     return null;
@@ -425,19 +434,17 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
 
   // 返回动画的位置
   Offset getTargetOffset(int startIndex, int endIndex) {
-    SliverGridDelegateWithFixedCrossAxisCount delegate = _delegate;
-    int horizionalSeparation = (startIndex % delegate.crossAxisCount) -
-        (endIndex % delegate.crossAxisCount);
-    int verticalSeparation = (startIndex ~/ delegate.crossAxisCount) -
-        (endIndex ~/ delegate.crossAxisCount);
+    final SliverGridDelegateWithFixedCrossAxisCount delegate = _delegate;
 
-    double dx = (delegate.crossAxisSpacing + _itemSize.width) *
-        horizionalSeparation /
-        _itemSize.width;
-    double dy = (delegate.mainAxisSpacing + _itemSize.height) *
-        verticalSeparation /
-        _itemSize.width;
-    return Offset(dx, dy);
+    return Offset(
+        (delegate.crossAxisSpacing + _itemSize.width) *
+            ((startIndex % delegate.crossAxisCount) -
+                (endIndex % delegate.crossAxisCount)) /
+            _itemSize.width,
+        (delegate.mainAxisSpacing + _itemSize.height) *
+            ((startIndex ~/ delegate.crossAxisCount) -
+                (endIndex ~/ delegate.crossAxisCount)) /
+            _itemSize.width);
   }
 
   // 删除Item，执行动画，完成后重绘界面
