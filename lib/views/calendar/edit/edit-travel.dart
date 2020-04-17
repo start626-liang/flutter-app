@@ -3,14 +3,14 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:time/time.dart';
 
-import '../repetition-select.dart';
-import '../warn-select.dart';
-import '../../../general/toast.dart';
-import '../../../db/db.dart' as DB;
 import '../../../db/calendar/travel-mode.dart';
 import '../../../db/calendar/travel-sql.dart' as TravelSql;
+import '../../../db/db.dart' as DB;
 import '../../../general/push.dart' as push;
+import '../../../general/toast.dart';
 import '../general-string.dart';
+import '../repetition-select.dart';
+import '../warn-select.dart';
 
 class EditTravelPage extends StatefulWidget {
   final List warnList;
@@ -165,8 +165,12 @@ class _EditTravelState extends State<EditTravelPage> {
                         e['time'](_startTime));
                   }
                 });
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/calendar');
+//                Navigator.of(context).pushNamedAndRemoveUntil(
+////                    '/calendar', ModalRoute.withName('/'));
 
-                Navigator.pushReplacementNamed(context, '/calendar');
                 Toast.toast(context, msg: "已保存！ ", showTime: 3000);
                 DB.close(db);
               });

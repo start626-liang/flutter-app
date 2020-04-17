@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
-import '../../views/home/drawer-component.dart';
 import '../../views/home/enshrine-component.dart';
 import '../../views/home/like-component.dart';
 import '../../views/home/trample-component.dart';
@@ -44,15 +43,7 @@ class HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
-        leading: Builder(builder: (BuildContext context) {
-          return IconButton(
-            icon: Icon(Icons.menu, color: Colors.white), //自定义图标
-            onPressed: () {
-              // 打开抽屉菜单
-              Scaffold.of(context).openDrawer();
-            },
-          );
-        }),
+        centerTitle: true,
       ),
       body: SimpleGestureDetector(
         onVerticalSwipe: _onVerticalSwipe,
@@ -81,7 +72,6 @@ class HomeViewState extends State<HomeView> {
           ),
         ),
       ),
-      drawer: MyDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigator.pushNamed(context, '/draft_box/write');

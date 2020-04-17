@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'drawer-component.dart';
+
 class BottomNavigationWidget extends StatefulWidget {
   final List<Widget> list;
 
@@ -17,6 +19,7 @@ class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: widget.list[_currentIndex],
+      drawer: MyDrawer(),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(

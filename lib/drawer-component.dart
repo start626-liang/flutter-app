@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import '../../model/Store.dart';
-import '../../model/User.dart';
-import '../../main.dart';
+import 'main.dart';
+import 'model/Store.dart';
+import 'model/User.dart';
 
 class MyDrawer extends StatelessWidget {
   @override
