@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:time/time.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../repetition-select.dart';
 import '../warn-select.dart';
@@ -141,22 +140,25 @@ class _EditTravelState extends State<EditTravelPage> {
                 push.cancelNotifications(_id);
               }
 
-              DB.createDB().then((onValue) async {
-                Database db = onValue;
+              DB.createDB().then((db) async {
                 final String title = _title.text;
                 final String site = _site.text;
                 final String notes = _notes.text;
-                final Travel fido = Travel(
-                    id: widget.item.id,
-                    title: title,
-                    site: site,
-                    notes: notes,
-                    startTimeMilliseconds: _startTime.millisecondsSinceEpoch,
-                    endTimeMilliseconds: _endTime.millisecondsSinceEpoch,
-                    time: Jiffy().format('yyyy-MM-dd h:mm:ss a'));
-                TravelSql.update(fido, db);
+
+                TravelSql.update(
+                    Travel(
+                        id: widget.item.id,
+                        title: title,
+                        site: site,
+                        notes: notes,
+                        startTimeMilliseconds:
+                            _startTime.millisecondsSinceEpoch,
+                        endTimeMilliseconds: _endTime.millisecondsSinceEpoch,
+                        time: Jiffy().format('yyyy-MM-dd h:mm:ss a')),
+                    db);
 
                 Travel _item = await TravelSql.select(db, widget.item.id);
+
                 widget.warnList.forEach((e) {
                   if (e['select']) {
                     push.setOneTime(_item.id * 10 + e['id'], title, notes,

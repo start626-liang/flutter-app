@@ -103,8 +103,7 @@ class _SeeViewState extends State<SeeView> {
   void initState() {
     super.initState();
 
-    DB.createDB().then((onValue) async {
-      Database db = onValue;
+    DB.createDB().then((db) async {
       Travel data = await TravelSql.select(db, widget.id);
       setState(() {
         _item = data;
@@ -334,14 +333,12 @@ class _SeeViewState extends State<SeeView> {
                         child: Text("删除"),
                         onPressed: () {
                           Navigator.of(context).pop(true); //关闭对话框
-                          DB.createDB().then((onValue) async {
-                            Database db = onValue;
+                          DB.createDB().then((db) async {
                             TravelSql.delete(db, widget.id);
 
                             //删除本次提醒
                             for (int i = 0; i < 10; i++) {
-                              final int _id = widget.id * 10 + i;
-                              push.cancelNotifications(_id);
+                              push.cancelNotifications(widget.id * 10 + i);
                             }
 
                             Navigator.pushReplacementNamed(

@@ -1,9 +1,8 @@
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../../general/push.dart' as push;
 import './event-list.dart';
@@ -138,8 +137,7 @@ class _CalendarStatePage extends State<CalendarPage>
 
     // 时间 : 行程 Map<DateTime, List> _events
     _events = {};
-    DB.createDB().then((onValue) async {
-      Database db = onValue;
+    DB.createDB().then((db) async {
       List dataList = await TravelSql.selectAll(db);
       dataList.forEach((e) {
         final DateTime _startT =
@@ -147,11 +145,10 @@ class _CalendarStatePage extends State<CalendarPage>
         final DateTime _endT =
             DateTime.fromMillisecondsSinceEpoch(e.endTimeMilliseconds);
 
-        final int daysNum = DateTime(_endT.year, _endT.month, _endT.day)
-            .difference(DateTime(_startT.year, _startT.month, _startT.day))
-            .inDays;
         setEventsShow(
-            daysNum,
+            DateTime(_endT.year, _endT.month, _endT.day)
+                .difference(DateTime(_startT.year, _startT.month, _startT.day))
+                .inDays,
             DateTime(_startT.year, _startT.month, _startT.day),
             _startT,
             DateTime(_endT.year, _endT.month, _endT.day),
