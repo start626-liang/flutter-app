@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../../db/draft-box/essay-mode.dart';
 import '../../../db/db.dart' as DB;
+import '../../../db/draft-box/essay-mode.dart';
 import '../../../db/draft-box/essay-sql.dart' as EssaySql;
 import '../../../db/draft-box/image-sql.dart' as ImageSql;
 import '../update/update-view.dart';
@@ -108,49 +108,53 @@ class DraftsViewState extends State<DraftsView> {
   @override
   Widget build(BuildContext context) {
     final title = 'Draft_Box';
-    return MaterialApp(
-      title: title,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(title),
-        ),
-        body: FutureBuilder<void>(
-          future: _future,
-          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return Text('ConnectionState.none');
-              case ConnectionState.waiting:
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              case ConnectionState.active:
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              case ConnectionState.done:
-                return ListView.builder(
-                  itemCount: _contentList.length,
-                  itemBuilder: (context, index) {
-                    final Essay item = _contentList[index];
-                    return buildItem(context, item, index);
-                  },
-                );
-              default:
-                return Text('?????');
-            }
-          },
-        ),
-        //  右下角按钮
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        centerTitle: true,
+        leading: FlatButton(
+          child: Icon(
+            Icons.keyboard_backspace,
+            color: Colors.white,
+          ),
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed('/draft_box/write');
+            Navigator.pop(context);
           },
         ),
+      ),
+      body: FutureBuilder<void>(
+        future: _future,
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return Text('ConnectionState.none');
+            case ConnectionState.waiting:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            case ConnectionState.active:
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            case ConnectionState.done:
+              return ListView.builder(
+                itemCount: _contentList.length,
+                itemBuilder: (context, index) {
+                  final Essay item = _contentList[index];
+                  return buildItem(context, item, index);
+                },
+              );
+            default:
+              return Text('?????');
+          }
+        },
+      ),
+      //  右下角按钮
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context).pushReplacementNamed('/draft_box/write');
+        },
       ),
     );
   }

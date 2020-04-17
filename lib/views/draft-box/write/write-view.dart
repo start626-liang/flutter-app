@@ -7,17 +7,16 @@ import 'package:jiffy/jiffy.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'add-image-select.dart';
-import 'bottom-column-icon.dart';
-import 'grid-item.dart';
-import 'image-item.dart';
 import '../../../db/db.dart' as DB;
 import '../../../db/draft-box/essay-mode.dart';
 import '../../../db/draft-box/essay-sql.dart' as EssaySql;
 import '../../../db/draft-box/image-mode.dart';
 import '../../../db/draft-box/image-sql.dart' as ImageSql;
-
 import '../../../general/toast.dart';
+import 'add-image-select.dart';
+import 'bottom-column-icon.dart';
+import 'grid-item.dart';
+import 'image-item.dart';
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -230,7 +229,6 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
           children: <Widget>[
             TextFormField(
               controller: _content,
-              autofocus: true,
               maxLines: 5,
               decoration: InputDecoration(
                 hintText: "please enter",
