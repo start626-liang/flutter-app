@@ -447,20 +447,17 @@ class UpdatePageState extends State<UpdatePage> with TickerProviderStateMixin {
 
   // 创建指定item的位移动画
   Animation<Offset> createTargetItemSlideAnimation(int index) {
-    if (remainsItems.length > 0) {
-      final int startIndex = remainsItems[index];
-      if (remainsItems.length == index) {
-        return Tween(
-                begin: getTargetOffset(index - 1, index), end: Offset(0.0, 0.0))
-            .animate(CurvedAnimation(
-                parent: _slideController, curve: Curves.easeOut));
-      } else if (remainsItems.isNotEmpty && startIndex != index) {
-        return Tween(
-                begin: getTargetOffset(remainsItems[index], index),
-                end: Offset(0.0, 0.0))
-            .animate(CurvedAnimation(
-                parent: _slideController, curve: Curves.easeOut));
-      }
+    if (remainsItems.length == index) {
+      return Tween(
+              begin: getTargetOffset(index - 1, index), end: Offset(0.0, 0.0))
+          .animate(
+              CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
+    } else if (remainsItems.isNotEmpty && remainsItems[index] != index) {
+      return Tween(
+              begin: getTargetOffset(remainsItems[index], index),
+              end: Offset(0.0, 0.0))
+          .animate(
+              CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
     }
 
     return null;
