@@ -4,8 +4,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/subjects.dart';
 
 import 'package:flutter/material.dart';
-import 'package:redux_dev_tools/redux_dev_tools.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+// import 'package:redux_dev_tools/redux_dev_tools.dart';
+// import 'package:flutter_redux/flutter_redux.dart';
 
 import 'app.dart';
 import 'model/Store.dart';
@@ -52,7 +52,7 @@ Future<void> main() async {
         id: id, title: title, body: body, payload: payload));
   });
   var initializationSettings = InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOS);
+      android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: (String payload) async {
     if (payload != null) {
@@ -62,21 +62,21 @@ Future<void> main() async {
   });
 
   final Store initStore = new Store(new User(name: notLogin));
-  final DevToolsStore store =
-      new DevToolsStore<Store>(storeReducer, initialState: initStore);
-  runApp(MyApp(store));
+  // final DevToolsStore store =
+  //     new DevToolsStore<Store>(storeReducer, initialState: initStore);
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
-  final DevToolsStore<Store> _store;
+// class MyApp extends StatelessWidget {
+//   // final DevToolsStore<Store> _store;
 
-  MyApp(this._store);
-  @override
-  Widget build(BuildContext context) {
-    return new StoreProvider<Store>(
-      store: _store,
-//      child: new App(_store),
-      child: new App(),
-    );
-  }
-}
+//   MyApp(this._store);
+//   @override
+//   Widget build(BuildContext context) {
+//     return new StoreProvider<Store>(
+//       store: _store,
+// //      child: new App(_store),
+//       child: new App(),
+//     );
+//   }
+// }

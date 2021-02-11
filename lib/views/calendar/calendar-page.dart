@@ -318,7 +318,7 @@ class _CalendarStatePage extends State<CalendarPage>
           return children;
         },
       ),
-      onDaySelected: (date, events) {
+      onDaySelected: (date, events, holidays) {
         // 点击事件
         _onDaySelected(date, events);
         _animationController.forward(from: 0.0);

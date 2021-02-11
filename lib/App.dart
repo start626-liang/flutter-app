@@ -12,7 +12,6 @@ import 'views/user/user-view.dart';
 import 'views/draft-box/write/write-view.dart';
 import 'views/calendar/calendar-page.dart';
 import 'views/search/search-page.dart';
-import 'views/permission-handler.dart';
 
 class App extends StatelessWidget {
 //  final DevToolsStore<Store> _store;
@@ -69,7 +68,6 @@ class App extends StatelessWidget {
         '/draft_box/list': (context) => buildDraftsBoxPage(context),
         '/calendar': (context) => buildCalendarPage(context),
         '/search': (context) => buildSearchPage(context),
-        '/permission_handler': (context) => PermissionHandlerPage(),
       },
     );
   }

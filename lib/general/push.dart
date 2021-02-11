@@ -25,8 +25,8 @@ Future<void> setOneTime(
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       _id.toString(), _id.toString(), _id.toString(),
-      importance: Importance.Max,
-      priority: Priority.Max,
+      importance: Importance.max,
+      priority: Priority.max,
       icon: 'secondary_icon',
       sound: RawResourceAndroidNotificationSound('slow_spring_board'),
       largeIcon: DrawableResourceAndroidBitmap('sample_large_icon'),
@@ -42,7 +42,8 @@ Future<void> setOneTime(
       IOSNotificationDetails(sound: "slow_spring_board.aiff");
 
   var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics);
   await flutterLocalNotificationsPlugin.schedule(
       _id, _title, _body, _time, platformChannelSpecifics);
 }

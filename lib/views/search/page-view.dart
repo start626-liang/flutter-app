@@ -86,7 +86,7 @@ class _PageViewState extends State<PageView> with TickerProviderStateMixin {
             child: ExtendedTabBarView(
               children: pageList,
               controller: tabController,
-              linkWithAncestor: true,
+              // linkWithAncestor: true,
               cacheExtent: 1,
             ),
           )
