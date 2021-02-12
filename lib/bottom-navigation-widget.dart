@@ -28,23 +28,19 @@ class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                color: _bottomNavigationColor,
-              ),
-              title: Text(
-                _titleList[0],
-                style: TextStyle(color: _bottomNavigationColor),
-              )),
+            icon: Icon(
+              Icons.home,
+              color: _bottomNavigationColor,
+            ),
+            label: _titleList[0],
+          ),
           BottomNavigationBarItem(
-              icon: Icon(
-                Icons.email,
-                color: _bottomNavigationColor,
-              ),
-              title: Text(
-                _titleList[1],
-                style: TextStyle(color: _bottomNavigationColor),
-              )),
+            icon: Icon(
+              Icons.email,
+              color: _bottomNavigationColor,
+            ),
+            label: _titleList[1],
+          )
         ],
         currentIndex: _currentIndex,
         onTap: (int index) {

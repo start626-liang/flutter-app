@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../../../db/db.dart' as DB;
 
@@ -303,7 +302,7 @@ class _SeeViewState extends State<SeeView> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 20.0),
                     child: DefaultTextStyle(
-                      style: Theme.of(context).textTheme.title,
+                      style: Theme.of(context).textTheme.headline6,
                       child: Semantics(
                         child: Text("提示"),
                         namesRoute: true,
@@ -316,7 +315,7 @@ class _SeeViewState extends State<SeeView> {
                       padding:
                           const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 24.0),
                       child: DefaultTextStyle(
-                        style: Theme.of(context).textTheme.title,
+                        style: Theme.of(context).textTheme.headline6,
                         child: Text("您确定要删除当前文件吗?"),
                       ),
                     ),

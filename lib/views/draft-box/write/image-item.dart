@@ -52,7 +52,7 @@ class ImageItem extends StatefulWidget {
 
 class _ImageItemState extends State<ImageItem> {
   String _retrieveDataError;
-
+  final ImagePicker _picker = ImagePicker();
   Widget _buildImageWidget(data) {
     final Text retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
@@ -80,7 +80,7 @@ class _ImageItemState extends State<ImageItem> {
   }
 
   Future<void> retrieveLostData() async {
-    final LostDataResponse response = await ImagePicker.retrieveLostData();
+    final LostData response = await _picker.getLostData();
     if (response.isEmpty) {
       return;
     }

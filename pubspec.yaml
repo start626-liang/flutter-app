@@ -56,6 +56,8 @@ dependencies:
   simple_gesture_detector: ^0.1.6
 
   extended_tabs: ^1.0.1
+
+  timezone: ^0.6.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

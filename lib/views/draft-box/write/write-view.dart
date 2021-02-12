@@ -72,6 +72,8 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
   final List<int> selectedItems = []; // 被选中的item的index集合
   final List<int> remainsItems = []; // 删除后将会保留的item的index集合
 
+  final ImagePicker _picker = ImagePicker();
+
   Size _itemSize;
 
   StateSetter _deleteSheetState;
@@ -117,7 +119,9 @@ class WritePageState extends State<WritePage> with TickerProviderStateMixin {
 
   void _onImageButtonPressed(ImageSource source) async {
     try {
-      imageFileIsNull(await ImagePicker.pickImage(source: source));
+      final pickedFile = await _picker.getImage(source: source);
+
+      imageFileIsNull(File(pickedFile.path));
     } catch (e) {
       setState(() {
         _pickImageError = e;

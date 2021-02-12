@@ -26,11 +26,14 @@ class AddImageSelect extends StatelessWidget {
       GestureDetector(
         onTap: () async {
           var status = await Permission.storage.status;
-          if (status.isUndetermined) {
+          print(status);
+          if (status.isPermanentlyDenied) {
+            Toast.toast(context, msg: 'photo拒绝访问，并不提示');
+          }
+
+          if (status.isUndetermined || status.isGranted) {
             _onImageButtonPressed(ImageSource.gallery);
             Navigator.pop(context);
-          } else {
-            Toast.toast(context, msg: 'photo拒绝访问，并不提示');
           }
         },
         child: Container(
@@ -63,11 +66,15 @@ class AddImageSelect extends StatelessWidget {
       GestureDetector(
         onTap: () async {
           var status = await Permission.camera.status;
-          if (status.isUndetermined) {
+          print(status);
+
+          if (status.isPermanentlyDenied) {
+            Toast.toast(context, msg: 'camera拒绝访问，并不提示');
+          }
+
+          if (status.isUndetermined || status.isGranted) {
             _onImageButtonPressed(ImageSource.camera);
             Navigator.pop(context);
-          } else {
-            Toast.toast(context, msg: 'camera拒绝访问，并不提示');
           }
         },
         child: Container(

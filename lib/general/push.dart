@@ -1,9 +1,16 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import 'package:flutter/material.dart';
+
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/standalone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 import '../main.dart';
 
@@ -17,35 +24,45 @@ Future<void> setOneTime(
   String _body,
   DateTime _time,
 ) async {
-  var vibrationPattern = Int64List(4);
+  final Int64List vibrationPattern = Int64List(4);
   vibrationPattern[0] = 0;
   vibrationPattern[1] = 1000;
   vibrationPattern[2] = 5000;
   vibrationPattern[3] = 2000;
 
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      _id.toString(), _id.toString(), _id.toString(),
-      importance: Importance.max,
-      priority: Priority.max,
-      icon: 'secondary_icon',
-      sound: RawResourceAndroidNotificationSound('slow_spring_board'),
-      largeIcon: DrawableResourceAndroidBitmap('sample_large_icon'),
-      vibrationPattern: vibrationPattern,
-      enableVibration: true,
-      enableLights: true,
-      color: const Color.fromARGB(255, 255, 0, 0),
-      ledColor: const Color.fromARGB(255, 255, 0, 0),
-      ledOnMs: 3000,
-      ledOffMs: 1500);
+  final AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails('daily notification channel $_id',
+          'daily notification channel $_id', 'daily notification description',
+          importance: Importance.max,
+          priority: Priority.high,
+          icon: 'secondary_icon',
+          sound: RawResourceAndroidNotificationSound('slow_spring_board'),
+          largeIcon: DrawableResourceAndroidBitmap('sample_large_icon'),
+          vibrationPattern: vibrationPattern,
+          enableVibration: true,
+          enableLights: true,
+          color: const Color.fromARGB(255, 255, 0, 0),
+          ledColor: const Color.fromARGB(255, 255, 0, 0),
+          ledOnMs: 3000,
+          ledOffMs: 1500);
 
-  var iOSPlatformChannelSpecifics =
+  const IOSNotificationDetails iOSPlatformChannelSpecifics =
       IOSNotificationDetails(sound: "slow_spring_board.aiff");
 
-  var platformChannelSpecifics = NotificationDetails(
+  final NotificationDetails platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics);
-  await flutterLocalNotificationsPlugin.schedule(
-      _id, _title, _body, _time, platformChannelSpecifics);
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+    _id,
+    _title,
+    _body,
+    tz.TZDateTime.fromMicrosecondsSinceEpoch(
+        tz.local, _time.microsecondsSinceEpoch),
+    platformChannelSpecifics,
+    androidAllowWhileIdle: false,
+    uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+  );
 }
 
 Future<List<int>> allNotificationRequests() async {
